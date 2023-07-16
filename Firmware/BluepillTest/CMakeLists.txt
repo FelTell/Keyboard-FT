@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.22)
 
 set(CMAKE_C_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_EXPORT_COMPILE_COMMANDS TRUE)
 
 set(PROJECT_NAME BluepillTest)
@@ -10,7 +11,7 @@ set(OPENOCD_CFG_NAME ${PROJECT_NAME}.cfg)
 # CMAKE project name, languages and version
 project(${PROJECT_NAME}
 # C and assembly
-LANGUAGES C ASM
+LANGUAGES C CXX ASM
 VERSION 0.1
 )
 
@@ -25,14 +26,12 @@ endif()
 add_library(ST STATIC)
 
 set(HAL_DRIVERS_SOURCES
-    Drivers/STM32F1xx_HAL_Driver/Src
-    Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_adc_ex.c
-    Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_adc.c
     Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_cortex.c
     Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_dma.c
     Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_exti.c
-    Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_flash.c
     Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_flash_ex.c
+    Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_flash.c
+    Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio_ex.c
     Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio.c
     Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_pcd_ex.c
     Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_pcd.c
@@ -43,9 +42,8 @@ set(HAL_DRIVERS_SOURCES
     Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim.c
     Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal.c
     Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_ll_usb.c
-    Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio_ex.c
 
-    Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Src/usbd_cdc.c
+    Middlewares/ST/STM32_USB_Device_Library/Class/HID/Src/usbd_hid.c
 
     Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_core.c
     Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c
@@ -60,10 +58,12 @@ target_sources(ST PRIVATE
 # Add include directory for HAL 
 target_include_directories(ST PUBLIC
     Drivers/STM32F1xx_HAL_Driver/Inc/
-    Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc/
+    Middlewares/ST/STM32_USB_Device_Library/Class/HID/Inc/
     Middlewares/ST/STM32_USB_Device_Library/Core/Inc/
     Drivers/CMSIS/Device/ST/STM32F1xx/Include/
     Drivers/CMSIS/Include/
+    USB_DEVICE/Target/
+    USB_DEVICE/App/
     Inc/
 )
 
@@ -84,11 +84,8 @@ add_executable(${EXE_NAME})
 set(ST_CONFIGURATION_SOURCES
     Src/stm32f1xx_hal_msp.c
     Src/system_stm32f1xx.c
-    Src/usb_device.c
-    Src/usbd_cdc_if.c
-    Src/usbd_conf.c
-    Src/usbd_desc.c
     Src/syscalls.c
+    Src/sysmem.c
 )
 
 # Add the rest of the files. Any new file should be added here
@@ -97,13 +94,12 @@ target_sources(${EXE_NAME} PRIVATE
 
     startup/startup_stm32f103c8tx.s
 
+    USB_DEVICE/Target/usbd_conf.c
+    USB_DEVICE/App/usb_device.c
+    USB_DEVICE/App/usbd_desc.c
+
     Src/stm32f1xx_it.c
     Src/main.c
-
-    Src/application/controller.c
-    Src/application/timer_handler.c
-    Src/application/visualizer.c
-    Src/application/electrical_analyzer.c
 )
 
 target_include_directories(${EXE_NAME} PRIVATE
