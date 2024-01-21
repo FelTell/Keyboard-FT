@@ -4608,7 +4608,7 @@
   (symbol (lib_id "Switch:SW_Push") (at 92.71 45.72 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 04b7c16a-88f2-4c68-9c37-83034faf9605)
-    (property "Reference" "S6" (at 95.25 43.18 0)
+    (property "Reference" "S26" (at 95.25 43.18 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "Key" (at 92.71 46.99 0)
@@ -4625,7 +4625,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "S6") (unit 1)
+          (reference "S26") (unit 1)
         )
       )
     )
@@ -4634,7 +4634,7 @@
   (symbol (lib_id "Device:D") (at 153.67 35.56 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 04bdd980-e506-4208-9ad0-be48e9fcb213)
-    (property "Reference" "D49" (at 149.86 38.1 90)
+    (property "Reference" "D46" (at 149.86 38.1 90)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "D" (at 153.67 38.1 90)
@@ -4657,7 +4657,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "D49") (unit 1)
+          (reference "D46") (unit 1)
         )
       )
     )
@@ -4666,7 +4666,7 @@
   (symbol (lib_id "Switch:SW_Push") (at 106.68 45.72 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 053d4881-60b4-4269-91bb-0afed232f677)
-    (property "Reference" "S8" (at 109.22 43.18 0)
+    (property "Reference" "S31" (at 109.22 43.18 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "Key" (at 106.68 46.99 0)
@@ -4683,7 +4683,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "S8") (unit 1)
+          (reference "S31") (unit 1)
         )
       )
     )
@@ -4692,7 +4692,7 @@
   (symbol (lib_id "Switch:SW_Push") (at 82.55 101.6 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 065711fb-5b9f-4290-a012-d559eadba652)
-    (property "Reference" "S72" (at 85.09 99.06 0)
+    (property "Reference" "S21" (at 85.09 99.06 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "Key" (at 82.55 102.87 0)
@@ -4709,7 +4709,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "S72") (unit 1)
+          (reference "S21") (unit 1)
         )
       )
     )
@@ -4718,13 +4718,13 @@
   (symbol (lib_id "Switch:SW_Push") (at 185.42 101.6 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 06d89e39-ba67-498c-b38c-976d75c8c2a2)
-    (property "Reference" "S74" (at 187.96 99.06 0)
+    (property "Reference" "S60" (at 187.96 99.06 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "Key" (at 185.42 102.87 0)
       (effects (font (size 1.27 1.27)))
     )
-    (property "Footprint" "PCM_Switch_Keyboard_Cherry_MX:SW_Cherry_MX_PCB_1.00u" (at 185.42 96.52 0)
+    (property "Footprint" "PCM_Switch_Keyboard_Cherry_MX:SW_Cherry_MX_PCB_1.25u" (at 185.42 96.52 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Datasheet" "~" (at 185.42 96.52 0)
@@ -4735,7 +4735,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "S74") (unit 1)
+          (reference "S60") (unit 1)
         )
       )
     )
@@ -4776,7 +4776,7 @@
   (symbol (lib_id "Device:D") (at 83.82 49.53 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 0b053728-99a8-489b-a95c-ece0129b151d)
-    (property "Reference" "D5" (at 80.01 52.07 90)
+    (property "Reference" "D20" (at 80.01 52.07 90)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "D" (at 83.82 52.07 90)
@@ -4799,7 +4799,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "D5") (unit 1)
+          (reference "D20") (unit 1)
         )
       )
     )
@@ -4808,7 +4808,7 @@
   (symbol (lib_id "Device:D") (at 125.73 35.56 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 0b5e86f3-9edc-498b-a142-3ba8351584dd)
-    (property "Reference" "D37" (at 121.92 38.1 90)
+    (property "Reference" "D35" (at 121.92 38.1 90)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "D" (at 125.73 38.1 90)
@@ -4831,7 +4831,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "D37") (unit 1)
+          (reference "D35") (unit 1)
         )
       )
     )
@@ -4872,7 +4872,7 @@
   (symbol (lib_id "Device:D") (at 111.76 35.56 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 0e4d4ed7-7a1e-4494-a37f-72af0df4902e)
-    (property "Reference" "D31" (at 107.95 38.1 90)
+    (property "Reference" "D30" (at 107.95 38.1 90)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "D" (at 111.76 38.1 90)
@@ -4895,7 +4895,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "D31") (unit 1)
+          (reference "D30") (unit 1)
         )
       )
     )
@@ -4904,7 +4904,7 @@
   (symbol (lib_id "Switch:SW_Push") (at 204.47 31.75 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 0ecf67ea-1632-4a34-9788-db663c277106)
-    (property "Reference" "S71" (at 207.01 29.21 0)
+    (property "Reference" "S68" (at 207.01 29.21 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "Key" (at 204.47 33.02 0)
@@ -4921,7 +4921,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "S71") (unit 1)
+          (reference "S68") (unit 1)
         )
       )
     )
@@ -4930,7 +4930,7 @@
   (symbol (lib_id "Device:D") (at 223.52 35.56 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 0fc82f44-de4f-4e26-ad8a-4b319f609513)
-    (property "Reference" "D75" (at 219.71 38.1 90)
+    (property "Reference" "D72" (at 219.71 38.1 90)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "D" (at 223.52 38.1 90)
@@ -4953,7 +4953,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "D75") (unit 1)
+          (reference "D72") (unit 1)
         )
       )
     )
@@ -4962,7 +4962,7 @@
   (symbol (lib_id "Device:D") (at 87.63 105.41 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 1058d2d4-1e98-4852-97ea-12054d47908f)
-    (property "Reference" "D72" (at 83.82 107.95 90)
+    (property "Reference" "D21" (at 83.82 107.95 90)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "D" (at 87.63 107.95 90)
@@ -4985,7 +4985,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "D72") (unit 1)
+          (reference "D21") (unit 1)
         )
       )
     )
@@ -4994,7 +4994,7 @@
   (symbol (lib_id "Device:D") (at 167.64 35.56 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 120b7391-e145-49c6-b603-17dc4a1a0a60)
-    (property "Reference" "D55" (at 163.83 38.1 90)
+    (property "Reference" "D51" (at 163.83 38.1 90)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "D" (at 167.64 38.1 90)
@@ -5017,7 +5017,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "D55") (unit 1)
+          (reference "D51") (unit 1)
         )
       )
     )
@@ -5026,7 +5026,7 @@
   (symbol (lib_id "Device:D") (at 161.29 63.5 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 1280d2b8-3bbc-4c56-bf82-bc729f845580)
-    (property "Reference" "D28" (at 157.48 66.04 90)
+    (property "Reference" "D49" (at 157.48 66.04 90)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "D" (at 161.29 66.04 90)
@@ -5049,7 +5049,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "D28") (unit 1)
+          (reference "D49") (unit 1)
         )
       )
     )
@@ -5058,7 +5058,7 @@
   (symbol (lib_id "Switch:SW_Push") (at 128.27 59.69 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 12a3c2e5-bdb7-4554-af37-11eb5ea54f4f)
-    (property "Reference" "S26" (at 130.81 57.15 0)
+    (property "Reference" "S38" (at 130.81 57.15 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "Key" (at 128.27 60.96 0)
@@ -5075,7 +5075,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "S26") (unit 1)
+          (reference "S38") (unit 1)
         )
       )
     )
@@ -5084,7 +5084,7 @@
   (symbol (lib_id "Device:D") (at 111.76 49.53 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 14e0c0f8-8bff-4536-96e0-1338bc6bc95b)
-    (property "Reference" "D8" (at 107.95 52.07 90)
+    (property "Reference" "D31" (at 107.95 52.07 90)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "D" (at 111.76 52.07 90)
@@ -5107,7 +5107,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "D8") (unit 1)
+          (reference "D31") (unit 1)
         )
       )
     )
@@ -5116,7 +5116,7 @@
   (symbol (lib_id "Switch:SW_Push") (at 232.41 31.75 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 18e848cb-85c5-4688-947a-1053d5488122)
-    (property "Reference" "S76" (at 234.95 29.21 0)
+    (property "Reference" "S77" (at 234.95 29.21 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "Key" (at 232.41 33.02 0)
@@ -5133,7 +5133,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "S76") (unit 1)
+          (reference "S77") (unit 1)
         )
       )
     )
@@ -5142,7 +5142,7 @@
   (symbol (lib_id "Switch:SW_Push") (at 64.77 45.72 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 197a4f92-0ced-47d5-a913-36c158994f85)
-    (property "Reference" "S4" (at 67.31 43.18 0)
+    (property "Reference" "S14" (at 67.31 43.18 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "Key" (at 64.77 46.99 0)
@@ -5159,7 +5159,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "S4") (unit 1)
+          (reference "S14") (unit 1)
         )
       )
     )
@@ -5168,13 +5168,13 @@
   (symbol (lib_id "Switch:SW_Push") (at 224.79 73.66 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 1a1c25d5-bcf3-4837-8f29-6a5e0d2833ff)
-    (property "Reference" "S50" (at 227.33 71.12 0)
+    (property "Reference" "S74" (at 227.33 71.12 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "Key" (at 224.79 74.93 0)
       (effects (font (size 1.27 1.27)))
     )
-    (property "Footprint" "PCM_Switch_Keyboard_Cherry_MX:SW_Cherry_MX_PCB_1.00u" (at 224.79 68.58 0)
+    (property "Footprint" "PCM_Switch_Keyboard_Cherry_MX:SW_Cherry_MX_PCB_2.25u" (at 224.79 68.58 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Datasheet" "~" (at 224.79 68.58 0)
@@ -5185,7 +5185,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "S50") (unit 1)
+          (reference "S74") (unit 1)
         )
       )
     )
@@ -5194,7 +5194,7 @@
   (symbol (lib_id "Switch:SW_Push") (at 190.5 31.75 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 1bdea860-d50e-4da7-b814-346a6c51be8a)
-    (property "Reference" "S66" (at 193.04 29.21 0)
+    (property "Reference" "S62" (at 193.04 29.21 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "Key" (at 190.5 33.02 0)
@@ -5211,7 +5211,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "S66") (unit 1)
+          (reference "S62") (unit 1)
         )
       )
     )
@@ -5220,7 +5220,7 @@
   (symbol (lib_id "Device:D") (at 217.17 63.5 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 1e8e0039-64ba-450b-8fdf-0843424fa8b4)
-    (property "Reference" "D33" (at 213.36 66.04 90)
+    (property "Reference" "D70" (at 213.36 66.04 90)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "D" (at 217.17 66.04 90)
@@ -5243,7 +5243,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "D33") (unit 1)
+          (reference "D70") (unit 1)
         )
       )
     )
@@ -5278,7 +5278,7 @@
   (symbol (lib_id "Device:D") (at 109.22 77.47 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 1fb0a57e-5522-4b40-8314-f3aa3696c094)
-    (property "Reference" "D40" (at 105.41 80.01 90)
+    (property "Reference" "D29" (at 105.41 80.01 90)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "D" (at 109.22 80.01 90)
@@ -5301,7 +5301,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "D40") (unit 1)
+          (reference "D29") (unit 1)
         )
       )
     )
@@ -5310,7 +5310,7 @@
   (symbol (lib_id "Device:D") (at 165.1 77.47 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 27db6516-0a97-4349-9176-76ddf732281e)
-    (property "Reference" "D45" (at 161.29 80.01 90)
+    (property "Reference" "D50" (at 161.29 80.01 90)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "D" (at 165.1 80.01 90)
@@ -5333,7 +5333,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "D45") (unit 1)
+          (reference "D50") (unit 1)
         )
       )
     )
@@ -5342,7 +5342,7 @@
   (symbol (lib_id "Device:D") (at 237.49 35.56 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 2833957d-a1a9-4efc-bc41-b33c14e86028)
-    (property "Reference" "D76" (at 233.68 38.1 90)
+    (property "Reference" "D77" (at 233.68 38.1 90)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "D" (at 237.49 38.1 90)
@@ -5365,7 +5365,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "D76") (unit 1)
+          (reference "D77") (unit 1)
         )
       )
     )
@@ -5374,7 +5374,7 @@
   (symbol (lib_id "Switch:SW_Push") (at 184.15 59.69 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 29e55953-7dc9-4733-bc5e-b9cff017c03f)
-    (property "Reference" "S30" (at 186.69 57.15 0)
+    (property "Reference" "S59" (at 186.69 57.15 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "Key" (at 184.15 60.96 0)
@@ -5391,7 +5391,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "S30") (unit 1)
+          (reference "S59") (unit 1)
         )
       )
     )
@@ -5450,7 +5450,7 @@
   (symbol (lib_id "Device:D") (at 172.72 90.17 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 31b315af-f004-494b-84bf-1e1e1cae33f5)
-    (property "Reference" "D62" (at 168.91 92.71 90)
+    (property "Reference" "D53" (at 168.91 92.71 90)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "D" (at 172.72 92.71 90)
@@ -5473,7 +5473,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "D62") (unit 1)
+          (reference "D53") (unit 1)
         )
       )
     )
@@ -5514,7 +5514,7 @@
   (symbol (lib_id "Device:D") (at 203.2 63.5 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 372cd857-fe59-448c-99f6-bd89e63d8256)
-    (property "Reference" "D32" (at 199.39 66.04 90)
+    (property "Reference" "D65" (at 199.39 66.04 90)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "D" (at 203.2 66.04 90)
@@ -5537,7 +5537,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "D32") (unit 1)
+          (reference "D65") (unit 1)
         )
       )
     )
@@ -5546,7 +5546,7 @@
   (symbol (lib_id "Switch:SW_Push") (at 86.36 59.69 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 3755d159-3ac2-410a-a4df-6caf487fe762)
-    (property "Reference" "S22" (at 88.9 57.15 0)
+    (property "Reference" "S23" (at 88.9 57.15 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "Key" (at 86.36 60.96 0)
@@ -5563,7 +5563,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "S22") (unit 1)
+          (reference "S23") (unit 1)
         )
       )
     )
@@ -5572,13 +5572,13 @@
   (symbol (lib_id "Switch:SW_Push") (at 45.72 73.66 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 3883eb33-f249-42d5-955f-b37770025938)
-    (property "Reference" "S35" (at 48.26 71.12 0)
+    (property "Reference" "S6" (at 48.26 71.12 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "Key" (at 45.72 74.93 0)
       (effects (font (size 1.27 1.27)))
     )
-    (property "Footprint" "PCM_Switch_Keyboard_Cherry_MX:SW_Cherry_MX_PCB_1.00u" (at 45.72 68.58 0)
+    (property "Footprint" "PCM_Switch_Keyboard_Cherry_MX:SW_Cherry_MX_PCB_1.75u" (at 45.72 68.58 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Datasheet" "~" (at 45.72 68.58 0)
@@ -5589,7 +5589,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "S35") (unit 1)
+          (reference "S6") (unit 1)
         )
       )
     )
@@ -5598,7 +5598,7 @@
   (symbol (lib_id "Switch:SW_Push") (at 176.53 45.72 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 3b587b28-d031-43bd-aceb-091412ff77a7)
-    (property "Reference" "S14" (at 179.07 43.18 0)
+    (property "Reference" "S57" (at 179.07 43.18 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "Key" (at 176.53 46.99 0)
@@ -5615,7 +5615,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "S14") (unit 1)
+          (reference "S57") (unit 1)
         )
       )
     )
@@ -5624,7 +5624,7 @@
   (symbol (lib_id "Switch:SW_Push") (at 198.12 59.69 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 3c5084fd-c4fa-46b7-a266-b6f34b6d4b97)
-    (property "Reference" "S32" (at 200.66 57.15 0)
+    (property "Reference" "S65" (at 200.66 57.15 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "Key" (at 198.12 60.96 0)
@@ -5641,7 +5641,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "S32") (unit 1)
+          (reference "S65") (unit 1)
         )
       )
     )
@@ -5650,7 +5650,7 @@
   (symbol (lib_id "Device:D") (at 59.69 105.41 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 3d98eb81-c642-4062-a6fd-bb13de00db0b)
-    (property "Reference" "D69" (at 55.88 107.95 90)
+    (property "Reference" "D9" (at 55.88 107.95 90)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "D" (at 59.69 107.95 90)
@@ -5673,7 +5673,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "D69") (unit 1)
+          (reference "D9") (unit 1)
         )
       )
     )
@@ -5682,7 +5682,7 @@
   (symbol (lib_id "Device:D") (at 252.73 90.17 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 3da3ba4f-08a0-48b8-ad51-26e2e8568827)
-    (property "Reference" "D67" (at 248.92 92.71 90)
+    (property "Reference" "D80" (at 248.92 92.71 90)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "D" (at 252.73 92.71 90)
@@ -5705,7 +5705,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "D67") (unit 1)
+          (reference "D80") (unit 1)
         )
       )
     )
@@ -5714,7 +5714,7 @@
   (symbol (lib_id "Device:D") (at 158.75 90.17 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 3dee6e0b-e63e-4919-b255-06cc4cb95291)
-    (property "Reference" "D60" (at 154.94 92.71 90)
+    (property "Reference" "D48" (at 154.94 92.71 90)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "D" (at 158.75 92.71 90)
@@ -5737,7 +5737,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "D60") (unit 1)
+          (reference "D48") (unit 1)
         )
       )
     )
@@ -5746,7 +5746,7 @@
   (symbol (lib_id "Device:D") (at 73.66 105.41 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 3e4107d0-8b4a-4542-b20b-edf460cc151e)
-    (property "Reference" "D70" (at 69.85 107.95 90)
+    (property "Reference" "D15" (at 69.85 107.95 90)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "D" (at 73.66 107.95 90)
@@ -5769,7 +5769,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "D70") (unit 1)
+          (reference "D15") (unit 1)
         )
       )
     )
@@ -5778,7 +5778,7 @@
   (symbol (lib_id "Device:D") (at 179.07 77.47 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 3ea0dfa7-246d-46f5-b603-560e458ba7a4)
-    (property "Reference" "D46" (at 175.26 80.01 90)
+    (property "Reference" "D55" (at 175.26 80.01 90)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "D" (at 179.07 80.01 90)
@@ -5801,7 +5801,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "D46") (unit 1)
+          (reference "D55") (unit 1)
         )
       )
     )
@@ -5810,7 +5810,7 @@
   (symbol (lib_id "Device:D") (at 88.9 90.17 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 3f61b917-643c-475f-a8d7-03c39f15a5ce)
-    (property "Reference" "D54" (at 85.09 92.71 90)
+    (property "Reference" "D22" (at 85.09 92.71 90)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "D" (at 88.9 92.71 90)
@@ -5833,7 +5833,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "D54") (unit 1)
+          (reference "D22") (unit 1)
         )
       )
     )
@@ -5866,7 +5866,7 @@
   (symbol (lib_id "Device:D") (at 69.85 49.53 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 424a7f42-cc8a-4e3a-b220-b5422db258ce)
-    (property "Reference" "D4" (at 66.04 52.07 90)
+    (property "Reference" "D14" (at 66.04 52.07 90)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "D" (at 69.85 52.07 90)
@@ -5889,7 +5889,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "D4") (unit 1)
+          (reference "D14") (unit 1)
         )
       )
     )
@@ -5898,7 +5898,7 @@
   (symbol (lib_id "Device:D") (at 195.58 35.56 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 4447bccc-87a7-4d28-b9c2-cc17072970be)
-    (property "Reference" "D66" (at 191.77 38.1 90)
+    (property "Reference" "D62" (at 191.77 38.1 90)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "D" (at 195.58 38.1 90)
@@ -5921,7 +5921,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "D66") (unit 1)
+          (reference "D62") (unit 1)
         )
       )
     )
@@ -5956,7 +5956,7 @@
   (symbol (lib_id "Device:D") (at 81.28 77.47 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 45bbc784-53a2-4d79-a275-fdca3ffc540b)
-    (property "Reference" "D38" (at 77.47 80.01 90)
+    (property "Reference" "D18" (at 77.47 80.01 90)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "D" (at 81.28 80.01 90)
@@ -5979,7 +5979,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "D38") (unit 1)
+          (reference "D18") (unit 1)
         )
       )
     )
@@ -5988,7 +5988,7 @@
   (symbol (lib_id "Device:D") (at 139.7 49.53 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 464fcf86-f43b-448e-acf8-ce4ce682ecd6)
-    (property "Reference" "D10" (at 135.89 52.07 90)
+    (property "Reference" "D41" (at 135.89 52.07 90)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "D" (at 139.7 52.07 90)
@@ -6011,7 +6011,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "D10") (unit 1)
+          (reference "D41") (unit 1)
         )
       )
     )
@@ -6020,7 +6020,7 @@
   (symbol (lib_id "Device:D") (at 45.72 90.17 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 49106c3e-6fea-45bd-81f9-2d295d4805e1)
-    (property "Reference" "D51" (at 41.91 92.71 90)
+    (property "Reference" "D4" (at 41.91 92.71 90)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "D" (at 45.72 92.71 90)
@@ -6043,7 +6043,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "D51") (unit 1)
+          (reference "D4") (unit 1)
         )
       )
     )
@@ -6052,7 +6052,7 @@
   (symbol (lib_id "Switch:SW_Push") (at 62.23 73.66 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 4a64518a-8375-4dd0-9bb1-aee1f4bc3ce2)
-    (property "Reference" "S36" (at 64.77 71.12 0)
+    (property "Reference" "S12" (at 64.77 71.12 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "Key" (at 62.23 74.93 0)
@@ -6069,7 +6069,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "S36") (unit 1)
+          (reference "S12") (unit 1)
         )
       )
     )
@@ -6078,7 +6078,7 @@
   (symbol (lib_id "Switch:SW_Push") (at 58.42 59.69 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 4b7ca6b9-5868-4771-8759-49203542efee)
-    (property "Reference" "S20" (at 60.96 57.15 0)
+    (property "Reference" "S11" (at 60.96 57.15 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "Key" (at 58.42 60.96 0)
@@ -6095,7 +6095,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "S20") (unit 1)
+          (reference "S11") (unit 1)
         )
       )
     )
@@ -6104,7 +6104,7 @@
   (symbol (lib_id "Switch:SW_Push") (at 181.61 86.36 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 4e318cc8-e7e1-4774-bdc2-8f72b19c9afd)
-    (property "Reference" "S63" (at 184.15 83.82 0)
+    (property "Reference" "S58" (at 184.15 83.82 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "Key" (at 181.61 87.63 0)
@@ -6121,7 +6121,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "S63") (unit 1)
+          (reference "S58") (unit 1)
         )
       )
     )
@@ -6130,7 +6130,7 @@
   (symbol (lib_id "Switch:SW_Push") (at 190.5 45.72 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 4eb0c62e-248a-49ca-9b8d-9c088903ac68)
-    (property "Reference" "S15" (at 193.04 43.18 0)
+    (property "Reference" "S63" (at 193.04 43.18 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "Key" (at 190.5 46.99 0)
@@ -6147,7 +6147,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "S15") (unit 1)
+          (reference "S63") (unit 1)
         )
       )
     )
@@ -6156,7 +6156,7 @@
   (symbol (lib_id "Switch:SW_Push") (at 200.66 101.6 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 51c243d1-a05b-4eb0-b801-49a5e441c324)
-    (property "Reference" "S77" (at 203.2 99.06 0)
+    (property "Reference" "S66" (at 203.2 99.06 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "Key" (at 200.66 102.87 0)
@@ -6173,7 +6173,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "S77") (unit 1)
+          (reference "S66") (unit 1)
         )
       )
     )
@@ -6182,7 +6182,7 @@
   (symbol (lib_id "Device:D") (at 44.45 105.41 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 529d05f0-16f9-46a7-92fe-211f54f9adbd)
-    (property "Reference" "D68" (at 40.64 107.95 90)
+    (property "Reference" "D3" (at 40.64 107.95 90)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "D" (at 44.45 107.95 90)
@@ -6205,7 +6205,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "D68") (unit 1)
+          (reference "D3") (unit 1)
         )
       )
     )
@@ -6214,7 +6214,7 @@
   (symbol (lib_id "Switch:SW_Push") (at 120.65 31.75 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 5440a4f2-cc7d-41a7-86e6-8989690c4a7c)
-    (property "Reference" "S37" (at 123.19 29.21 0)
+    (property "Reference" "S35" (at 123.19 29.21 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "Key" (at 120.65 33.02 0)
@@ -6231,7 +6231,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "S37") (unit 1)
+          (reference "S35") (unit 1)
         )
       )
     )
@@ -6272,13 +6272,13 @@
   (symbol (lib_id "Switch:SW_Push") (at 134.62 101.6 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 561a9ae6-6ab3-4c93-9289-033605df5eed)
-    (property "Reference" "S73" (at 137.16 99.06 0)
+    (property "Reference" "S42" (at 137.16 99.06 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "Key" (at 134.62 102.87 0)
       (effects (font (size 1.27 1.27)))
     )
-    (property "Footprint" "PCM_Switch_Keyboard_Cherry_MX:SW_Cherry_MX_PCB_1.00u" (at 134.62 96.52 0)
+    (property "Footprint" "PCM_Switch_Keyboard_Cherry_MX:SW_Cherry_MX_PCB_6.25u" (at 134.62 96.52 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Datasheet" "~" (at 134.62 96.52 0)
@@ -6289,7 +6289,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "S73") (unit 1)
+          (reference "S42") (unit 1)
         )
       )
     )
@@ -6298,7 +6298,7 @@
   (symbol (lib_id "Switch:SW_Push") (at 132.08 73.66 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 56e82e86-e9ef-4953-a3b1-e1f81621fcfb)
-    (property "Reference" "S42" (at 134.62 71.12 0)
+    (property "Reference" "S39" (at 134.62 71.12 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "Key" (at 132.08 74.93 0)
@@ -6315,7 +6315,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "S42") (unit 1)
+          (reference "S39") (unit 1)
         )
       )
     )
@@ -6324,7 +6324,7 @@
   (symbol (lib_id "Device:D") (at 186.69 90.17 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 5900d512-840c-4950-b408-8d3ab74dc308)
-    (property "Reference" "D63" (at 182.88 92.71 90)
+    (property "Reference" "D58" (at 182.88 92.71 90)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "D" (at 186.69 92.71 90)
@@ -6347,7 +6347,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "D63") (unit 1)
+          (reference "D58") (unit 1)
         )
       )
     )
@@ -6356,7 +6356,7 @@
   (symbol (lib_id "Device:D") (at 130.81 90.17 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 599b9a50-3c7d-4263-a808-9e283bfe2208)
-    (property "Reference" "D58" (at 127 92.71 90)
+    (property "Reference" "D37" (at 127 92.71 90)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "D" (at 130.81 92.71 90)
@@ -6379,7 +6379,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "D58") (unit 1)
+          (reference "D37") (unit 1)
         )
       )
     )
@@ -6388,7 +6388,7 @@
   (symbol (lib_id "Device:D") (at 77.47 63.5 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 5b787f4f-3a39-455b-873e-7fcb16bf4ac2)
-    (property "Reference" "D21" (at 73.66 66.04 90)
+    (property "Reference" "D17" (at 73.66 66.04 90)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "D" (at 77.47 66.04 90)
@@ -6411,7 +6411,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "D21") (unit 1)
+          (reference "D17") (unit 1)
         )
       )
     )
@@ -6420,7 +6420,7 @@
   (symbol (lib_id "Device:D") (at 97.79 49.53 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 5cd4e511-e472-4835-be99-3b9c6270f2f2)
-    (property "Reference" "D6" (at 93.98 52.07 90)
+    (property "Reference" "D26" (at 93.98 52.07 90)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "D" (at 97.79 52.07 90)
@@ -6443,7 +6443,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "D6") (unit 1)
+          (reference "D26") (unit 1)
         )
       )
     )
@@ -6452,7 +6452,7 @@
   (symbol (lib_id "Switch:SW_Push") (at 148.59 45.72 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 5d0e90b2-a52d-4607-bac5-130bf0d8417e)
-    (property "Reference" "S11" (at 151.13 43.18 0)
+    (property "Reference" "S47" (at 151.13 43.18 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "Key" (at 148.59 46.99 0)
@@ -6469,7 +6469,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "S11") (unit 1)
+          (reference "S47") (unit 1)
         )
       )
     )
@@ -6478,7 +6478,7 @@
   (symbol (lib_id "Device:D") (at 55.88 49.53 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 5e54bd9b-767f-4c55-912e-fb0121b54905)
-    (property "Reference" "D3" (at 52.07 52.07 90)
+    (property "Reference" "D8" (at 52.07 52.07 90)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "D" (at 55.88 52.07 90)
@@ -6501,7 +6501,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "D3") (unit 1)
+          (reference "D8") (unit 1)
         )
       )
     )
@@ -6510,7 +6510,7 @@
   (symbol (lib_id "Switch:SW_Push") (at 142.24 59.69 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 5effaa08-38bc-4c8c-b489-608c22e9eb3d)
-    (property "Reference" "S27" (at 144.78 57.15 0)
+    (property "Reference" "S44" (at 144.78 57.15 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "Key" (at 142.24 60.96 0)
@@ -6527,7 +6527,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "S27") (unit 1)
+          (reference "S44") (unit 1)
         )
       )
     )
@@ -6536,7 +6536,7 @@
   (symbol (lib_id "Switch:SW_Push") (at 176.53 31.75 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 600a0ce5-b222-4e1b-a7e2-44cc0d0ed592)
-    (property "Reference" "S61" (at 179.07 29.21 0)
+    (property "Reference" "S56" (at 179.07 29.21 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "Key" (at 176.53 33.02 0)
@@ -6553,7 +6553,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "S61") (unit 1)
+          (reference "S56") (unit 1)
         )
       )
     )
@@ -6562,7 +6562,7 @@
   (symbol (lib_id "Switch:SW_Push") (at 148.59 31.75 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 609c04b6-1ed4-41a8-bb7a-794a3439b5c6)
-    (property "Reference" "S49" (at 151.13 29.21 0)
+    (property "Reference" "S46" (at 151.13 29.21 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "Key" (at 148.59 33.02 0)
@@ -6579,7 +6579,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "S49") (unit 1)
+          (reference "S46") (unit 1)
         )
       )
     )
@@ -6588,7 +6588,7 @@
   (symbol (lib_id "Device:D") (at 207.01 77.47 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 67dd21e4-88e3-4317-9f29-4300b25195de)
-    (property "Reference" "D48" (at 203.2 80.01 90)
+    (property "Reference" "D67" (at 203.2 80.01 90)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "D" (at 207.01 80.01 90)
@@ -6611,7 +6611,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "D48") (unit 1)
+          (reference "D67") (unit 1)
         )
       )
     )
@@ -6620,7 +6620,7 @@
   (symbol (lib_id "Device:D") (at 190.5 105.41 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 67ead8be-0c42-4494-b428-05e64f157bf1)
-    (property "Reference" "D74" (at 186.69 107.95 90)
+    (property "Reference" "D60" (at 186.69 107.95 90)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "D" (at 190.5 107.95 90)
@@ -6643,7 +6643,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "D74") (unit 1)
+          (reference "D60") (unit 1)
         )
       )
     )
@@ -6652,7 +6652,7 @@
   (symbol (lib_id "Device:D") (at 227.33 90.17 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 6989d1e1-b301-4ed5-8b88-0f8408896d1c)
-    (property "Reference" "D65" (at 223.52 92.71 90)
+    (property "Reference" "D73" (at 223.52 92.71 90)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "D" (at 227.33 92.71 90)
@@ -6675,7 +6675,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "D65") (unit 1)
+          (reference "D73") (unit 1)
         )
       )
     )
@@ -6684,7 +6684,7 @@
   (symbol (lib_id "Switch:SW_Push") (at 204.47 45.72 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 69e65704-f93e-4bc4-9454-ac208e17bd75)
-    (property "Reference" "S16" (at 207.01 43.18 0)
+    (property "Reference" "S69" (at 207.01 43.18 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "Key" (at 204.47 46.99 0)
@@ -6701,7 +6701,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "S16") (unit 1)
+          (reference "S69") (unit 1)
         )
       )
     )
@@ -6736,7 +6736,7 @@
   (symbol (lib_id "Switch:SW_Push") (at 72.39 59.69 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 707d8e23-9b7e-4c6d-9249-783f38a354be)
-    (property "Reference" "S21" (at 74.93 57.15 0)
+    (property "Reference" "S17" (at 74.93 57.15 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "Key" (at 72.39 60.96 0)
@@ -6753,7 +6753,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "S21") (unit 1)
+          (reference "S17") (unit 1)
         )
       )
     )
@@ -6762,7 +6762,7 @@
   (symbol (lib_id "Device:D") (at 139.7 105.41 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 722b1729-84a7-4ba2-8d8b-192ca8255e8f)
-    (property "Reference" "D73" (at 135.89 107.95 90)
+    (property "Reference" "D42" (at 135.89 107.95 90)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "D" (at 139.7 107.95 90)
@@ -6785,7 +6785,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "D73") (unit 1)
+          (reference "D42") (unit 1)
         )
       )
     )
@@ -6794,7 +6794,7 @@
   (symbol (lib_id "Device:D") (at 151.13 77.47 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 7243089a-9ed1-4703-b04c-6058575e8ce9)
-    (property "Reference" "D44" (at 147.32 80.01 90)
+    (property "Reference" "D45" (at 147.32 80.01 90)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "D" (at 151.13 80.01 90)
@@ -6817,7 +6817,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "D44") (unit 1)
+          (reference "D45") (unit 1)
         )
       )
     )
@@ -6826,13 +6826,13 @@
   (symbol (lib_id "Switch:SW_Push") (at 43.18 59.69 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 73486df4-1894-402e-bbff-f1d408fe99b0)
-    (property "Reference" "S18" (at 45.72 57.15 0)
+    (property "Reference" "S5" (at 45.72 57.15 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "Key" (at 43.18 60.96 0)
       (effects (font (size 1.27 1.27)))
     )
-    (property "Footprint" "PCM_Switch_Keyboard_Cherry_MX:SW_Cherry_MX_PCB_1.00u" (at 43.18 54.61 0)
+    (property "Footprint" "PCM_Switch_Keyboard_Cherry_MX:SW_Cherry_MX_PCB_1.50u" (at 43.18 54.61 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Datasheet" "~" (at 43.18 54.61 0)
@@ -6843,7 +6843,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "S18") (unit 1)
+          (reference "S5") (unit 1)
         )
       )
     )
@@ -6852,7 +6852,7 @@
   (symbol (lib_id "Switch:SW_Push") (at 55.88 86.36 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 75073618-b089-42df-9fd7-9b2e15422640)
-    (property "Reference" "S52" (at 58.42 83.82 0)
+    (property "Reference" "S10" (at 58.42 83.82 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "Key" (at 55.88 87.63 0)
@@ -6869,7 +6869,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "S52") (unit 1)
+          (reference "S10") (unit 1)
         )
       )
     )
@@ -6878,7 +6878,7 @@
   (symbol (lib_id "Switch:SW_Push") (at 173.99 73.66 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 777f1fcc-f20f-420d-a325-538ca44ce99f)
-    (property "Reference" "S46" (at 176.53 71.12 0)
+    (property "Reference" "S55" (at 176.53 71.12 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "Key" (at 173.99 74.93 0)
@@ -6895,7 +6895,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "S46") (unit 1)
+          (reference "S55") (unit 1)
         )
       )
     )
@@ -6904,13 +6904,13 @@
   (symbol (lib_id "Switch:SW_Push") (at 227.33 45.72 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 77a2c9be-1a34-4a9f-970b-4ef59ea553da)
-    (property "Reference" "S17" (at 229.87 43.18 0)
+    (property "Reference" "S75" (at 229.87 43.18 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "Key" (at 227.33 46.99 0)
       (effects (font (size 1.27 1.27)))
     )
-    (property "Footprint" "PCM_Switch_Keyboard_Cherry_MX:SW_Cherry_MX_PCB_1.00u" (at 227.33 40.64 0)
+    (property "Footprint" "PCM_Switch_Keyboard_Cherry_MX:SW_Cherry_MX_PCB_2.00u" (at 227.33 40.64 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Datasheet" "~" (at 227.33 40.64 0)
@@ -6921,7 +6921,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "S17") (unit 1)
+          (reference "S75") (unit 1)
         )
       )
     )
@@ -6930,7 +6930,7 @@
   (symbol (lib_id "Switch:SW_Push") (at 111.76 86.36 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 79568894-62f1-49b7-ab59-7b1134988540)
-    (property "Reference" "S57" (at 114.3 83.82 0)
+    (property "Reference" "S32" (at 114.3 83.82 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "Key" (at 111.76 87.63 0)
@@ -6947,7 +6947,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "S57") (unit 1)
+          (reference "S32") (unit 1)
         )
       )
     )
@@ -7024,7 +7024,7 @@
   (symbol (lib_id "Switch:SW_Push") (at 187.96 73.66 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 7bc3c141-645a-4b3e-b3b2-8125cb8a8170)
-    (property "Reference" "S47" (at 190.5 71.12 0)
+    (property "Reference" "S61" (at 190.5 71.12 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "Key" (at 187.96 74.93 0)
@@ -7041,7 +7041,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "S47") (unit 1)
+          (reference "S61") (unit 1)
         )
       )
     )
@@ -7050,7 +7050,7 @@
   (symbol (lib_id "Device:D") (at 251.46 105.41 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 7cc259dd-424e-4ef1-91c0-66e37cb6424a)
-    (property "Reference" "D80" (at 247.65 107.95 90)
+    (property "Reference" "D79" (at 247.65 107.95 90)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "D" (at 251.46 107.95 90)
@@ -7073,7 +7073,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "D80") (unit 1)
+          (reference "D79") (unit 1)
         )
       )
     )
@@ -7108,7 +7108,7 @@
   (symbol (lib_id "Switch:SW_Push") (at 104.14 73.66 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 7e71b37a-3f36-48b4-9d13-79397bf299c9)
-    (property "Reference" "S40" (at 106.68 71.12 0)
+    (property "Reference" "S29" (at 106.68 71.12 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "Key" (at 104.14 74.93 0)
@@ -7125,7 +7125,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "S40") (unit 1)
+          (reference "S29") (unit 1)
         )
       )
     )
@@ -7134,7 +7134,7 @@
   (symbol (lib_id "Device:D") (at 209.55 49.53 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 7fdd3119-88ad-4ddc-b3dd-dd70c06ef644)
-    (property "Reference" "D16" (at 205.74 52.07 90)
+    (property "Reference" "D69" (at 205.74 52.07 90)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "D" (at 209.55 52.07 90)
@@ -7157,7 +7157,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "D16") (unit 1)
+          (reference "D69") (unit 1)
         )
       )
     )
@@ -7166,7 +7166,7 @@
   (symbol (lib_id "Switch:SW_Push") (at 246.38 86.36 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 8018040e-8a51-4f6e-b69a-77c5a1c2f24e)
-    (property "Reference" "S67" (at 248.92 83.82 0)
+    (property "Reference" "S79" (at 248.92 83.82 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "Key" (at 246.38 87.63 0)
@@ -7183,7 +7183,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "S67") (unit 1)
+          (reference "S79") (unit 1)
         )
       )
     )
@@ -7192,13 +7192,13 @@
   (symbol (lib_id "Switch:SW_Push") (at 40.64 86.36 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 83e3415f-a941-4770-87d2-b173855e4c01)
-    (property "Reference" "S51" (at 43.18 83.82 0)
+    (property "Reference" "S4" (at 43.18 83.82 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "Key" (at 40.64 87.63 0)
       (effects (font (size 1.27 1.27)))
     )
-    (property "Footprint" "PCM_Switch_Keyboard_Cherry_MX:SW_Cherry_MX_PCB_1.00u" (at 40.64 81.28 0)
+    (property "Footprint" "PCM_Switch_Keyboard_Cherry_MX:SW_Cherry_MX_PCB_1.25u" (at 40.64 81.28 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Datasheet" "~" (at 40.64 81.28 0)
@@ -7209,7 +7209,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "S51") (unit 1)
+          (reference "S4") (unit 1)
         )
       )
     )
@@ -7218,7 +7218,7 @@
   (symbol (lib_id "Device:D") (at 119.38 63.5 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 84ed73a3-6a57-4a27-b5a4-87d21d4f4e0d)
-    (property "Reference" "D24" (at 115.57 66.04 90)
+    (property "Reference" "D33" (at 115.57 66.04 90)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "D" (at 119.38 66.04 90)
@@ -7241,7 +7241,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "D24") (unit 1)
+          (reference "D33") (unit 1)
         )
       )
     )
@@ -7250,7 +7250,7 @@
   (symbol (lib_id "Switch:SW_Push") (at 69.85 86.36 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 8503def7-c4a5-4246-af07-e339038065f5)
-    (property "Reference" "S53" (at 72.39 83.82 0)
+    (property "Reference" "S16" (at 72.39 83.82 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "Key" (at 69.85 87.63 0)
@@ -7267,7 +7267,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "S53") (unit 1)
+          (reference "S16") (unit 1)
         )
       )
     )
@@ -7300,7 +7300,7 @@
   (symbol (lib_id "Switch:SW_Push") (at 100.33 59.69 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 86a71988-35c4-4df8-940e-1cf6d33bbc3b)
-    (property "Reference" "S23" (at 102.87 57.15 0)
+    (property "Reference" "S28" (at 102.87 57.15 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "Key" (at 100.33 60.96 0)
@@ -7317,7 +7317,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "S23") (unit 1)
+          (reference "S28") (unit 1)
         )
       )
     )
@@ -7326,7 +7326,7 @@
   (symbol (lib_id "Device:D") (at 153.67 49.53 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 8835d1dd-14b7-4de8-8cbd-be2acc07fc71)
-    (property "Reference" "D11" (at 149.86 52.07 90)
+    (property "Reference" "D47" (at 149.86 52.07 90)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "D" (at 153.67 52.07 90)
@@ -7349,7 +7349,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "D11") (unit 1)
+          (reference "D47") (unit 1)
         )
       )
     )
@@ -7358,7 +7358,7 @@
   (symbol (lib_id "Switch:SW_Push") (at 167.64 86.36 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 8a33fcdd-0925-4d60-ac21-2c6b2bd8336a)
-    (property "Reference" "S62" (at 170.18 83.82 0)
+    (property "Reference" "S53" (at 170.18 83.82 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "Key" (at 167.64 87.63 0)
@@ -7375,7 +7375,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "S62") (unit 1)
+          (reference "S53") (unit 1)
         )
       )
     )
@@ -7384,7 +7384,7 @@
   (symbol (lib_id "Device:D") (at 189.23 63.5 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 8abfed67-248f-4f96-aa4d-6f7c90707bef)
-    (property "Reference" "D30" (at 185.42 66.04 90)
+    (property "Reference" "D59" (at 185.42 66.04 90)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "D" (at 189.23 66.04 90)
@@ -7407,7 +7407,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "D30") (unit 1)
+          (reference "D59") (unit 1)
         )
       )
     )
@@ -7416,7 +7416,7 @@
   (symbol (lib_id "Switch:SW_Push") (at 139.7 86.36 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 8be89fbe-7bb0-4857-bc50-9ca9c8a9a9e2)
-    (property "Reference" "S59" (at 142.24 83.82 0)
+    (property "Reference" "S43" (at 142.24 83.82 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "Key" (at 139.7 87.63 0)
@@ -7433,7 +7433,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "S59") (unit 1)
+          (reference "S43") (unit 1)
         )
       )
     )
@@ -7442,7 +7442,7 @@
   (symbol (lib_id "Device:D") (at 181.61 35.56 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 8c5b3a93-4c9e-456d-88ac-01ede791728c)
-    (property "Reference" "D61" (at 177.8 38.1 90)
+    (property "Reference" "D56" (at 177.8 38.1 90)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "D" (at 181.61 38.1 90)
@@ -7465,7 +7465,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "D61") (unit 1)
+          (reference "D56") (unit 1)
         )
       )
     )
@@ -7474,7 +7474,7 @@
   (symbol (lib_id "Device:D") (at 193.04 77.47 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 8e96e6d6-84f9-443f-81b9-94c082572174)
-    (property "Reference" "D47" (at 189.23 80.01 90)
+    (property "Reference" "D61" (at 189.23 80.01 90)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "D" (at 193.04 80.01 90)
@@ -7497,7 +7497,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "D47") (unit 1)
+          (reference "D61") (unit 1)
         )
       )
     )
@@ -7506,7 +7506,7 @@
   (symbol (lib_id "Device:D") (at 60.96 90.17 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 8f451967-409a-42ef-9e9a-faa90e097913)
-    (property "Reference" "D52" (at 57.15 92.71 90)
+    (property "Reference" "D10" (at 57.15 92.71 90)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "D" (at 60.96 92.71 90)
@@ -7529,7 +7529,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "D52") (unit 1)
+          (reference "D10") (unit 1)
         )
       )
     )
@@ -7538,7 +7538,7 @@
   (symbol (lib_id "Device:D") (at 195.58 49.53 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 906e6e72-ead1-4112-b394-bbb4f6acc5ca)
-    (property "Reference" "D15" (at 191.77 52.07 90)
+    (property "Reference" "D63" (at 191.77 52.07 90)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "D" (at 195.58 52.07 90)
@@ -7561,7 +7561,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "D15") (unit 1)
+          (reference "D63") (unit 1)
         )
       )
     )
@@ -7570,7 +7570,7 @@
   (symbol (lib_id "Device:D") (at 175.26 63.5 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 90b7096f-9f3f-4581-addb-dc5104644b58)
-    (property "Reference" "D29" (at 171.45 66.04 90)
+    (property "Reference" "D54" (at 171.45 66.04 90)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "D" (at 175.26 66.04 90)
@@ -7593,7 +7593,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "D29") (unit 1)
+          (reference "D54") (unit 1)
         )
       )
     )
@@ -7602,7 +7602,7 @@
   (symbol (lib_id "Switch:SW_Push") (at 97.79 86.36 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 921d6d9a-0102-43a1-bba9-ae7a32e90407)
-    (property "Reference" "S56" (at 100.33 83.82 0)
+    (property "Reference" "S27" (at 100.33 83.82 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "Key" (at 97.79 87.63 0)
@@ -7619,7 +7619,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "S56") (unit 1)
+          (reference "S27") (unit 1)
         )
       )
     )
@@ -7628,7 +7628,7 @@
   (symbol (lib_id "Device:D") (at 232.41 49.53 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 9302cdfc-c0e8-4581-892f-b60cf349122b)
-    (property "Reference" "D17" (at 228.6 52.07 90)
+    (property "Reference" "D75" (at 228.6 52.07 90)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "D" (at 232.41 52.07 90)
@@ -7651,7 +7651,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "D17") (unit 1)
+          (reference "D75") (unit 1)
         )
       )
     )
@@ -7660,7 +7660,7 @@
   (symbol (lib_id "Switch:SW_Push") (at 232.41 101.6 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 95c665ce-d3a8-4232-ac29-8f8531134087)
-    (property "Reference" "S79" (at 234.95 99.06 0)
+    (property "Reference" "S78" (at 234.95 99.06 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "Key" (at 232.41 102.87 0)
@@ -7677,7 +7677,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "S79") (unit 1)
+          (reference "S78") (unit 1)
         )
       )
     )
@@ -7686,7 +7686,7 @@
   (symbol (lib_id "Switch:SW_Push") (at 68.58 101.6 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 97593efc-8703-4b54-97ca-fa917278904b)
-    (property "Reference" "S70" (at 71.12 99.06 0)
+    (property "Reference" "S15" (at 71.12 99.06 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "Key" (at 68.58 102.87 0)
@@ -7703,7 +7703,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "S70") (unit 1)
+          (reference "S15") (unit 1)
         )
       )
     )
@@ -7712,7 +7712,7 @@
   (symbol (lib_id "Switch:SW_Push") (at 90.17 73.66 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 97873f62-07c4-49d2-9549-ed62f6fe4ecd)
-    (property "Reference" "S39" (at 92.71 71.12 0)
+    (property "Reference" "S24" (at 92.71 71.12 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "Key" (at 90.17 74.93 0)
@@ -7729,7 +7729,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "S39") (unit 1)
+          (reference "S24") (unit 1)
         )
       )
     )
@@ -7738,7 +7738,7 @@
   (symbol (lib_id "Device:D") (at 105.41 63.5 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 98ea6e49-4b49-4d22-afe3-ddb36d1ec057)
-    (property "Reference" "D23" (at 101.6 66.04 90)
+    (property "Reference" "D28" (at 101.6 66.04 90)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "D" (at 105.41 66.04 90)
@@ -7761,7 +7761,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "D23") (unit 1)
+          (reference "D28") (unit 1)
         )
       )
     )
@@ -7770,7 +7770,7 @@
   (symbol (lib_id "Device:D") (at 95.25 77.47 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 9b0c1e41-94d2-4618-8aaa-ead48b6373c0)
-    (property "Reference" "D39" (at 91.44 80.01 90)
+    (property "Reference" "D24" (at 91.44 80.01 90)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "D" (at 95.25 80.01 90)
@@ -7793,7 +7793,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "D39") (unit 1)
+          (reference "D24") (unit 1)
         )
       )
     )
@@ -7802,7 +7802,7 @@
   (symbol (lib_id "Device:D") (at 205.74 105.41 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 9b161ef0-45db-45d5-a30c-f67b2312a8e0)
-    (property "Reference" "D77" (at 201.93 107.95 90)
+    (property "Reference" "D66" (at 201.93 107.95 90)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "D" (at 205.74 107.95 90)
@@ -7825,7 +7825,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "D77") (unit 1)
+          (reference "D66") (unit 1)
         )
       )
     )
@@ -7834,7 +7834,7 @@
   (symbol (lib_id "Device:D") (at 137.16 77.47 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 9bd04bae-57af-4be3-99f5-23536d525891)
-    (property "Reference" "D42" (at 133.35 80.01 90)
+    (property "Reference" "D39" (at 133.35 80.01 90)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "D" (at 137.16 80.01 90)
@@ -7857,7 +7857,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "D42") (unit 1)
+          (reference "D39") (unit 1)
         )
       )
     )
@@ -7866,7 +7866,7 @@
   (symbol (lib_id "Device:D") (at 237.49 105.41 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 9c611264-bb1c-4e24-9c8b-baeee9cedc5e)
-    (property "Reference" "D79" (at 233.68 107.95 90)
+    (property "Reference" "D78" (at 233.68 107.95 90)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "D" (at 237.49 107.95 90)
@@ -7889,7 +7889,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "D79") (unit 1)
+          (reference "D78") (unit 1)
         )
       )
     )
@@ -7898,7 +7898,7 @@
   (symbol (lib_id "Switch:SW_Push") (at 146.05 73.66 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 9e15f8ed-a696-4d80-a84e-8b0530ceb50a)
-    (property "Reference" "S44" (at 148.59 71.12 0)
+    (property "Reference" "S45" (at 148.59 71.12 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "Key" (at 146.05 74.93 0)
@@ -7915,7 +7915,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "S44") (unit 1)
+          (reference "S45") (unit 1)
         )
       )
     )
@@ -7924,7 +7924,7 @@
   (symbol (lib_id "Device:D") (at 74.93 90.17 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 9e6b99f9-a3b2-4a01-a179-73602a85e9cb)
-    (property "Reference" "D53" (at 71.12 92.71 90)
+    (property "Reference" "D16" (at 71.12 92.71 90)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "D" (at 74.93 92.71 90)
@@ -7947,7 +7947,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "D53") (unit 1)
+          (reference "D16") (unit 1)
         )
       )
     )
@@ -7956,7 +7956,7 @@
   (symbol (lib_id "Switch:SW_Push") (at 170.18 59.69 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 9efc6e23-a250-4232-a898-37e89047d6ed)
-    (property "Reference" "S29" (at 172.72 57.15 0)
+    (property "Reference" "S54" (at 172.72 57.15 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "Key" (at 170.18 60.96 0)
@@ -7973,7 +7973,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "S29") (unit 1)
+          (reference "S54") (unit 1)
         )
       )
     )
@@ -7982,7 +7982,7 @@
   (symbol (lib_id "Switch:SW_Push") (at 125.73 86.36 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 9f5a6a1d-8423-48c3-924b-58806a66d6e1)
-    (property "Reference" "S58" (at 128.27 83.82 0)
+    (property "Reference" "S37" (at 128.27 83.82 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "Key" (at 125.73 87.63 0)
@@ -7999,7 +7999,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "S58") (unit 1)
+          (reference "S37") (unit 1)
         )
       )
     )
@@ -8008,7 +8008,7 @@
   (symbol (lib_id "Switch:SW_Push") (at 162.56 45.72 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid a141e2f3-f664-4855-8f14-1ed3997adce4)
-    (property "Reference" "S12" (at 165.1 43.18 0)
+    (property "Reference" "S52" (at 165.1 43.18 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "Key" (at 162.56 46.99 0)
@@ -8025,7 +8025,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "S12") (unit 1)
+          (reference "S52") (unit 1)
         )
       )
     )
@@ -8034,13 +8034,13 @@
   (symbol (lib_id "Switch:SW_Push") (at 229.87 59.69 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid a2a05e3c-368c-4c15-ba5b-132c12afaf95)
-    (property "Reference" "S34" (at 232.41 57.15 0)
+    (property "Reference" "S76" (at 232.41 57.15 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "Key" (at 229.87 60.96 0)
       (effects (font (size 1.27 1.27)))
     )
-    (property "Footprint" "PCM_Switch_Keyboard_Cherry_MX:SW_Cherry_MX_PCB_1.00u" (at 229.87 54.61 0)
+    (property "Footprint" "PCM_Switch_Keyboard_Cherry_MX:SW_Cherry_MX_PCB_1.50u" (at 229.87 54.61 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Datasheet" "~" (at 229.87 54.61 0)
@@ -8051,7 +8051,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "S34") (unit 1)
+          (reference "S76") (unit 1)
         )
       )
     )
@@ -8060,7 +8060,7 @@
   (symbol (lib_id "Switch:SW_Push") (at 160.02 73.66 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid a321d15d-7b79-47ad-99d0-fe8aa21d3558)
-    (property "Reference" "S45" (at 162.56 71.12 0)
+    (property "Reference" "S50" (at 162.56 71.12 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "Key" (at 160.02 74.93 0)
@@ -8077,7 +8077,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "S45") (unit 1)
+          (reference "S50") (unit 1)
         )
       )
     )
@@ -8086,7 +8086,7 @@
   (symbol (lib_id "Device:D") (at 48.26 63.5 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid a3ceb448-94e2-4294-87e1-c2fa86b9ebf4)
-    (property "Reference" "D18" (at 44.45 66.04 90)
+    (property "Reference" "D5" (at 44.45 66.04 90)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "D" (at 48.26 66.04 90)
@@ -8109,7 +8109,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "D18") (unit 1)
+          (reference "D5") (unit 1)
         )
       )
     )
@@ -8176,7 +8176,7 @@
   (symbol (lib_id "Device:D") (at 234.95 63.5 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid abee0779-1dd3-4c79-8ee6-18b9e9437eb0)
-    (property "Reference" "D34" (at 231.14 66.04 90)
+    (property "Reference" "D76" (at 231.14 66.04 90)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "D" (at 234.95 66.04 90)
@@ -8199,7 +8199,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "D34") (unit 1)
+          (reference "D76") (unit 1)
         )
       )
     )
@@ -8232,7 +8232,7 @@
   (symbol (lib_id "Device:D") (at 63.5 63.5 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid ae3282c8-6f90-4eef-9397-415d0b3706b9)
-    (property "Reference" "D20" (at 59.69 66.04 90)
+    (property "Reference" "D11" (at 59.69 66.04 90)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "D" (at 63.5 66.04 90)
@@ -8255,7 +8255,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "D20") (unit 1)
+          (reference "D11") (unit 1)
         )
       )
     )
@@ -8264,7 +8264,7 @@
   (symbol (lib_id "Switch:SW_Push") (at 54.61 101.6 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid b09dc270-0db6-463b-8479-0b83818025ab)
-    (property "Reference" "S69" (at 57.15 99.06 0)
+    (property "Reference" "S9" (at 57.15 99.06 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "Key" (at 54.61 102.87 0)
@@ -8281,7 +8281,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "S69") (unit 1)
+          (reference "S9") (unit 1)
         )
       )
     )
@@ -8354,7 +8354,7 @@
   (symbol (lib_id "Switch:SW_Push") (at 106.68 31.75 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid b8e19c78-ae34-4114-8778-d326a5156966)
-    (property "Reference" "S31" (at 109.22 29.21 0)
+    (property "Reference" "S30" (at 109.22 29.21 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "Key" (at 106.68 33.02 0)
@@ -8371,7 +8371,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "S31") (unit 1)
+          (reference "S30") (unit 1)
         )
       )
     )
@@ -8406,7 +8406,7 @@
   (symbol (lib_id "Switch:SW_Push") (at 212.09 59.69 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid b9d6a95e-aa3c-4ebe-aea2-51149010e230)
-    (property "Reference" "S33" (at 214.63 57.15 0)
+    (property "Reference" "S70" (at 214.63 57.15 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "Key" (at 212.09 60.96 0)
@@ -8423,7 +8423,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "S33") (unit 1)
+          (reference "S70") (unit 1)
         )
       )
     )
@@ -8432,7 +8432,7 @@
   (symbol (lib_id "Switch:SW_Push") (at 156.21 59.69 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid ba1c65eb-9b46-43cf-b9c3-b5853016be78)
-    (property "Reference" "S28" (at 158.75 57.15 0)
+    (property "Reference" "S49" (at 158.75 57.15 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "Key" (at 156.21 60.96 0)
@@ -8449,7 +8449,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "S28") (unit 1)
+          (reference "S49") (unit 1)
         )
       )
     )
@@ -8458,7 +8458,7 @@
   (symbol (lib_id "Device:D") (at 116.84 90.17 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid bb6042fd-2afe-4096-91cd-4535c58df9d0)
-    (property "Reference" "D57" (at 113.03 92.71 90)
+    (property "Reference" "D32" (at 113.03 92.71 90)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "D" (at 116.84 92.71 90)
@@ -8481,7 +8481,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "D57") (unit 1)
+          (reference "D32") (unit 1)
         )
       )
     )
@@ -8490,7 +8490,7 @@
   (symbol (lib_id "Device:D") (at 125.73 49.53 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid bc39ee72-4fb7-4b30-b136-a6592e7e643a)
-    (property "Reference" "D9" (at 121.92 52.07 90)
+    (property "Reference" "D36" (at 121.92 52.07 90)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "D" (at 125.73 52.07 90)
@@ -8513,7 +8513,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "D9") (unit 1)
+          (reference "D36") (unit 1)
         )
       )
     )
@@ -8522,7 +8522,7 @@
   (symbol (lib_id "Device:D") (at 167.64 49.53 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid bffa788c-58ae-476e-88d2-e880a13c6156)
-    (property "Reference" "D12" (at 163.83 52.07 90)
+    (property "Reference" "D52" (at 163.83 52.07 90)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "D" (at 167.64 52.07 90)
@@ -8545,7 +8545,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "D12") (unit 1)
+          (reference "D52") (unit 1)
         )
       )
     )
@@ -8554,7 +8554,7 @@
   (symbol (lib_id "Switch:SW_Push") (at 134.62 31.75 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid c2d2a225-83e6-45a4-b08f-8f306fb2cc14)
-    (property "Reference" "S43" (at 137.16 29.21 0)
+    (property "Reference" "S40" (at 137.16 29.21 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "Key" (at 134.62 33.02 0)
@@ -8571,7 +8571,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "S43") (unit 1)
+          (reference "S40") (unit 1)
         )
       )
     )
@@ -8580,7 +8580,7 @@
   (symbol (lib_id "Switch:SW_Push") (at 201.93 73.66 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid c58dbab9-c0af-4d15-aef3-7ed1a1f003bc)
-    (property "Reference" "S48" (at 204.47 71.12 0)
+    (property "Reference" "S67" (at 204.47 71.12 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "Key" (at 201.93 74.93 0)
@@ -8597,7 +8597,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "S48") (unit 1)
+          (reference "S67") (unit 1)
         )
       )
     )
@@ -8606,7 +8606,7 @@
   (symbol (lib_id "Switch:SW_Push") (at 76.2 73.66 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid c5d02fcc-f932-4cc5-bf1d-8f4383cc3474)
-    (property "Reference" "S38" (at 78.74 71.12 0)
+    (property "Reference" "S18" (at 78.74 71.12 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "Key" (at 76.2 74.93 0)
@@ -8623,7 +8623,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "S38") (unit 1)
+          (reference "S18") (unit 1)
         )
       )
     )
@@ -8632,7 +8632,7 @@
   (symbol (lib_id "Switch:SW_Push") (at 114.3 59.69 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid c8f3d7f4-97cf-46d2-9d24-b738ce11cc23)
-    (property "Reference" "S24" (at 116.84 57.15 0)
+    (property "Reference" "S33" (at 116.84 57.15 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "Key" (at 114.3 60.96 0)
@@ -8649,7 +8649,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "S24") (unit 1)
+          (reference "S33") (unit 1)
         )
       )
     )
@@ -8658,7 +8658,7 @@
   (symbol (lib_id "Switch:SW_Push") (at 78.74 45.72 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid caa4d3c4-fff2-4896-a9e3-c75a660ac196)
-    (property "Reference" "S5" (at 81.28 43.18 0)
+    (property "Reference" "S20" (at 81.28 43.18 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "Key" (at 78.74 46.99 0)
@@ -8675,7 +8675,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "S5") (unit 1)
+          (reference "S20") (unit 1)
         )
       )
     )
@@ -8684,7 +8684,7 @@
   (symbol (lib_id "Device:D") (at 209.55 35.56 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid cc52bfac-3082-4bad-9c02-27e461e090d1)
-    (property "Reference" "D71" (at 205.74 38.1 90)
+    (property "Reference" "D68" (at 205.74 38.1 90)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "D" (at 209.55 38.1 90)
@@ -8707,7 +8707,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "D71") (unit 1)
+          (reference "D68") (unit 1)
         )
       )
     )
@@ -8716,7 +8716,7 @@
   (symbol (lib_id "Switch:SW_Push") (at 218.44 31.75 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid d09e1d84-2ab8-40f8-9a15-b62fc083143a)
-    (property "Reference" "S75" (at 220.98 29.21 0)
+    (property "Reference" "S72" (at 220.98 29.21 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "Key" (at 218.44 33.02 0)
@@ -8733,7 +8733,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "S75") (unit 1)
+          (reference "S72") (unit 1)
         )
       )
     )
@@ -8742,7 +8742,7 @@
   (symbol (lib_id "Device:D") (at 222.25 105.41 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid d3164004-4580-4419-a0e8-4b080ad98f2e)
-    (property "Reference" "D78" (at 218.44 107.95 90)
+    (property "Reference" "D71" (at 218.44 107.95 90)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "D" (at 222.25 107.95 90)
@@ -8765,7 +8765,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "D78") (unit 1)
+          (reference "D71") (unit 1)
         )
       )
     )
@@ -8806,7 +8806,7 @@
   (symbol (lib_id "Switch:SW_Push") (at 50.8 45.72 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid d96343ee-b4c1-40de-95aa-682a725b6dcb)
-    (property "Reference" "S3" (at 53.34 43.18 0)
+    (property "Reference" "S8" (at 53.34 43.18 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "Key" (at 50.8 46.99 0)
@@ -8823,7 +8823,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "S3") (unit 1)
+          (reference "S8") (unit 1)
         )
       )
     )
@@ -8832,7 +8832,7 @@
   (symbol (lib_id "Switch:SW_Push") (at 153.67 86.36 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid db536ea8-2a0a-467e-91bb-2924e297a0ce)
-    (property "Reference" "S60" (at 156.21 83.82 0)
+    (property "Reference" "S48" (at 156.21 83.82 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "Key" (at 153.67 87.63 0)
@@ -8849,7 +8849,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "S60") (unit 1)
+          (reference "S48") (unit 1)
         )
       )
     )
@@ -8858,13 +8858,13 @@
   (symbol (lib_id "Switch:SW_Push") (at 222.25 86.36 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid dc7ae8e9-8420-47e2-a1e6-232d4b63198f)
-    (property "Reference" "S65" (at 224.79 83.82 0)
+    (property "Reference" "S73" (at 224.79 83.82 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "Key" (at 222.25 87.63 0)
       (effects (font (size 1.27 1.27)))
     )
-    (property "Footprint" "PCM_Switch_Keyboard_Cherry_MX:SW_Cherry_MX_PCB_1.00u" (at 222.25 81.28 0)
+    (property "Footprint" "PCM_Switch_Keyboard_Cherry_MX:SW_Cherry_MX_PCB_2.75u" (at 222.25 81.28 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Datasheet" "~" (at 222.25 81.28 0)
@@ -8875,7 +8875,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "S65") (unit 1)
+          (reference "S73") (unit 1)
         )
       )
     )
@@ -8884,7 +8884,7 @@
   (symbol (lib_id "Device:D") (at 133.35 63.5 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid dcbd59b1-0a73-4b8d-a86d-a2022a32a28a)
-    (property "Reference" "D26" (at 129.54 66.04 90)
+    (property "Reference" "D38" (at 129.54 66.04 90)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "D" (at 133.35 66.04 90)
@@ -8907,7 +8907,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "D26") (unit 1)
+          (reference "D38") (unit 1)
         )
       )
     )
@@ -8916,7 +8916,7 @@
   (symbol (lib_id "Device:D") (at 139.7 35.56 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid de322e32-9328-4503-81fa-9c0eb1c77fca)
-    (property "Reference" "D43" (at 135.89 38.1 90)
+    (property "Reference" "D40" (at 135.89 38.1 90)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "D" (at 139.7 38.1 90)
@@ -8939,7 +8939,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "D43") (unit 1)
+          (reference "D40") (unit 1)
         )
       )
     )
@@ -8948,7 +8948,7 @@
   (symbol (lib_id "Device:D") (at 181.61 49.53 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid e029ac3f-efa8-46a2-94f1-d8b3537998b4)
-    (property "Reference" "D14" (at 177.8 52.07 90)
+    (property "Reference" "D57" (at 177.8 52.07 90)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "D" (at 181.61 52.07 90)
@@ -8971,7 +8971,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "D14") (unit 1)
+          (reference "D57") (unit 1)
         )
       )
     )
@@ -8980,7 +8980,7 @@
   (symbol (lib_id "Device:D") (at 147.32 63.5 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid e04dbeee-069c-4b07-ba84-f1454c492387)
-    (property "Reference" "D27" (at 143.51 66.04 90)
+    (property "Reference" "D44" (at 143.51 66.04 90)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "D" (at 147.32 66.04 90)
@@ -9003,7 +9003,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "D27") (unit 1)
+          (reference "D44") (unit 1)
         )
       )
     )
@@ -9012,7 +9012,7 @@
   (symbol (lib_id "Switch:SW_Push") (at 134.62 45.72 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid e0a049b4-d181-4690-8c09-146aa81953c7)
-    (property "Reference" "S10" (at 137.16 43.18 0)
+    (property "Reference" "S41" (at 137.16 43.18 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "Key" (at 134.62 46.99 0)
@@ -9029,7 +9029,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "S10") (unit 1)
+          (reference "S41") (unit 1)
         )
       )
     )
@@ -9064,7 +9064,7 @@
   (symbol (lib_id "Device:D") (at 123.19 77.47 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid ea72f52a-f986-43ad-aef4-6d01ae4c2c3c)
-    (property "Reference" "D41" (at 119.38 80.01 90)
+    (property "Reference" "D34" (at 119.38 80.01 90)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "D" (at 123.19 80.01 90)
@@ -9087,7 +9087,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "D41") (unit 1)
+          (reference "D34") (unit 1)
         )
       )
     )
@@ -9096,7 +9096,7 @@
   (symbol (lib_id "Device:D") (at 102.87 90.17 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid ec96d28d-6aa8-4fa9-be16-05009717c050)
-    (property "Reference" "D56" (at 99.06 92.71 90)
+    (property "Reference" "D27" (at 99.06 92.71 90)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "D" (at 102.87 92.71 90)
@@ -9119,7 +9119,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "D56") (unit 1)
+          (reference "D27") (unit 1)
         )
       )
     )
@@ -9128,13 +9128,13 @@
   (symbol (lib_id "Switch:SW_Push") (at 39.37 101.6 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid ecc98a1f-9a02-4fa1-9784-b9608533dcbd)
-    (property "Reference" "S68" (at 41.91 99.06 0)
+    (property "Reference" "S3" (at 41.91 99.06 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "Key" (at 39.37 102.87 0)
       (effects (font (size 1.27 1.27)))
     )
-    (property "Footprint" "PCM_Switch_Keyboard_Cherry_MX:SW_Cherry_MX_PCB_1.00u" (at 39.37 96.52 0)
+    (property "Footprint" "PCM_Switch_Keyboard_Cherry_MX:SW_Cherry_MX_PCB_1.25u" (at 39.37 96.52 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Datasheet" "~" (at 39.37 96.52 0)
@@ -9145,7 +9145,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "S68") (unit 1)
+          (reference "S3") (unit 1)
         )
       )
     )
@@ -9154,7 +9154,7 @@
   (symbol (lib_id "Device:D") (at 91.44 63.5 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid ed6fc501-10d9-401c-bf34-59260a0d9521)
-    (property "Reference" "D22" (at 87.63 66.04 90)
+    (property "Reference" "D23" (at 87.63 66.04 90)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "D" (at 91.44 66.04 90)
@@ -9177,7 +9177,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "D22") (unit 1)
+          (reference "D23") (unit 1)
         )
       )
     )
@@ -9186,7 +9186,7 @@
   (symbol (lib_id "Device:D") (at 229.87 77.47 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid efc54e9e-57ba-459a-a0a1-c9e76447bb4b)
-    (property "Reference" "D50" (at 226.06 80.01 90)
+    (property "Reference" "D74" (at 226.06 80.01 90)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "D" (at 229.87 80.01 90)
@@ -9209,7 +9209,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "D50") (unit 1)
+          (reference "D74") (unit 1)
         )
       )
     )
@@ -9218,7 +9218,7 @@
   (symbol (lib_id "Device:D") (at 144.78 90.17 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid efe04bfe-3c10-45ef-bd05-f2b1128190d3)
-    (property "Reference" "D59" (at 140.97 92.71 90)
+    (property "Reference" "D43" (at 140.97 92.71 90)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "D" (at 144.78 92.71 90)
@@ -9241,7 +9241,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "D59") (unit 1)
+          (reference "D43") (unit 1)
         )
       )
     )
@@ -9250,7 +9250,7 @@
   (symbol (lib_id "Switch:SW_Push") (at 162.56 31.75 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid f2e36743-1a75-43ca-aee3-ebef91925941)
-    (property "Reference" "S55" (at 165.1 29.21 0)
+    (property "Reference" "S51" (at 165.1 29.21 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "Key" (at 162.56 33.02 0)
@@ -9267,7 +9267,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "S55") (unit 1)
+          (reference "S51") (unit 1)
         )
       )
     )
@@ -9302,7 +9302,7 @@
   (symbol (lib_id "Switch:SW_Push") (at 118.11 73.66 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid f72ae9c0-a6b7-4574-8262-f7a96dc560be)
-    (property "Reference" "S41" (at 120.65 71.12 0)
+    (property "Reference" "S34" (at 120.65 71.12 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "Key" (at 118.11 74.93 0)
@@ -9319,7 +9319,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "S41") (unit 1)
+          (reference "S34") (unit 1)
         )
       )
     )
@@ -9328,7 +9328,7 @@
   (symbol (lib_id "Switch:SW_Push") (at 83.82 86.36 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid fb2a7d41-6ada-443b-8100-d5cff312fb8a)
-    (property "Reference" "S54" (at 86.36 83.82 0)
+    (property "Reference" "S22" (at 86.36 83.82 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "Key" (at 83.82 87.63 0)
@@ -9345,7 +9345,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "S54") (unit 1)
+          (reference "S22") (unit 1)
         )
       )
     )
@@ -9354,13 +9354,13 @@
   (symbol (lib_id "Switch:SW_Push") (at 217.17 101.6 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid fbd064e2-1e6b-4477-b4c5-abe002ce563b)
-    (property "Reference" "S78" (at 219.71 99.06 0)
+    (property "Reference" "S71" (at 219.71 99.06 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "Key" (at 217.17 102.87 0)
       (effects (font (size 1.27 1.27)))
     )
-    (property "Footprint" "PCM_Switch_Keyboard_Cherry_MX:SW_Cherry_MX_PCB_1.00u" (at 217.17 96.52 0)
+    (property "Footprint" "PCM_Switch_Keyboard_Cherry_MX:SW_Cherry_MX_PCB_1.25u" (at 217.17 96.52 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Datasheet" "~" (at 217.17 96.52 0)
@@ -9371,7 +9371,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "S78") (unit 1)
+          (reference "S71") (unit 1)
         )
       )
     )
@@ -9380,7 +9380,7 @@
   (symbol (lib_id "Switch:SW_Push") (at 120.65 45.72 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid fc7b6e26-a79f-4e97-9e1f-cd359a1acada)
-    (property "Reference" "S9" (at 123.19 43.18 0)
+    (property "Reference" "S36" (at 123.19 43.18 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "Key" (at 120.65 46.99 0)
@@ -9397,7 +9397,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "S9") (unit 1)
+          (reference "S36") (unit 1)
         )
       )
     )
@@ -9406,7 +9406,7 @@
   (symbol (lib_id "Device:D") (at 67.31 77.47 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid fe5f9213-75cf-4cc6-8e27-9a7c6f5ebbfa)
-    (property "Reference" "D36" (at 63.5 80.01 90)
+    (property "Reference" "D12" (at 63.5 80.01 90)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "D" (at 67.31 80.01 90)
@@ -9429,7 +9429,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "D36") (unit 1)
+          (reference "D12") (unit 1)
         )
       )
     )
@@ -9438,7 +9438,7 @@
   (symbol (lib_id "Device:D") (at 50.8 77.47 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid ff512320-0b0a-48ed-9aaa-a51d3aa8472e)
-    (property "Reference" "D35" (at 46.99 80.01 90)
+    (property "Reference" "D6" (at 46.99 80.01 90)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "D" (at 50.8 80.01 90)
@@ -9461,7 +9461,7 @@
     (instances
       (project "PCB"
         (path "/676ec0c6-fc02-4d1b-bdbe-380045c782eb"
-          (reference "D35") (unit 1)
+          (reference "D6") (unit 1)
         )
       )
     )
