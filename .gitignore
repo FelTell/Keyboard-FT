@@ -5,3 +5,5 @@
 
 # Folder where gerbers and layers manufacturing files are exported
 Outputs/
+# Kicad temporary file
+*.lck
