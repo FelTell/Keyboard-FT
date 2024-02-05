@@ -9275,7 +9275,7 @@
 
   (footprint "PCM_Switch_Keyboard_Cherry_MX:SW_Cherry_MX_PCB_1.00u" (layer "F.Cu")
     (tstamp a149facf-7c41-4d9e-a608-3af412e575b6)
-    (at 57.195 57.15)
+    (at 57.15 57.15)
     (descr "Cherry MX keyswitch PCB Mount Keycap 1.00u")
     (tags "Cherry MX Keyboard Keyswitch Switch PCB Cutout Keycap 1.00u")
     (property "Sheetfile" "PCB.kicad_sch")
