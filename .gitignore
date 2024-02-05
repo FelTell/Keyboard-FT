@@ -1,0 +1,7 @@
+*backup*/
+*.zip
+*cache*
+*bak
+
+# Folder where gerbers and layers manufacturing files are exported
+Outputs/
