@@ -11,3 +11,4 @@ Outputs/
 .vscode
 build/
 managed_components/
+*.old

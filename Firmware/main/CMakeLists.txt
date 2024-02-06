@@ -1,2 +1,3 @@
-idf_component_register(SRCS "main.c"
-                    INCLUDE_DIRS ".")
+idf_component_register(SRCS "main.cpp"
+                    "Src/StatusLed.cpp"
+                    INCLUDE_DIRS "Inc")
