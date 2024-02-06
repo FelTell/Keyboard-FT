@@ -7,3 +7,6 @@
 Outputs/
 # Kicad temporary file
 *.lck
+
+.vscode
+build/
