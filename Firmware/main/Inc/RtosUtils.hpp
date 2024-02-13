@@ -1,4 +1,5 @@
 #pragma once
+
 #include <esp_log.h>
 #include <freertos/FreeRTOS.h>
 #include <freertos/queue.h>
@@ -8,9 +9,7 @@
 
 namespace rtos {
 
-void Delay(const TickType_t ticksToDelay) {
-    vTaskDelay(ticksToDelay / portTICK_PERIOD_MS);
-}
+void Delay(const TickType_t ticksToDelay);
 
 template <typename T>
 class Queue {
