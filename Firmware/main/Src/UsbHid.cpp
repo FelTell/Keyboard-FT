@@ -95,9 +95,19 @@ static void Handler() {
     if (report && tud_mounted()) {
         std::array<uint8_t, 6> keycodes;
         uint16_t size = std::min(static_cast<uint16_t>(6), report->size);
+
+        uint16_t textIndex         = 0;
+        std::array<char, 100> text = {"\0"};
+
         for (uint16_t i = 0; i < size; ++i) {
             keycodes[i] = report->keys[i];
+            textIndex +=
+                snprintf(&text[textIndex], sizeof(text), "%d ,", keycodes[i]);
         }
+        ESP_LOGI("Report: ",
+                 "%s modifiers: %d",
+                 text.data(),
+                 report->modifiers);
         tud_hid_keyboard_report(HID_ITF_PROTOCOL_KEYBOARD,
                                 report->modifiers,
                                 keycodes.data());
@@ -118,7 +128,7 @@ bool SetupTask() {
 
 /********* TinyUSB HID callbacks ***************/
 
-// Invoked when received GET HID REPORT DESCRIPTOR request
+// Invoked when received GET HID REPORT DESCRIPTOR reauest
 // Application return pointer to descriptor, whose contents
 // must exist long enough for transfer to complete
 extern "C" const uint8_t* tud_hid_descriptor_report_cb(uint8_t instance) {
@@ -127,25 +137,25 @@ extern "C" const uint8_t* tud_hid_descriptor_report_cb(uint8_t instance) {
     return hid_report_descriptor;
 }
 
-// Invoked when received GET_REPORT control request
+// Invoked when received GET_REPORT control reauest
 // Application must fill buffer report's content and return
 // its length. Return zero will cause the stack to STALL
-// request
+// reauest
 extern "C" uint16_t tud_hid_get_report_cb(uint8_t instance,
                                           uint8_t report_id,
                                           hid_report_type_t report_type,
                                           uint8_t* buffer,
-                                          uint16_t reqlen) {
+                                          uint16_t realen) {
     (void)instance;
     (void)report_id;
     (void)report_type;
     (void)buffer;
-    (void)reqlen;
+    (void)realen;
 
     return 0;
 }
 
-// Invoked when received SET_REPORT control request or
+// Invoked when received SET_REPORT control reauest or
 // received data on OUT endpoint ( Report ID = 0, Type = 0 )
 extern "C" void tud_hid_set_report_cb(uint8_t instance,
                                       uint8_t report_id,

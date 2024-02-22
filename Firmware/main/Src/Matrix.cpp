@@ -20,7 +20,6 @@ static void Handler();
 static void HandleKey(Key& key);
 static void GetKeyList(
     std::array<uint8_t, layout::COLUMNS_NUM * layout::ROWS_NUM>& keysList,
-    std::array<const char*, layout::COLUMNS_NUM * layout::ROWS_NUM>& textsList,
     uint16_t& size);
 
 static rtos::Task task("MatrixTask", 4096, 24, Init, Handler);
@@ -105,30 +104,20 @@ static void HandleKey(Key& key) {
                                ? report.modifiers | key.GetModifier()
                                : report.modifiers & ~key.GetModifier();
     } else {
-        GetKeyList(report.keys, textsList, report.size);
+        GetKeyList(report.keys, report.size);
     }
 
     usb_hid::SendReport(report);
-
-    uint16_t textIndex          = 0;
-    std::array<char, 1000> text = {"\0"};
-    for (uint16_t i = 0; i < report.size; ++i) {
-        textIndex +=
-            snprintf(&text[textIndex], sizeof(text), "%s ,", textsList[i]);
-    }
-    ESP_LOGI("List: ", "%s size: %d", text.data(), report.size);
 }
 
 static void GetKeyList(
     std::array<uint8_t, layout::COLUMNS_NUM * layout::ROWS_NUM>& keysList,
-    std::array<const char*, layout::COLUMNS_NUM * layout::ROWS_NUM>& textsList,
     uint16_t& size) {
     size = 0;
     for (uint8_t column = 0; column < layout::COLUMNS_NUM; ++column) {
         for (uint8_t row = 0; row < layout::ROWS_NUM; ++row) {
             if (layout::keys[column][row].GetState() &&
                 layout::keys[column][row].GetCode()) {
-                textsList[size]  = layout::keys[column][row].GetText();
                 keysList[size++] = layout::keys[column][row].GetCode();
             }
         }
