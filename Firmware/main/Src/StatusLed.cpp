@@ -38,12 +38,15 @@ bool SetMode(Modes mode) {
 
 static bool Init() {
     led_strip_config_t strip_config = {
-        .strip_gpio_num = STATUS_LED_PIN,
-        .max_leds       = 1,
+        .strip_gpio_num   = STATUS_LED_PIN,
+        .max_leds         = 1,
+        .led_pixel_format = LED_PIXEL_FORMAT_GRB,
+        .led_model        = LED_MODEL_WS2812,
+        .flags            = {.invert_out = false},
     };
-    led_strip_rmt_config_t rmt_config = {
-        .resolution_hz = 10'000'000,
-    };
+    // Using default settings
+    led_strip_rmt_config_t rmt_config = {};
+
     led_strip_new_rmt_device(&strip_config, &rmt_config, &ledHandle);
     led_strip_clear(ledHandle);
     currentMode = Modes::Rainbow;

@@ -88,6 +88,8 @@ static bool Init() {
             sizeof(hid_string_descriptor) / sizeof(hid_string_descriptor[0]),
         .external_phy             = false,
         .configuration_descriptor = hid_configuration_descriptor,
+        .self_powered             = false,
+        .vbus_monitor_io          = 0,
     };
     ESP_ERROR_CHECK(tinyusb_driver_install(&tusb_cfg));
 
@@ -148,38 +150,23 @@ bool SetupTask() {
 
 } // namespace usb_hid
 
-/********* TinyUSB HID callbacks ***************/
+// TinyUSB HID callbacks
 
-// Invoked when received GET HID REPORT DESCRIPTOR reauest
-// Application return pointer to descriptor, whose contents
-// must exist long enough for transfer to complete
-extern "C" const uint8_t* tud_hid_descriptor_report_cb(uint8_t instance) {
-    // We use only one interface and one HID report
-    // descriptor, so we can ignore parameter 'instance'
+extern "C" const uint8_t* tud_hid_descriptor_report_cb(
+    [[maybe_unused]] uint8_t instance) {
     return hid_report_descriptor;
 }
 
-// Invoked when received GET_REPORT control reauest
-// Application must fill buffer report's content and return
-// its length. Return zero will cause the stack to STALL
-// reauest
-extern "C" uint16_t tud_hid_get_report_cb(uint8_t instance,
-                                          uint8_t report_id,
-                                          hid_report_type_t report_type,
-                                          uint8_t* buffer,
-                                          uint16_t realen) {
-    (void)instance;
-    (void)report_id;
-    (void)report_type;
-    (void)buffer;
-    (void)realen;
-
+extern "C" uint16_t tud_hid_get_report_cb(
+    [[maybe_unused]] uint8_t instance,
+    [[maybe_unused]] uint8_t report_id,
+    [[maybe_unused]] hid_report_type_t report_type,
+    [[maybe_unused]] uint8_t* buffer,
+    [[maybe_unused]] uint16_t realen) {
     return 0;
 }
 
-// Invoked when received SET_REPORT control request or
-// received data on OUT endpoint ( Report ID = 0, Type = 0 )
-extern "C" void tud_hid_set_report_cb(uint8_t instance,
+extern "C" void tud_hid_set_report_cb([[maybe_unused]] uint8_t instance,
                                       uint8_t id,
                                       hid_report_type_t type,
                                       const uint8_t* buf,
