@@ -97,7 +97,8 @@ static void Handler() {
 
 static void HandleKey(Key& key) {
     usb_hid::KbHidReport report = {};
-    std::array<const char*, layout::COLUMNS_NUM * layout::ROWS_NUM> textsList;
+    std::array<const char*, layout::COLUMNS_NUM * layout::ROWS_NUM> textsList =
+        {};
 
     if (key.GetModifier()) {
         report.modifiers = key.GetState()

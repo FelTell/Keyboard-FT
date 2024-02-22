@@ -92,26 +92,35 @@ static bool Init() {
 
 static void Handler() {
     auto report = kbReportsQueue.Wait(0xFFFFFFFF);
-    if (report && tud_mounted()) {
-        std::array<uint8_t, 6> keycodes;
-        uint16_t size = std::min(static_cast<uint16_t>(6), report->size);
-
-        uint16_t textIndex         = 0;
-        std::array<char, 100> text = {"\0"};
-
-        for (uint16_t i = 0; i < size; ++i) {
-            keycodes[i] = report->keys[i];
-            textIndex +=
-                snprintf(&text[textIndex], sizeof(text), "%d ,", keycodes[i]);
-        }
-        ESP_LOGI("Report: ",
-                 "%s modifiers: %d",
-                 text.data(),
-                 report->modifiers);
-        tud_hid_keyboard_report(HID_ITF_PROTOCOL_KEYBOARD,
-                                report->modifiers,
-                                keycodes.data());
+    if (!report) {
+        return;
     }
+    if (!tud_mounted()) {
+        return;
+    }
+    if (!report->size && !report->modifiers) {
+        tud_hid_keyboard_report(HID_ITF_PROTOCOL_KEYBOARD, 0, nullptr);
+        return;
+    }
+    std::array<uint8_t, 6> keycodes;
+    uint16_t size = std::min(static_cast<uint16_t>(6), report->size);
+
+    tud_hid_keyboard_report(HID_ITF_PROTOCOL_KEYBOARD,
+                            report->modifiers,
+                            keycodes.data());
+
+    uint16_t textIndex         = 0;
+    std::array<char, 100> text = {"\0"};
+
+    for (uint16_t i = 0; i < size; ++i) {
+        keycodes[i] = report->keys[i];
+        textIndex +=
+            snprintf(&text[textIndex], sizeof(text), "%d ,", keycodes[i]);
+    }
+    ESP_LOGI("Report: ", "%s modifiers: %d", text.data(), report->modifiers);
+    tud_hid_keyboard_report(HID_ITF_PROTOCOL_KEYBOARD,
+                            report->modifiers,
+                            keycodes.data());
 }
 
 bool SetupTask() {
