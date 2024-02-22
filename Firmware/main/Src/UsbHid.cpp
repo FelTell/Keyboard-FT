@@ -28,6 +28,8 @@ static void Handler();
 static rtos::Task task("UsbHidTask", 4096, 24, Init, Handler);
 static rtos::Queue<KbHidReport> kbReportsQueue(10);
 
+static bool isReady;
+
 /************* TinyUSB descriptors ****************/
 
 #define TUSB_DESC_TOTAL_LEN \
@@ -93,13 +95,24 @@ static bool Init() {
 }
 
 static void Handler() {
-    auto report = kbReportsQueue.Wait(0xFFFFFFFF);
+    auto report = kbReportsQueue.Wait(100);
+
+    const bool tinyUsbReady = tud_ready();
+    if (isReady != tinyUsbReady) {
+        isReady = tinyUsbReady;
+        if (!isReady) {
+            isReady = false;
+            // It is not needed to set led when connected because usb will send
+            // a LED report.
+            status_led::SetMode(status_led::Modes::Rainbow);
+            return;
+        }
+    }
+
     if (!report) {
         return;
     }
-    if (!tud_mounted()) {
-        return;
-    }
+
     if (!report->size && !report->modifiers) {
         tud_hid_keyboard_report(HID_ITF_PROTOCOL_KEYBOARD, 0, nullptr);
         return;
@@ -108,7 +121,7 @@ static void Handler() {
     uint16_t size = std::min(static_cast<uint16_t>(6), report->size);
 
     uint16_t textIndex         = 0;
-    std::array<char, 100> text = {"\0"};
+    std::array<char, 100> text = {""};
 
     for (uint16_t i = 0; i < size; ++i) {
         keycodes[i] = report->keys[i];
