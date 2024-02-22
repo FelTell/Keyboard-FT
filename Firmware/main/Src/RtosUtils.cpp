@@ -1,5 +1,3 @@
-#pragma once
-
 #include "RtosUtils.hpp"
 
 namespace rtos {
