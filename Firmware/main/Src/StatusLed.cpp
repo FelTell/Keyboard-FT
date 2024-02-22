@@ -17,6 +17,8 @@ static void Handler();
 
 static void DelayAndWaitNewCommand(const TickType_t ticksToDelay);
 
+static void ShowCapsOnUsb();
+static void ShowCapsOnBle();
 static void ShowUsb();
 static void ShowBluetoothSearching();
 static void ShowBluetoothConnected();
@@ -29,6 +31,10 @@ static rtos::Task task(taskName, 4096, 24, Init, Handler);
 static rtos::Queue<Modes> requests(1);
 
 static Modes currentMode;
+
+bool SetMode(Modes mode) {
+    return requests.Send(mode);
+}
 
 static bool Init() {
     led_strip_config_t strip_config = {
@@ -47,6 +53,12 @@ static bool Init() {
 
 static void Handler() {
     switch (currentMode) {
+        case Modes::CapsOnUsb:
+            ShowCapsOnUsb();
+            break;
+        case Modes::CapsOnBle:
+            ShowCapsOnBle();
+            break;
         case Modes::Usb:
             ShowUsb();
             break;
@@ -72,8 +84,21 @@ static void DelayAndWaitNewCommand(const TickType_t ticksToDelay) {
     }
 }
 
+static void ShowCapsOnUsb() {
+    led_strip_set_pixel(ledHandle, 0, LED_MAX, LED_MAX, 0);
+    led_strip_refresh(ledHandle);
+    DelayAndWaitNewCommand(0xFFFFFFFF);
+}
+
+static void ShowCapsOnBle() {
+    led_strip_set_pixel(ledHandle, 0, LED_MAX, 0, LED_MAX);
+    led_strip_refresh(ledHandle);
+    DelayAndWaitNewCommand(0xFFFFFFFF);
+}
+
 static void ShowUsb() {
     led_strip_set_pixel(ledHandle, 0, 0, LED_MAX, 0);
+    led_strip_refresh(ledHandle);
     DelayAndWaitNewCommand(0xFFFFFFFF);
 }
 

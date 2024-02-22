@@ -9,6 +9,8 @@
 
 #include "RtosUtils.hpp"
 
+#include "StatusLed.hpp"
+
 /**
  * @brief HID report descriptor
  *
@@ -110,8 +112,10 @@ static void Handler() {
 
     for (uint16_t i = 0; i < size; ++i) {
         keycodes[i] = report->keys[i];
-        textIndex +=
-            snprintf(&text[textIndex], sizeof(text), "%d ,", keycodes[i]);
+        textIndex += snprintf(&text[textIndex],
+                              sizeof(text) - textIndex,
+                              "%d ,",
+                              keycodes[i]);
     }
     ESP_LOGI("Report: ", "%s modifiers: %d", text.data(), report->modifiers);
     tud_hid_keyboard_report(HID_ITF_PROTOCOL_KEYBOARD,
@@ -160,10 +164,30 @@ extern "C" uint16_t tud_hid_get_report_cb(uint8_t instance,
     return 0;
 }
 
-// Invoked when received SET_REPORT control reauest or
+// Invoked when received SET_REPORT control request or
 // received data on OUT endpoint ( Report ID = 0, Type = 0 )
 extern "C" void tud_hid_set_report_cb(uint8_t instance,
-                                      uint8_t report_id,
-                                      hid_report_type_t report_type,
-                                      const uint8_t* buffer,
-                                      uint16_t bufsize) {}
+                                      uint8_t id,
+                                      hid_report_type_t type,
+                                      const uint8_t* buf,
+                                      uint16_t size) {
+    if (id != 1 && type != HID_REPORT_TYPE_OUTPUT && size != 1) {
+        // Unknown message, log and ignore it
+        uint16_t index = 0;
+        std::array<char, 100> text;
+        for (uint16_t i = 0; i < size; ++i) {
+            index +=
+                snprintf(&text[index], sizeof(text) - index, "%x ,", buf[i]);
+        }
+        ESP_LOGI("set report cb",
+                 "id: %d, type: %d, size: %d, buf: %s",
+                 id,
+                 type,
+                 size,
+                 buf);
+        return;
+    }
+    bool capsState = buf[0] & KEYBOARD_LED_CAPSLOCK;
+    status_led::SetMode(capsState ? status_led::Modes::CapsOnUsb
+                                  : status_led::Modes::Usb);
+}
