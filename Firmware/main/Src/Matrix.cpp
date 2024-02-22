@@ -1,14 +1,17 @@
 #include "Matrix.hpp"
 
-#include "RtosUtils.hpp"
 #include <array>
-#include <esp_log.h>
 
-#include "class/hid/hid_device.h"
+#include <class/hid/hid_device.h>
 #include <driver/gpio.h>
 #include <esp_bit_defs.h>
 
+#include <esp_log.h>
+
+#include "RtosUtils.hpp"
+
 #include "Layout.hpp"
+#include "UsbHid.hpp"
 
 namespace matrix {
 
@@ -94,28 +97,26 @@ static void Handler() {
 }
 
 static void HandleKey(Key& key) {
-    static uint8_t modifiersState;
-    std::array<uint8_t, layout::COLUMNS_NUM * layout::ROWS_NUM> keysList;
+    usb_hid::KbHidReport report = {};
     std::array<const char*, layout::COLUMNS_NUM * layout::ROWS_NUM> textsList;
 
-    uint16_t size;
-
     if (key.GetModifier()) {
-        modifiersState = key.GetState() ? modifiersState | key.GetModifier()
-                                        : modifiersState & ~key.GetModifier();
+        report.modifiers = key.GetState()
+                               ? report.modifiers | key.GetModifier()
+                               : report.modifiers & ~key.GetModifier();
     } else {
-        GetKeyList(keysList, textsList, size);
+        GetKeyList(report.keys, textsList, report.size);
     }
 
-    // TODO (Felipe): send to usb or ble
+    usb_hid::SendReport(report);
 
     uint16_t textIndex          = 0;
     std::array<char, 1000> text = {"\0"};
-    for (uint16_t i = 0; i < size; ++i) {
+    for (uint16_t i = 0; i < report.size; ++i) {
         textIndex +=
             snprintf(&text[textIndex], sizeof(text), "%s ,", textsList[i]);
     }
-    ESP_LOGI("List: ", "%s size: %d", text.data(), size);
+    ESP_LOGI("List: ", "%s size: %d", text.data(), report.size);
 }
 
 static void GetKeyList(
