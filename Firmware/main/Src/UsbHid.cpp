@@ -11,15 +11,6 @@
 
 #include "StatusLed.hpp"
 
-/**
- * @brief HID report descriptor
- *
- * In this example we implement Keyboard + Mouse HID device,
- * so we must define both report descriptors
- */
-const uint8_t hid_report_descriptor[] = {
-    TUD_HID_REPORT_DESC_KEYBOARD(HID_REPORT_ID(HID_ITF_PROTOCOL_KEYBOARD))};
-
 namespace usb_hid {
 
 static bool Init();
@@ -30,33 +21,23 @@ static rtos::Queue<KbHidReport> kbReportsQueue(10);
 
 static bool isReady;
 
-/************* TinyUSB descriptors ****************/
+// TinyUSB descriptors
 
-#define TUSB_DESC_TOTAL_LEN \
-    (TUD_CONFIG_DESC_LEN + CFG_TUD_HID * TUD_HID_DESC_LEN)
+static constexpr uint32_t TUSB_DESC_TOTAL_LEN =
+    TUD_CONFIG_DESC_LEN + CFG_TUD_HID * TUD_HID_DESC_LEN;
 
-/**
- * @brief String descriptor
- */
-const char* hid_string_descriptor[5] = {
-    // array of pointer to string descriptors
-    (char[]){0x09, 0x04}, // 0: is supported language is
-                          // English (0x0409)
+static const uint8_t reportDescriptor[] = {
+    TUD_HID_REPORT_DESC_KEYBOARD(HID_REPORT_ID(HID_ITF_PROTOCOL_KEYBOARD))};
+
+static const char* stringDescriptor[5] = {
+    (char[]){0x09, 0x04}, // 0: is supported language is English (0x0409)
     "FelTell",            // 1: Manufacturer
     "Keyboard-FT",        // 2: Product
-    "0000001",            // 3: Serials, should use chip ID
+    "0000001",            // 3: Serial,
     "Keyboard-FT V1.0",   // 4: HID
 };
 
-/**
- * @brief Configuration descriptor
- *
- * This is a simple configuration descriptor that defines 1
- * configuration and 1 HID interface
- */
-static const uint8_t hid_configuration_descriptor[] = {
-    // Configuration number, interface count, string index,
-    // total length, attribute, power in mA
+static const uint8_t configurationDescriptor[] = {
     TUD_CONFIG_DESCRIPTOR(1,
                           1,
                           0,
@@ -64,16 +45,7 @@ static const uint8_t hid_configuration_descriptor[] = {
                           TUSB_DESC_CONFIG_ATT_REMOTE_WAKEUP,
                           100),
 
-    // Interface number, string index, boot protocol, report
-    // descriptor len, EP In address, size & polling
-    // interval
-    TUD_HID_DESCRIPTOR(0,
-                       4,
-                       false,
-                       sizeof(hid_report_descriptor),
-                       0x81,
-                       16,
-                       10),
+    TUD_HID_DESCRIPTOR(0, 4, false, sizeof(reportDescriptor), 0x81, 16, 10),
 };
 
 bool SendReport(KbHidReport kbHidReport) {
@@ -81,17 +53,17 @@ bool SendReport(KbHidReport kbHidReport) {
 }
 
 static bool Init() {
-    const tinyusb_config_t tusb_cfg = {
+    const tinyusb_config_t tinyUsbConfig = {
         .device_descriptor = NULL,
-        .string_descriptor = hid_string_descriptor,
+        .string_descriptor = stringDescriptor,
         .string_descriptor_count =
-            sizeof(hid_string_descriptor) / sizeof(hid_string_descriptor[0]),
+            sizeof(stringDescriptor) / sizeof(stringDescriptor[0]),
         .external_phy             = false,
-        .configuration_descriptor = hid_configuration_descriptor,
+        .configuration_descriptor = configurationDescriptor,
         .self_powered             = false,
         .vbus_monitor_io          = 0,
     };
-    ESP_ERROR_CHECK(tinyusb_driver_install(&tusb_cfg));
+    ESP_ERROR_CHECK(tinyusb_driver_install(&tinyUsbConfig));
 
     return true;
 }
@@ -104,10 +76,10 @@ static void Handler() {
         isReady = tinyUsbReady;
         if (!isReady) {
             isReady = false;
-            // It is not needed to set led when connected because usb will send
-            // a LED report.
             status_led::SetMode(status_led::Modes::Rainbow);
             return;
+        } else {
+            status_led::SetMode(status_led::Modes::Usb);
         }
     }
 
@@ -120,7 +92,7 @@ static void Handler() {
         return;
     }
     std::array<uint8_t, 6> keycodes = {};
-    uint16_t size = std::min(static_cast<uint16_t>(6), report->size);
+    const uint16_t size = std::min(static_cast<uint16_t>(6), report->size);
 
     uint16_t textIndex         = 0;
     std::array<char, 100> text = {""};
@@ -154,14 +126,14 @@ bool SetupTask() {
 
 extern "C" const uint8_t* tud_hid_descriptor_report_cb(
     [[maybe_unused]] uint8_t instance) {
-    return hid_report_descriptor;
+    return usb_hid::reportDescriptor;
 }
 
 extern "C" uint16_t tud_hid_get_report_cb(
     [[maybe_unused]] uint8_t instance,
-    [[maybe_unused]] uint8_t report_id,
-    [[maybe_unused]] hid_report_type_t report_type,
-    [[maybe_unused]] uint8_t* buffer,
+    [[maybe_unused]] uint8_t id,
+    [[maybe_unused]] hid_report_type_t type,
+    [[maybe_unused]] uint8_t* buf,
     [[maybe_unused]] uint16_t realen) {
     return 0;
 }

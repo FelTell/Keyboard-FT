@@ -37,7 +37,7 @@ bool SetMode(Modes mode) {
 }
 
 static bool Init() {
-    led_strip_config_t strip_config = {
+    const led_strip_config_t stripConfig = {
         .strip_gpio_num   = STATUS_LED_PIN,
         .max_leds         = 1,
         .led_pixel_format = LED_PIXEL_FORMAT_GRB,
@@ -45,9 +45,9 @@ static bool Init() {
         .flags            = {.invert_out = false},
     };
     // Using default settings
-    led_strip_rmt_config_t rmt_config = {};
+    const led_strip_rmt_config_t rmtConfig = {};
 
-    led_strip_new_rmt_device(&strip_config, &rmt_config, &ledHandle);
+    led_strip_new_rmt_device(&stripConfig, &rmtConfig, &ledHandle);
     led_strip_clear(ledHandle);
     currentMode = Modes::Rainbow;
 
