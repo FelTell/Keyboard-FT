@@ -12,7 +12,7 @@ static constexpr uint8_t COLUMNS_NUM = 15;
 static std::array<std::array<Key, ROWS_NUM>, COLUMNS_NUM> keys = {
     {{{
          Key("ESCAPE", HID_KEY_ESCAPE),
-         Key("LANG3", HID_KEY_LANG3),
+         Key("GRAVE", HID_KEY_GRAVE),
          Key("TAB", HID_KEY_TAB),
          Key("CAPS_LOCK", HID_KEY_CAPS_LOCK),
          Key("LEFTSHIFT", KEYBOARD_MODIFIER_LEFTSHIFT, true),
@@ -23,7 +23,7 @@ static std::array<std::array<Key, ROWS_NUM>, COLUMNS_NUM> keys = {
          Key("1", HID_KEY_1),
          Key("Q", HID_KEY_Q),
          Key("A", HID_KEY_A),
-         Key("BACKSLASH", HID_KEY_BACKSLASH),
+         Key("EUROPE_2", HID_KEY_EUROPE_2),
          Key("FUNCTION"),
      }},
      {{
@@ -94,22 +94,22 @@ static std::array<std::array<Key, ROWS_NUM>, COLUMNS_NUM> keys = {
          Key("F10", HID_KEY_F10),
          Key("0", HID_KEY_0),
          Key("P", HID_KEY_P),
-         Key("LANG1", HID_KEY_LANG1),
+         Key("SEMICOLON", HID_KEY_SEMICOLON),
          Key("PERIOD", HID_KEY_PERIOD),
          Key("RIGHTCTRL", KEYBOARD_MODIFIER_RIGHTCTRL, true),
      }},
      {{
          Key("F11", HID_KEY_F11),
          Key("MINUS", HID_KEY_MINUS),
-         Key("LANG4", HID_KEY_LANG4),
-         Key("LANG7", HID_KEY_LANG7),
-         Key("SEMICOLON", HID_KEY_SEMICOLON),
+         Key("BRACKET_LEFT", HID_KEY_BRACKET_LEFT),
+         Key("APOSTROPHE", HID_KEY_APOSTROPHE),
+         Key("SLASH", HID_KEY_SLASH),
          Key("ARROW_LEFT ", HID_KEY_ARROW_LEFT),
      }},
      {{
          Key("F12", HID_KEY_F12),
          Key("EQUAL", HID_KEY_EQUAL),
-         Key("LANG6", HID_KEY_LANG6),
+         Key("BRACKET_RIGHT", HID_KEY_BRACKET_RIGHT),
          Key("NONE", HID_KEY_NONE),
          Key("RIGHTSHIFT", KEYBOARD_MODIFIER_RIGHTSHIFT, true),
          Key("ARROW_DOWN", HID_KEY_ARROW_DOWN),
@@ -125,9 +125,9 @@ static std::array<std::array<Key, ROWS_NUM>, COLUMNS_NUM> keys = {
      {{
          Key("DELETE", HID_KEY_DELETE),
          Key("BACKSPACE", HID_KEY_BACKSPACE),
-         Key("LANG5", HID_KEY_LANG5),
+         Key("BACKSLASH", HID_KEY_BACKSLASH),
          Key("ENTER", HID_KEY_ENTER),
-         Key("ARROW_DOWN", HID_KEY_ARROW_DOWN),
+         Key("ARROW_UP", HID_KEY_ARROW_UP),
          Key("ARROW_RIGHT", HID_KEY_ARROW_RIGHT),
      }}}};
 
