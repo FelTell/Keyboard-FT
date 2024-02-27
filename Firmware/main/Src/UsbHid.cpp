@@ -87,10 +87,6 @@ static void Handler() {
         return;
     }
 
-    if (!report->size && !report->modifiers) {
-        tud_hid_keyboard_report(HID_ITF_PROTOCOL_KEYBOARD, 0, nullptr);
-        return;
-    }
     std::array<uint8_t, 6> keycodes = {};
     const uint16_t size = std::min(static_cast<uint16_t>(6), report->size);
 
