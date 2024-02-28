@@ -19,6 +19,7 @@ static bool Init();
 static void Handler();
 static void HandleKey(Key& key);
 static usb_hid::KbHidReport GetKeyReport();
+static bool IsFunctionPressed();
 
 static rtos::Task task("MatrixTask", 4096, 24, Init, Handler);
 
@@ -102,13 +103,16 @@ static void HandleKey(Key& key) {
 static usb_hid::KbHidReport GetKeyReport() {
     usb_hid::KbHidReport report = {};
 
+    const bool isFunctionPressed = IsFunctionPressed();
+
     for (uint8_t column = 0; column < layout::COLUMNS_NUM; ++column) {
         for (uint8_t row = 0; row < layout::ROWS_NUM; ++row) {
             const auto key = layout::keys[column][row];
 
             if (key.GetState()) {
                 if (key.GetCode()) {
-                    report.keys[report.size++] = key.GetCode();
+                    report.keys[report.size++] =
+                        isFunctionPressed ? key.GetFnCode() : key.GetCode();
                 } else {
                     report.modifiers = report.modifiers | key.GetModifier();
                 }
@@ -117,6 +121,10 @@ static usb_hid::KbHidReport GetKeyReport() {
     }
 
     return report;
+}
+
+static bool IsFunctionPressed() {
+    return layout::keys[1][5].GetState();
 }
 
 bool SetupTask() {

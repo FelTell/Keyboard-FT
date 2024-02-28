@@ -15,8 +15,8 @@ static std::array<std::array<Key, ROWS_NUM>, COLUMNS_NUM> keys = {
          Key("GRAVE", HID_KEY_GRAVE),
          Key("TAB", HID_KEY_TAB),
          Key("CAPS_LOCK", HID_KEY_CAPS_LOCK),
-         Key("LEFTSHIFT", KEYBOARD_MODIFIER_LEFTSHIFT, true),
-         Key("LEFTCTRL", KEYBOARD_MODIFIER_LEFTCTRL, true),
+         Key("LEFTSHIFT", KEYBOARD_MODIFIER_LEFTSHIFT),
+         Key("LEFTCTRL", KEYBOARD_MODIFIER_LEFTCTRL),
      }},
      {{
          Key("F1", HID_KEY_F1),
@@ -24,7 +24,7 @@ static std::array<std::array<Key, ROWS_NUM>, COLUMNS_NUM> keys = {
          Key("Q", HID_KEY_Q),
          Key("A", HID_KEY_A),
          Key("EUROPE_2", HID_KEY_EUROPE_2),
-         Key("FUNCTION"),
+         Key("FUNCTION", HID_KEY_NONE),
      }},
      {{
          Key("F2", HID_KEY_F2),
@@ -32,7 +32,7 @@ static std::array<std::array<Key, ROWS_NUM>, COLUMNS_NUM> keys = {
          Key("W", HID_KEY_W),
          Key("S", HID_KEY_S),
          Key("Z", HID_KEY_Z),
-         Key("LEFTGUI", KEYBOARD_MODIFIER_LEFTGUI, true),
+         Key("LEFTGUI", KEYBOARD_MODIFIER_LEFTGUI),
      }},
      {{
          Key("F3", HID_KEY_F3),
@@ -40,7 +40,7 @@ static std::array<std::array<Key, ROWS_NUM>, COLUMNS_NUM> keys = {
          Key("E", HID_KEY_E),
          Key("D", HID_KEY_D),
          Key("X", HID_KEY_X),
-         Key("LEFTALT", KEYBOARD_MODIFIER_LEFTALT, true),
+         Key("LEFTALT", KEYBOARD_MODIFIER_LEFTALT),
      }},
      {{
          Key("F4", HID_KEY_F4),
@@ -80,7 +80,7 @@ static std::array<std::array<Key, ROWS_NUM>, COLUMNS_NUM> keys = {
          Key("I", HID_KEY_I),
          Key("K", HID_KEY_K),
          Key("M", HID_KEY_M),
-         Key("RIGHTALT", KEYBOARD_MODIFIER_RIGHTALT, true),
+         Key("RIGHTALT", KEYBOARD_MODIFIER_RIGHTALT),
      }},
      {{
          Key("F9", HID_KEY_F9),
@@ -96,7 +96,7 @@ static std::array<std::array<Key, ROWS_NUM>, COLUMNS_NUM> keys = {
          Key("P", HID_KEY_P),
          Key("SEMICOLON", HID_KEY_SEMICOLON),
          Key("PERIOD", HID_KEY_PERIOD),
-         Key("RIGHTCTRL", KEYBOARD_MODIFIER_RIGHTCTRL, true),
+         Key("RIGHTCTRL", KEYBOARD_MODIFIER_RIGHTCTRL),
      }},
      {{
          Key("F11", HID_KEY_F11),
@@ -104,15 +104,15 @@ static std::array<std::array<Key, ROWS_NUM>, COLUMNS_NUM> keys = {
          Key("BRACKET_LEFT", HID_KEY_BRACKET_LEFT),
          Key("APOSTROPHE", HID_KEY_APOSTROPHE),
          Key("SLASH", HID_KEY_SLASH),
-         Key("ARROW_LEFT ", HID_KEY_ARROW_LEFT),
+         Key("ARROW_LEFT ", HID_KEY_ARROW_LEFT, HID_KEY_HOME),
      }},
      {{
          Key("F12", HID_KEY_F12),
          Key("EQUAL", HID_KEY_EQUAL),
          Key("BRACKET_RIGHT", HID_KEY_BRACKET_RIGHT),
          Key("NONE", HID_KEY_NONE),
-         Key("RIGHTSHIFT", KEYBOARD_MODIFIER_RIGHTSHIFT, true),
-         Key("ARROW_DOWN", HID_KEY_ARROW_DOWN),
+         Key("RIGHTSHIFT", KEYBOARD_MODIFIER_RIGHTSHIFT),
+         Key("ARROW_DOWN", HID_KEY_ARROW_DOWN, HID_KEY_PAGE_DOWN),
      }},
      {{
          Key("PRINT_SCREEN", HID_KEY_PRINT_SCREEN),
@@ -127,8 +127,8 @@ static std::array<std::array<Key, ROWS_NUM>, COLUMNS_NUM> keys = {
          Key("BACKSPACE", HID_KEY_BACKSPACE),
          Key("BACKSLASH", HID_KEY_BACKSLASH),
          Key("ENTER", HID_KEY_ENTER),
-         Key("ARROW_UP", HID_KEY_ARROW_UP),
-         Key("ARROW_RIGHT", HID_KEY_ARROW_RIGHT),
+         Key("ARROW_UP", HID_KEY_ARROW_UP, HID_KEY_PAGE_UP),
+         Key("ARROW_RIGHT", HID_KEY_ARROW_RIGHT, HID_KEY_END),
      }}}};
 
 } // namespace layout
