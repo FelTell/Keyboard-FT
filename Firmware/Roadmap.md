@@ -1,0 +1,5 @@
+- Add more function key commands
+- Add bluetooth 
+- Save connected devices in NVS
+- Implement sleep
+- Add LampArray operation to control LEDs from OS
