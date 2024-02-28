@@ -76,10 +76,10 @@ static void Handler() {
         isReady = tinyUsbReady;
         if (!isReady) {
             isReady = false;
-            status_led::SetMode(status_led::Modes::Rainbow);
+            leds::SetMode(leds::Modes::Rainbow);
             return;
         } else {
-            status_led::SetMode(status_led::Modes::Usb);
+            leds::SetMode(leds::Modes::Usb);
         }
     }
 
@@ -87,10 +87,6 @@ static void Handler() {
         return;
     }
 
-    if (!report->size && !report->modifiers) {
-        tud_hid_keyboard_report(HID_ITF_PROTOCOL_KEYBOARD, 0, nullptr);
-        return;
-    }
     std::array<uint8_t, 6> keycodes = {};
     const uint16_t size = std::min(static_cast<uint16_t>(6), report->size);
 
@@ -160,6 +156,5 @@ extern "C" void tud_hid_set_report_cb([[maybe_unused]] uint8_t instance,
         return;
     }
     bool capsState = buf[0] & KEYBOARD_LED_CAPSLOCK;
-    status_led::SetMode(capsState ? status_led::Modes::CapsOnUsb
-                                  : status_led::Modes::Usb);
+    leds::SetMode(capsState ? leds::Modes::CapsOnUsb : leds::Modes::Usb);
 }

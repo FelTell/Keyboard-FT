@@ -18,9 +18,8 @@ namespace matrix {
 static bool Init();
 static void Handler();
 static void HandleKey(Key& key);
-static void GetKeyList(
-    std::array<uint8_t, layout::COLUMNS_NUM * layout::ROWS_NUM>& keysList,
-    uint16_t& size);
+static usb_hid::KbHidReport GetKeyReport();
+static bool IsFunctionPressed();
 
 static rtos::Task task("MatrixTask", 4096, 24, Init, Handler);
 
@@ -73,6 +72,7 @@ static bool Init() {
 static void Handler() {
     for (uint8_t column = 0; column < layout::COLUMNS_NUM; ++column) {
         gpio_set_level(columns[column], true);
+        rtos::Delay(1);
         for (uint8_t row = 0; row < layout::ROWS_NUM; ++row) {
             Key& key   = layout::keys[column][row];
             bool state = gpio_get_level(rows[row]);
@@ -92,35 +92,39 @@ static void Handler() {
         }
         gpio_set_level(columns[column], false);
     }
-    rtos::Delay(5);
 }
 
 static void HandleKey(Key& key) {
-    usb_hid::KbHidReport report = {};
-
-    if (key.GetModifier()) {
-        report.modifiers = key.GetState()
-                               ? report.modifiers | key.GetModifier()
-                               : report.modifiers & ~key.GetModifier();
-    } else {
-        GetKeyList(report.keys, report.size);
-    }
+    const auto report = GetKeyReport();
 
     usb_hid::SendReport(report);
 }
 
-static void GetKeyList(
-    std::array<uint8_t, layout::COLUMNS_NUM * layout::ROWS_NUM>& keysList,
-    uint16_t& size) {
-    size = 0;
+static usb_hid::KbHidReport GetKeyReport() {
+    usb_hid::KbHidReport report = {};
+
+    const bool isFunctionPressed = IsFunctionPressed();
+
     for (uint8_t column = 0; column < layout::COLUMNS_NUM; ++column) {
         for (uint8_t row = 0; row < layout::ROWS_NUM; ++row) {
-            if (layout::keys[column][row].GetState() &&
-                layout::keys[column][row].GetCode()) {
-                keysList[size++] = layout::keys[column][row].GetCode();
+            const auto key = layout::keys[column][row];
+
+            if (key.GetState()) {
+                if (key.GetCode()) {
+                    report.keys[report.size++] =
+                        isFunctionPressed ? key.GetFnCode() : key.GetCode();
+                } else {
+                    report.modifiers = report.modifiers | key.GetModifier();
+                }
             }
         }
     }
+
+    return report;
+}
+
+static bool IsFunctionPressed() {
+    return layout::keys[1][5].GetState();
 }
 
 bool SetupTask() {

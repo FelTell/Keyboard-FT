@@ -5,7 +5,7 @@
 #include "UsbHid.hpp"
 
 extern "C" void app_main(void) {
-    status_led::SetupTask();
+    leds::SetupTask();
     matrix::SetupTask();
     usb_hid::SetupTask();
 
