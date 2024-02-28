@@ -76,10 +76,10 @@ static void Handler() {
         isReady = tinyUsbReady;
         if (!isReady) {
             isReady = false;
-            status_led::SetMode(status_led::Modes::Rainbow);
+            leds::SetMode(leds::Modes::Rainbow);
             return;
         } else {
-            status_led::SetMode(status_led::Modes::Usb);
+            leds::SetMode(leds::Modes::Usb);
         }
     }
 
@@ -156,6 +156,5 @@ extern "C" void tud_hid_set_report_cb([[maybe_unused]] uint8_t instance,
         return;
     }
     bool capsState = buf[0] & KEYBOARD_LED_CAPSLOCK;
-    status_led::SetMode(capsState ? status_led::Modes::CapsOnUsb
-                                  : status_led::Modes::Usb);
+    leds::SetMode(capsState ? leds::Modes::CapsOnUsb : leds::Modes::Usb);
 }

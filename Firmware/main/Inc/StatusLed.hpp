@@ -2,7 +2,7 @@
 
 #include <cstdint>
 
-namespace status_led {
+namespace leds {
 
 enum class Modes : uint8_t {
     CapsOnUsb,
@@ -18,4 +18,4 @@ bool SetMode(Modes);
 
 bool SetupTask();
 
-} // namespace status_led
+} // namespace leds
