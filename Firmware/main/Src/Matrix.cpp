@@ -19,7 +19,7 @@ static bool Init();
 static void Handler();
 static void HandleKey(Key& key);
 static usb_hid::KbHidReport GetKeyReport();
-static bool IsFunctionPressed();
+static bool IsFnPressed();
 
 static rtos::Task task("MatrixTask", 4096, 24, Init, Handler);
 
@@ -103,7 +103,7 @@ static void HandleKey(Key& key) {
 static usb_hid::KbHidReport GetKeyReport() {
     usb_hid::KbHidReport report = {};
 
-    const bool isFunctionPressed = IsFunctionPressed();
+    const bool isFnPressed = IsFnPressed();
 
     for (uint8_t column = 0; column < layout::COLUMNS_NUM; ++column) {
         for (uint8_t row = 0; row < layout::ROWS_NUM; ++row) {
@@ -112,8 +112,9 @@ static usb_hid::KbHidReport GetKeyReport() {
             if (key.GetState()) {
                 if (key.GetCode()) {
                     report.keys[report.size++] =
-                        isFunctionPressed ? key.GetFnKeyCode() : key.GetCode();
-                    report.consumerCode = key.GetFnConsumerCode();
+                        isFnPressed ? key.GetFnKeyCode() : key.GetCode();
+                    report.consumerCode =
+                        isFnPressed ? key.GetFnConsumerCode() : 0;
                 } else {
                     report.modifiers = report.modifiers | key.GetModifier();
                 }
@@ -124,7 +125,7 @@ static usb_hid::KbHidReport GetKeyReport() {
     return report;
 }
 
-static bool IsFunctionPressed() {
+static bool IsFnPressed() {
     return layout::keys[1][5].GetState();
 }
 
