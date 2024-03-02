@@ -13,9 +13,12 @@
 
 namespace usb_hid {
 
+static constexpr uint8_t REPORT_MAX_KEYS = 6;
+
 static bool Init();
 static void Handler();
 
+static void HandleConnectedStatus();
 static void PrintReport(usb_hid::KbHidReport report);
 
 static rtos::Task task("UsbHidTask", 4096, 24, Init, Handler);
@@ -75,47 +78,48 @@ static bool Init() {
 }
 
 static void Handler() {
-    static bool isConsumerPressed;
+    static uint16_t consumerCode;
+    static std::array<uint8_t, REPORT_MAX_KEYS> keyCodes = {};
+    static uint8_t modifiers;
+    bool consumerUpdated = false;
 
-    auto report = kbReportsQueue.Wait(100);
+    auto report = kbReportsQueue.Wait(10);
 
+    HandleConnectedStatus();
+
+    if (report) {
+        if (consumerCode != report->consumerCode) {
+            consumerUpdated = true;
+        }
+
+        consumerCode = report->consumerCode;
+        modifiers    = report->modifiers;
+
+        for (uint16_t i = 0; i < REPORT_MAX_KEYS; ++i) {
+            keyCodes[i] = report->keys[i];
+        }
+
+        PrintReport(*report);
+    }
+
+    if (consumerUpdated) {
+        tud_hid_report(CONSUMER_REPORT_ID, &consumerCode, 2);
+    } else {
+        tud_hid_keyboard_report(KEYBOARD_REPORT_ID, modifiers, keyCodes.data());
+    }
+}
+
+static void HandleConnectedStatus() {
     const bool tinyUsbReady = tud_ready();
     if (isReady != tinyUsbReady) {
         isReady = tinyUsbReady;
         if (!isReady) {
             isReady = false;
             leds::SetMode(leds::Modes::NotConnected);
-            return;
         } else if (leds::GetMode() == leds::Modes::NotConnected) {
             leds::SetMode(leds::Modes::Usb);
         }
     }
-
-    if (!report) {
-        return;
-    }
-
-    if (report->consumerCode) {
-        tud_hid_report(CONSUMER_REPORT_ID, &report->consumerCode, 2);
-        isConsumerPressed = true;
-    } else if (isConsumerPressed) {
-        isConsumerPressed = false;
-        uint16_t emptyKey = 0;
-        tud_hid_report(CONSUMER_REPORT_ID, &emptyKey, 2);
-    }
-
-    std::array<uint8_t, 6> keycodes = {};
-    const uint16_t size = std::min(static_cast<uint16_t>(6), report->size);
-
-    for (uint16_t i = 0; i < size; ++i) {
-        keycodes[i] = report->keys[i];
-    }
-
-    tud_hid_keyboard_report(KEYBOARD_REPORT_ID,
-                            report->modifiers,
-                            keycodes.data());
-
-    PrintReport(*report);
 }
 
 static void PrintReport(usb_hid::KbHidReport report) {
@@ -132,7 +136,7 @@ static void PrintReport(usb_hid::KbHidReport report) {
         isConsumerPressed = false;
     }
 
-    for (uint16_t i = 0; i < report.size; ++i) {
+    for (uint16_t i = 0; i < REPORT_MAX_KEYS; ++i) {
         textIndex += snprintf(&text[textIndex],
                               sizeof(text) - textIndex,
                               "%d ,",

@@ -17,8 +17,7 @@ namespace matrix {
 
 static bool Init();
 static void Handler();
-static void HandleKey(Key& key);
-static usb_hid::KbHidReport GetKeyReport();
+static usb_hid::KbHidReport GenerateReport();
 static bool IsFnPressed();
 
 static rtos::Task task("MatrixTask", 4096, 24, Init, Handler);
@@ -70,15 +69,21 @@ static bool Init() {
 }
 
 static void Handler() {
+    bool changePresent = false;
+
+    rtos::Delay(5);
+
     for (uint8_t column = 0; column < layout::COLUMNS_NUM; ++column) {
         gpio_set_level(columns[column], true);
-        rtos::Delay(1);
+        // Quick blocking delay to keep sure gpio is in the correct level
+        volatile uint32_t i = 10;
+        while (--i) {}
         for (uint8_t row = 0; row < layout::ROWS_NUM; ++row) {
             Key& key   = layout::keys[column][row];
             bool state = gpio_get_level(rows[row]);
             if (state != key.GetState()) {
+                changePresent = true;
                 key.SetState(state);
-                HandleKey(key);
                 ESP_LOGI(key.GetText(),
                          "has been %s. ID = %d. Row = %d, Column = %d. GPIO = "
                          "%d and %d.",
@@ -92,15 +97,13 @@ static void Handler() {
         }
         gpio_set_level(columns[column], false);
     }
+
+    if (changePresent) {
+        usb_hid::SendReport(GenerateReport());
+    }
 }
 
-static void HandleKey(Key& key) {
-    const auto report = GetKeyReport();
-
-    usb_hid::SendReport(report);
-}
-
-static usb_hid::KbHidReport GetKeyReport() {
+static usb_hid::KbHidReport GenerateReport() {
     usb_hid::KbHidReport report = {};
 
     const bool isFnPressed = IsFnPressed();
