@@ -4,6 +4,7 @@
 #include <freertos/FreeRTOS.h>
 #include <freertos/queue.h>
 #include <freertos/task.h>
+#include <freertos/timers.h>
 #include <functional>
 #include <optional>
 
@@ -32,7 +33,7 @@ class Queue {
         };
         return std::nullopt;
     }
-    std::optional<T> Wait(uint32_t timeout) {
+    std::optional<T> Wait(uint32_t timeout = 0xFFFFFFFF) {
         T value;
         if (xQueueReceive(m_handle, &value, timeout) == pdTRUE) {
             return value;
@@ -43,6 +44,64 @@ class Queue {
   private:
     QueueHandle_t m_handle;
     uint32_t m_size;
+};
+
+class Timer {
+  public:
+    Timer(const char* name,
+          uint32_t period,
+          bool autoReload,
+          void (*callback)())
+        : m_name(name),
+          m_period(period),
+          m_autoReload(autoReload),
+          m_callback(callback) {}
+
+    bool Start() {
+        if (!m_handle) {
+            if (!Setup()) {
+                return false;
+            }
+        }
+
+        if (xTimerStart(m_handle, 0) != pdPASS) {
+            ESP_LOGE(m_name, "Start failed");
+            return false;
+        }
+        return true;
+    }
+
+    bool Stop() {
+        if (!m_handle) {
+            return true;
+        }
+        return xTimerStop(m_handle, 0) == pdPASS ? true : false;
+    }
+
+    bool Setup() {
+        m_handle = xTimerCreate(m_name, m_period, m_autoReload, this, Callback);
+        if (!m_handle) {
+            ESP_LOGE(m_name, "Setup failed");
+            return false;
+        }
+        return true;
+    }
+
+    TimerHandle_t* GetHandle() {
+        return &m_handle;
+    };
+
+  private:
+    TimerHandle_t m_handle;
+    const char* m_name;
+    uint32_t m_period;
+    bool m_autoReload;
+    void (*m_callback)();
+
+    static void Callback(TimerHandle_t xTimer) {
+        Timer* obj = static_cast<Timer*>(pvTimerGetTimerID(xTimer));
+        obj->m_callback();
+    }
 };
 
 class Task {
