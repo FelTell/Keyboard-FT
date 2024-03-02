@@ -16,6 +16,8 @@ namespace usb_hid {
 static bool Init();
 static void Handler();
 
+static void PrintReport(usb_hid::KbHidReport report);
+
 static rtos::Task task("UsbHidTask", 4096, 24, Init, Handler);
 static rtos::Queue<KbHidReport> kbReportsQueue(10);
 
@@ -23,11 +25,15 @@ static bool isReady;
 
 // TinyUSB descriptors
 
+static constexpr uint8_t KEYBOARD_REPORT_ID = 1;
+static constexpr uint8_t CONSUMER_REPORT_ID = 3;
+
 static constexpr uint32_t TUSB_DESC_TOTAL_LEN =
     TUD_CONFIG_DESC_LEN + CFG_TUD_HID * TUD_HID_DESC_LEN;
 
 static const uint8_t reportDescriptor[] = {
-    TUD_HID_REPORT_DESC_KEYBOARD(HID_REPORT_ID(HID_ITF_PROTOCOL_KEYBOARD))};
+    TUD_HID_REPORT_DESC_KEYBOARD(HID_REPORT_ID(KEYBOARD_REPORT_ID)),
+    TUD_HID_REPORT_DESC_CONSUMER(HID_REPORT_ID(CONSUMER_REPORT_ID))};
 
 static const char* stringDescriptor[5] = {
     (char[]){0x09, 0x04}, // 0: is supported language is English (0x0409)
@@ -69,6 +75,8 @@ static bool Init() {
 }
 
 static void Handler() {
+    static bool isConsumerPressed;
+
     auto report = kbReportsQueue.Wait(100);
 
     const bool tinyUsbReady = tud_ready();
@@ -87,23 +95,50 @@ static void Handler() {
         return;
     }
 
+    if (report->consumerCode) {
+        tud_hid_report(CONSUMER_REPORT_ID, &report->consumerCode, 2);
+        isConsumerPressed = true;
+    } else if (isConsumerPressed) {
+        isConsumerPressed = false;
+        uint16_t emptyKey = 0;
+        tud_hid_report(CONSUMER_REPORT_ID, &emptyKey, 2);
+    }
+
     std::array<uint8_t, 6> keycodes = {};
     const uint16_t size = std::min(static_cast<uint16_t>(6), report->size);
+
+    for (uint16_t i = 0; i < size; ++i) {
+        keycodes[i] = report->keys[i];
+    }
+
+    tud_hid_keyboard_report(KEYBOARD_REPORT_ID,
+                            report->modifiers,
+                            keycodes.data());
+
+    PrintReport(*report);
+}
+
+static void PrintReport(usb_hid::KbHidReport report) {
+    static bool isConsumerPressed;
 
     uint16_t textIndex         = 0;
     std::array<char, 100> text = {""};
 
-    for (uint16_t i = 0; i < size; ++i) {
-        keycodes[i] = report->keys[i];
+    if (report.consumerCode) {
+        ESP_LOGI("ConsumerReport: ", "%d pressed", report.consumerCode);
+        isConsumerPressed = true;
+    } else if (isConsumerPressed) {
+        ESP_LOGI("ConsumerReport: ", "released");
+        isConsumerPressed = false;
+    }
+
+    for (uint16_t i = 0; i < report.size; ++i) {
         textIndex += snprintf(&text[textIndex],
                               sizeof(text) - textIndex,
                               "%d ,",
-                              keycodes[i]);
+                              report.keys[i]);
     }
-    ESP_LOGI("Report: ", "%s modifiers: %d", text.data(), report->modifiers);
-    tud_hid_keyboard_report(HID_ITF_PROTOCOL_KEYBOARD,
-                            report->modifiers,
-                            keycodes.data());
+    ESP_LOGI("Report: ", "%s modifiers: %d", text.data(), report.modifiers);
 }
 
 bool SetupTask() {
@@ -131,6 +166,12 @@ extern "C" uint16_t tud_hid_get_report_cb(
     [[maybe_unused]] hid_report_type_t type,
     [[maybe_unused]] uint8_t* buf,
     [[maybe_unused]] uint16_t realen) {
+    ESP_LOGI("get report cb",
+             "id: %d, type: %d, realen: %d, buf: %s",
+             id,
+             type,
+             realen,
+             buf);
     return 0;
 }
 

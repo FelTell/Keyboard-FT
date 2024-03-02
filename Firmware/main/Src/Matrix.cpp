@@ -112,7 +112,8 @@ static usb_hid::KbHidReport GetKeyReport() {
             if (key.GetState()) {
                 if (key.GetCode()) {
                     report.keys[report.size++] =
-                        isFunctionPressed ? key.GetFnCode() : key.GetCode();
+                        isFunctionPressed ? key.GetFnKeyCode() : key.GetCode();
+                    report.consumerCode = key.GetFnConsumerCode();
                 } else {
                     report.modifiers = report.modifiers | key.GetModifier();
                 }

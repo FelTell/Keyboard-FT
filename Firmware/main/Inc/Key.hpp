@@ -5,18 +5,23 @@
 
 class Key {
   public:
-    Key(const char* keyText, uint8_t hidCode, uint8_t fnCode = HID_KEY_NONE)
+    Key(const char* keyText,
+        uint8_t hidCode,
+        uint8_t fnCode         = 0,
+        uint8_t fnConsumerCode = 0)
         : m_keyText(keyText),
           m_modifier(0),
           m_hidCode(hidCode),
-          m_fnCode(fnCode),
+          m_fnKeyCode(fnCode),
+          m_fnConsumerCode(fnConsumerCode),
           m_state(false) {}
 
     Key(const char* keyText, hid_keyboard_modifier_bm_t modifier)
         : m_keyText(keyText),
           m_modifier(modifier),
           m_hidCode(0),
-          m_fnCode(0),
+          m_fnKeyCode(0),
+          m_fnConsumerCode(0),
           m_state(false) {}
 
     const char* GetText() {
@@ -27,8 +32,12 @@ class Key {
         return m_hidCode;
     }
 
-    uint8_t GetFnCode() const {
-        return m_fnCode;
+    uint8_t GetFnKeyCode() const {
+        return m_fnKeyCode;
+    }
+
+    uint8_t GetFnConsumerCode() const {
+        return m_fnConsumerCode;
     }
 
     uint8_t GetModifier() const {
@@ -47,6 +56,7 @@ class Key {
     const char* m_keyText;
     const uint8_t m_modifier;
     const uint8_t m_hidCode;
-    const uint8_t m_fnCode;
+    const uint8_t m_fnKeyCode;
+    const uint16_t m_fnConsumerCode;
     bool m_state;
 };
