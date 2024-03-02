@@ -88,7 +88,7 @@ static std::array<std::array<Key, ROWS_NUM>, COLUMNS_NUM> keys = {
          Key("O", HID_KEY_O),
          Key("L", HID_KEY_L),
          Key("COMMA", HID_KEY_COMMA),
-         Key("SLASH", HID_KEY_SLASH),
+         Key("/?", HID_KEY_KANJI1),
      }},
      {{
          Key("F10", HID_KEY_F10),
