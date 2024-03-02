@@ -14,14 +14,19 @@
 namespace usb_hid {
 
 static constexpr uint8_t REPORT_MAX_KEYS = 6;
+static constexpr uint8_t REPORT_SIZE     = 2 + REPORT_MAX_KEYS;
 
 static bool Init();
 static void Handler();
 
-static void HandleConnectedStatus();
-static void PrintReport(usb_hid::KbHidReport report);
+static void PollConnection();
+static void PrintReport(std::array<uint8_t, REPORT_SIZE>& report);
 
 static rtos::Task task("UsbHidTask", 4096, 24, Init, Handler);
+static rtos::Timer pollConnectionTimer("PollConnectionTimer",
+                                       100,
+                                       true,
+                                       PollConnection);
 static rtos::Queue<KbHidReport> kbReportsQueue(10);
 
 static bool isReady;
@@ -74,42 +79,35 @@ static bool Init() {
     };
     ESP_ERROR_CHECK(tinyusb_driver_install(&tinyUsbConfig));
 
+    pollConnectionTimer.Start();
+
     return true;
 }
 
 static void Handler() {
-    static uint16_t consumerCode;
-    static std::array<uint8_t, REPORT_MAX_KEYS> keyCodes = {};
-    static uint8_t modifiers;
-    bool consumerUpdated = false;
+    static uint16_t lastConsumerCode;
 
-    auto report = kbReportsQueue.Wait(10);
-
-    HandleConnectedStatus();
-
-    if (report) {
-        if (consumerCode != report->consumerCode) {
-            consumerUpdated = true;
-        }
-
-        consumerCode = report->consumerCode;
-        modifiers    = report->modifiers;
-
-        for (uint16_t i = 0; i < REPORT_MAX_KEYS; ++i) {
-            keyCodes[i] = report->keys[i];
-        }
-
-        PrintReport(*report);
+    auto report = kbReportsQueue.Wait();
+    if (!report) {
+        return;
     }
 
-    if (consumerUpdated) {
-        tud_hid_report(CONSUMER_REPORT_ID, &consumerCode, 2);
-    } else {
-        tud_hid_keyboard_report(KEYBOARD_REPORT_ID, modifiers, keyCodes.data());
+    if (lastConsumerCode != report->consumerCode) {
+        lastConsumerCode = report->consumerCode;
+        tud_hid_report(CONSUMER_REPORT_ID, &lastConsumerCode, 2);
+        ESP_LOGI("ConsumerReport: ", "%d", report->consumerCode);
+        return;
     }
+
+    std::array<uint8_t, REPORT_SIZE> keyCodes = {report->modifiers, 0};
+    memcpy(&keyCodes[2], report->keys.data(), REPORT_MAX_KEYS);
+
+    tud_hid_report(KEYBOARD_REPORT_ID, keyCodes.data(), REPORT_SIZE);
+
+    PrintReport(keyCodes);
 }
 
-static void HandleConnectedStatus() {
+static void PollConnection() {
     const bool tinyUsbReady = tud_ready();
     if (isReady != tinyUsbReady) {
         isReady = tinyUsbReady;
@@ -122,27 +120,17 @@ static void HandleConnectedStatus() {
     }
 }
 
-static void PrintReport(usb_hid::KbHidReport report) {
-    static bool isConsumerPressed;
-
+static void PrintReport(std::array<uint8_t, REPORT_SIZE>& report) {
     uint16_t textIndex         = 0;
     std::array<char, 100> text = {""};
 
-    if (report.consumerCode) {
-        ESP_LOGI("ConsumerReport: ", "%d pressed", report.consumerCode);
-        isConsumerPressed = true;
-    } else if (isConsumerPressed) {
-        ESP_LOGI("ConsumerReport: ", "released");
-        isConsumerPressed = false;
-    }
-
-    for (uint16_t i = 0; i < REPORT_MAX_KEYS; ++i) {
+    for (uint16_t i = 0; i < REPORT_SIZE; ++i) {
         textIndex += snprintf(&text[textIndex],
                               sizeof(text) - textIndex,
-                              "%d ,",
-                              report.keys[i]);
+                              "%d ",
+                              report[i]);
     }
-    ESP_LOGI("Report: ", "%s modifiers: %d", text.data(), report.modifiers);
+    ESP_LOGI("Report: ", "%s", text.data());
 }
 
 bool SetupTask() {
