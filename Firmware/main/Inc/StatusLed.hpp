@@ -10,11 +10,12 @@ enum class Modes : uint8_t {
     Usb,
     BluetoothSearching,
     BluetoothConnected,
-    Rainbow,
+    NotConnected,
     Error,
 };
 
 bool SetMode(Modes);
+Modes GetMode();
 
 bool SetupTask();
 

@@ -38,6 +38,12 @@ bool SetMode(Modes mode) {
     return requests.Send(mode);
 }
 
+// Since this is a simple variable that only changes in one place there is no
+// need for synchronization
+Modes GetMode() {
+    return currentMode;
+}
+
 static bool Init() {
     const led_strip_config_t stripConfig = {
         .strip_gpio_num   = STATUS_LED_PIN,
@@ -63,7 +69,7 @@ static bool Init() {
 
     SetCapsKey(false);
 
-    currentMode = Modes::Rainbow;
+    currentMode = Modes::NotConnected;
 
     return true;
 }
@@ -85,7 +91,7 @@ static void Handler() {
         case Modes::BluetoothConnected:
             ShowBluetoothConnected();
             break;
-        case Modes::Rainbow:
+        case Modes::NotConnected:
             ShowStartupDance();
             break;
         case Modes::Error:

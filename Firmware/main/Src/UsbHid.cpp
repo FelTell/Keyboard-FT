@@ -84,9 +84,9 @@ static void Handler() {
         isReady = tinyUsbReady;
         if (!isReady) {
             isReady = false;
-            leds::SetMode(leds::Modes::Rainbow);
+            leds::SetMode(leds::Modes::NotConnected);
             return;
-        } else {
+        } else if (leds::GetMode() == leds::Modes::NotConnected) {
             leds::SetMode(leds::Modes::Usb);
         }
     }
