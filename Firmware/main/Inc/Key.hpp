@@ -5,15 +5,19 @@
 
 class Key {
   public:
+    using FnFunction = void (*)(bool);
+
     Key(const char* keyText,
         uint8_t hidCode,
         uint8_t fnCode         = 0,
-        uint8_t fnConsumerCode = 0)
+        uint8_t fnConsumerCode = 0,
+        FnFunction fnFunction  = nullptr)
         : m_keyText(keyText),
           m_modifier(0),
           m_hidCode(hidCode),
           m_fnKeyCode(fnCode),
           m_fnConsumerCode(fnConsumerCode),
+          m_fnFunction(fnFunction),
           m_state(false) {}
 
     Key(const char* keyText, hid_keyboard_modifier_bm_t modifier)
@@ -22,6 +26,7 @@ class Key {
           m_hidCode(0),
           m_fnKeyCode(0),
           m_fnConsumerCode(0),
+          m_fnFunction(nullptr),
           m_state(false) {}
 
     const char* GetText() {
@@ -52,11 +57,18 @@ class Key {
         m_state = state;
     }
 
+    void DoFnFunction(bool state) const {
+        if (m_fnFunction) {
+            m_fnFunction(state);
+        }
+    }
+
   private:
     const char* m_keyText;
     const uint8_t m_modifier;
     const uint8_t m_hidCode;
     const uint8_t m_fnKeyCode;
     const uint16_t m_fnConsumerCode;
+    const FnFunction m_fnFunction;
     bool m_state;
 };

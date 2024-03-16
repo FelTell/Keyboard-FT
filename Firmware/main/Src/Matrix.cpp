@@ -78,7 +78,9 @@ static void Handler() {
         gpio_set_level(columns[column], true);
         // Quick blocking delay to keep sure gpio is in the correct level
         volatile uint32_t i = 10;
-        while (--i) {}
+        while (i) {
+            i = i - 1;
+        }
         for (uint8_t row = 0; row < layout::ROWS_NUM; ++row) {
             Key& key   = layout::keys[column][row];
             bool state = gpio_get_level(rows[row]);
@@ -113,16 +115,24 @@ static usb_hid::KbHidReport GenerateReport() {
         for (uint8_t row = 0; row < layout::ROWS_NUM; ++row) {
             const auto key = layout::keys[column][row];
 
-            if (key.GetState()) {
-                if (key.GetCode()) {
-                    report.keys[report.size++] =
-                        isFnPressed ? key.GetFnKeyCode() : key.GetCode();
-                    report.consumerCode =
-                        isFnPressed ? key.GetFnConsumerCode() : 0;
-                } else {
-                    report.modifiers = report.modifiers | key.GetModifier();
-                }
+            if (!key.GetState()) {
+                key.DoFnFunction(false);
+                continue;
             }
+
+            if (key.GetModifier()) {
+                report.modifiers = report.modifiers | key.GetModifier();
+                continue;
+            }
+
+            if (!isFnPressed) {
+                report.keys[report.size++] = key.GetCode();
+                continue;
+            }
+
+            report.keys[report.size++] = key.GetFnKeyCode();
+            report.consumerCode        = key.GetFnConsumerCode();
+            key.DoFnFunction(true);
         }
     }
 
