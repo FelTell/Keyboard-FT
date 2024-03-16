@@ -120,7 +120,7 @@ static usb_hid::KbHidReport GenerateReport() {
                 continue;
             }
 
-            if (key.GetModifier()) {
+            if (!key.GetCode()) {
                 report.modifiers = report.modifiers | key.GetModifier();
                 continue;
             }
