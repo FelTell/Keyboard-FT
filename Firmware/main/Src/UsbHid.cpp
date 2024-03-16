@@ -9,7 +9,7 @@
 
 #include "RtosUtils.hpp"
 
-#include "StatusLed.hpp"
+#include "Leds.hpp"
 
 namespace usb_hid {
 

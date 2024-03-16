@@ -1,7 +1,7 @@
 #include "RtosUtils.hpp"
 
+#include "Leds.hpp"
 #include "Matrix.hpp"
-#include "StatusLed.hpp"
 #include "UsbHid.hpp"
 
 extern "C" void app_main(void) {
