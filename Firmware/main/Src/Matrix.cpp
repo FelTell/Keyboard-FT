@@ -45,7 +45,8 @@ static const std::array<gpio_num_t, layout::COLUMNS_NUM> columns = {
     GPIO_NUM_10,
     GPIO_NUM_11,
     GPIO_NUM_12,
-    GPIO_NUM_13};
+    GPIO_NUM_13,
+};
 
 static bool Init() {
     gpio_config_t config;
