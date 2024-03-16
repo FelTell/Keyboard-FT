@@ -86,9 +86,11 @@ static bool Init() {
 
 static void Handler() {
     static uint16_t lastConsumerCode;
+    static std::array<uint8_t, REPORT_SIZE> keyCodes = {};
 
-    auto report = kbReportsQueue.Wait();
+    auto report = kbReportsQueue.Wait(100);
     if (!report) {
+        tud_hid_report(KEYBOARD_REPORT_ID, keyCodes.data(), REPORT_SIZE);
         return;
     }
 
@@ -99,7 +101,7 @@ static void Handler() {
         return;
     }
 
-    std::array<uint8_t, REPORT_SIZE> keyCodes = {report->modifiers, 0};
+    keyCodes[0] = report->modifiers;
     memcpy(&keyCodes[2], report->keys.data(), REPORT_MAX_KEYS);
 
     tud_hid_report(KEYBOARD_REPORT_ID, keyCodes.data(), REPORT_SIZE);
