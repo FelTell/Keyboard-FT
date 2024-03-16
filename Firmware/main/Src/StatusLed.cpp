@@ -1,4 +1,5 @@
 #include "StatusLed.hpp"
+#include <array>
 
 #include "RtosUtils.hpp"
 #include "led_strip.h"
@@ -9,7 +10,6 @@
 namespace leds {
 static const char* taskName = "LedsTask";
 
-static constexpr auto LED_MAX        = 16;
 static constexpr auto STATUS_LED_PIN = GPIO_NUM_48;
 static constexpr auto CAPS_LED_PIN   = GPIO_NUM_39;
 
@@ -26,21 +26,55 @@ static void ShowBluetoothConnected();
 static void ShowStartupDance();
 static void ShowError();
 static void SetCapsKey(bool);
+static void DecreaseIncreaseBrightness(bool isIncrease);
 
 static led_strip_handle_t ledHandle;
 
 static rtos::Task task(taskName, 4096, 24, Init, Handler);
-static rtos::Queue<Modes> requests(1);
+static rtos::Queue<Commands> requests(1);
 
-static Modes currentMode;
+static Commands currentMode;
 
-bool SetMode(Modes mode) {
+static constexpr int8_t DEFAULT_INDEX = 2;
+static uint8_t ledBrightness          = (1 << (DEFAULT_INDEX + 1)) - 1;
+
+bool SendCommand(Commands mode) {
     return requests.Send(mode);
+}
+
+void IncreaseBrightness(bool isPressed) {
+    static bool commandDone;
+
+    if (!isPressed) {
+        commandDone = false;
+        return;
+    }
+    if (commandDone) {
+        return;
+    }
+
+    SendCommand(Commands::IncreaseBrightness);
+    commandDone = true;
+}
+
+void DecreaseBrightness(bool isPressed) {
+    static bool commandDone;
+
+    if (!isPressed) {
+        commandDone = false;
+        return;
+    }
+    if (commandDone) {
+        return;
+    }
+
+    SendCommand(Commands::DecreaseBrightness);
+    commandDone = true;
 }
 
 // Since this is a simple variable that only changes in one place there is no
 // need for synchronization
-Modes GetMode() {
+Commands GetMode() {
     return currentMode;
 }
 
@@ -69,33 +103,36 @@ static bool Init() {
 
     SetCapsKey(false);
 
-    currentMode = Modes::NotConnected;
+    currentMode = Commands::NotConnected;
 
     return true;
 }
 
 static void Handler() {
     switch (currentMode) {
-        case Modes::CapsOnUsb:
+        case Commands::CapsOnUsb:
             ShowCapsOnUsb();
             break;
-        case Modes::CapsOnBle:
+        case Commands::CapsOnBle:
             ShowCapsOnBle();
             break;
-        case Modes::Usb:
+        case Commands::Usb:
             ShowUsb();
             break;
-        case Modes::BluetoothSearching:
+        case Commands::BluetoothSearching:
             ShowBluetoothSearching();
             break;
-        case Modes::BluetoothConnected:
+        case Commands::BluetoothConnected:
             ShowBluetoothConnected();
             break;
-        case Modes::NotConnected:
+        case Commands::NotConnected:
             ShowStartupDance();
             break;
-        case Modes::Error:
+        case Commands::Error:
             ShowError();
+            break;
+        default:
+            DelayAndWaitNewCommand(0xFFFFFFFF);
             break;
     }
 }
@@ -103,12 +140,18 @@ static void Handler() {
 static void DelayAndWaitNewCommand(const TickType_t ticksToDelay) {
     auto newCommand = requests.Wait(ticksToDelay);
     if (newCommand) {
-        currentMode = newCommand.value();
+        if (*newCommand == Commands::DecreaseBrightness ||
+            *newCommand == Commands::IncreaseBrightness) {
+            DecreaseIncreaseBrightness(*newCommand ==
+                                       Commands::IncreaseBrightness);
+        } else {
+            currentMode = newCommand.value();
+        }
     }
 }
 
 static void ShowCapsOnUsb() {
-    led_strip_set_pixel(ledHandle, 0, LED_MAX, LED_MAX, 0);
+    led_strip_set_pixel(ledHandle, 0, ledBrightness, ledBrightness, 0);
     led_strip_refresh(ledHandle);
 
     SetCapsKey(true);
@@ -117,7 +160,7 @@ static void ShowCapsOnUsb() {
 }
 
 static void ShowCapsOnBle() {
-    led_strip_set_pixel(ledHandle, 0, LED_MAX, 0, LED_MAX);
+    led_strip_set_pixel(ledHandle, 0, ledBrightness, 0, ledBrightness);
     led_strip_refresh(ledHandle);
 
     SetCapsKey(true);
@@ -126,7 +169,7 @@ static void ShowCapsOnBle() {
 }
 
 static void ShowUsb() {
-    led_strip_set_pixel(ledHandle, 0, 0, LED_MAX, 0);
+    led_strip_set_pixel(ledHandle, 0, 0, ledBrightness, 0);
     led_strip_refresh(ledHandle);
 
     SetCapsKey(false);
@@ -137,10 +180,10 @@ static void ShowUsb() {
 static void ShowBluetoothSearching() {
     static bool state;
     if (state) {
-        led_strip_set_pixel(ledHandle, 0, 0, 0, LED_MAX);
+        led_strip_set_pixel(ledHandle, 0, 0, 0, ledBrightness);
         led_strip_refresh(ledHandle);
     } else {
-        led_strip_set_pixel(ledHandle, 0, LED_MAX, 0, 0);
+        led_strip_set_pixel(ledHandle, 0, ledBrightness, 0, 0);
         led_strip_refresh(ledHandle);
     }
     state = !state;
@@ -151,7 +194,7 @@ static void ShowBluetoothSearching() {
 }
 
 static void ShowBluetoothConnected() {
-    led_strip_set_pixel(ledHandle, 0, 0, 0, LED_MAX);
+    led_strip_set_pixel(ledHandle, 0, 0, 0, ledBrightness);
 
     SetCapsKey(false);
 
@@ -171,31 +214,31 @@ static void ShowStartupDance() {
         led_strip_set_pixel(ledHandle, 0, level, 0, 0);
         led_strip_refresh(ledHandle);
         level++;
-        if (level >= LED_MAX) {
+        if (level >= ledBrightness) {
             state = State::Red;
             level = 0;
         }
     } else if (state == State::Red) {
-        led_strip_set_pixel(ledHandle, 0, LED_MAX - level, level, 0);
+        led_strip_set_pixel(ledHandle, 0, ledBrightness - level, level, 0);
         led_strip_refresh(ledHandle);
         level++;
-        if (level >= LED_MAX) {
+        if (level >= ledBrightness) {
             state = State::Green;
             level = 0;
         }
     } else if (state == State::Green) {
-        led_strip_set_pixel(ledHandle, 0, 0, LED_MAX - level, level);
+        led_strip_set_pixel(ledHandle, 0, 0, ledBrightness - level, level);
         led_strip_refresh(ledHandle);
         level++;
-        if (level >= LED_MAX) {
+        if (level >= ledBrightness) {
             state = State::Blue;
             level = 0;
         }
     } else if (state == State::Blue) {
-        led_strip_set_pixel(ledHandle, 0, level, 0, LED_MAX - level);
+        led_strip_set_pixel(ledHandle, 0, level, 0, ledBrightness - level);
         led_strip_refresh(ledHandle);
         level++;
-        if (level >= LED_MAX) {
+        if (level >= ledBrightness) {
             state = State::Red;
             level = 0;
         }
@@ -204,12 +247,28 @@ static void ShowStartupDance() {
 }
 
 static void ShowError() {
-    led_strip_set_pixel(ledHandle, 0, 0, LED_MAX, 0);
+    led_strip_set_pixel(ledHandle, 0, 0, ledBrightness, 0);
     DelayAndWaitNewCommand(0xFFFFFFFF);
 }
 
 static void SetCapsKey(bool state) {
     gpio_set_level(CAPS_LED_PIN, !state);
+}
+
+static void DecreaseIncreaseBrightness(bool isIncrease) {
+    static constexpr int8_t MAX_INDEX     = 7;
+    static constexpr int8_t DEFAULT_INDEX = 2;
+    static int8_t currentIndex            = DEFAULT_INDEX;
+
+    if (isIncrease && currentIndex < MAX_INDEX) {
+        currentIndex++;
+    } else if (!isIncrease && currentIndex > 0) {
+        currentIndex--;
+    }
+
+    ledBrightness = (1 << (currentIndex + 1)) - 1;
+
+    ESP_LOGI("Led Brightness", "Set to %d", ledBrightness);
 }
 
 bool SetupTask() {

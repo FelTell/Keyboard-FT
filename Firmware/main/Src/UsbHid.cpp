@@ -113,9 +113,9 @@ static void PollConnection() {
         isReady = tinyUsbReady;
         if (!isReady) {
             isReady = false;
-            leds::SetMode(leds::Modes::NotConnected);
-        } else if (leds::GetMode() == leds::Modes::NotConnected) {
-            leds::SetMode(leds::Modes::Usb);
+            leds::SendCommand(leds::Commands::NotConnected);
+        } else if (leds::GetMode() == leds::Commands::NotConnected) {
+            leds::SendCommand(leds::Commands::Usb);
         }
     }
 }
@@ -189,5 +189,6 @@ extern "C" void tud_hid_set_report_cb([[maybe_unused]] uint8_t instance,
         return;
     }
     bool capsState = buf[0] & KEYBOARD_LED_CAPSLOCK;
-    leds::SetMode(capsState ? leds::Modes::CapsOnUsb : leds::Modes::Usb);
+    leds::SendCommand(capsState ? leds::Commands::CapsOnUsb
+                                : leds::Commands::Usb);
 }

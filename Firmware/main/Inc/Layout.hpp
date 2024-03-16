@@ -1,6 +1,9 @@
 #pragma once
 
 #include "Key.hpp"
+
+#include "StatusLed.hpp"
+
 #include <array>
 #include <cstdint>
 
@@ -99,7 +102,7 @@ static std::array<std::array<Key, ROWS_NUM>, COLUMNS_NUM> keys = {
          Key("9", HID_KEY_9),
          Key("O", HID_KEY_O),
          Key("L", HID_KEY_L),
-         Key("COMMA", HID_KEY_COMMA),
+         Key("COMMA", HID_KEY_COMMA, 0, 0, leds::DecreaseBrightness),
          Key("/?", HID_KEY_KANJI1),
      }},
      {{
@@ -107,7 +110,7 @@ static std::array<std::array<Key, ROWS_NUM>, COLUMNS_NUM> keys = {
          Key("0", HID_KEY_0),
          Key("P", HID_KEY_P),
          Key("SEMICOLON", HID_KEY_SEMICOLON),
-         Key("PERIOD", HID_KEY_PERIOD),
+         Key("PERIOD", HID_KEY_PERIOD, 0, 0, leds::IncreaseBrightness),
          Key("RIGHTCTRL", KEYBOARD_MODIFIER_RIGHTCTRL),
      }},
      {{
