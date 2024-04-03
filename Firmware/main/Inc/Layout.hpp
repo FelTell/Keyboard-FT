@@ -1,7 +1,7 @@
 #pragma once
 
+#include "Controller.hpp"
 #include "Key.hpp"
-
 #include "Leds.hpp"
 
 #include <array>
@@ -15,7 +15,7 @@ static constexpr uint8_t COLUMNS_NUM = 15;
 static std::array<std::array<Key, ROWS_NUM>, COLUMNS_NUM> keys = {
     {{{
          Key("ESCAPE", HID_KEY_ESCAPE),
-         Key("GRAVE", HID_KEY_GRAVE),
+         Key("GRAVE", HID_KEY_GRAVE, 0, 0, controller::SetUsb),
          Key("TAB", HID_KEY_TAB),
          Key("CAPS_LOCK", HID_KEY_CAPS_LOCK),
          Key("LEFTSHIFT", KEYBOARD_MODIFIER_LEFTSHIFT),
@@ -23,7 +23,7 @@ static std::array<std::array<Key, ROWS_NUM>, COLUMNS_NUM> keys = {
      }},
      {{
          Key("F1", HID_KEY_F1, HID_KEY_NONE, HID_USAGE_CONSUMER_MUTE),
-         Key("1", HID_KEY_1),
+         Key("1", HID_KEY_1, 0, 0, controller::SetBle),
          Key("Q", HID_KEY_Q),
          Key("A", HID_KEY_A, HID_KEY_NONE, HID_USAGE_CONSUMER_SCAN_PREVIOUS),
          Key("EUROPE_2", HID_KEY_EUROPE_2),

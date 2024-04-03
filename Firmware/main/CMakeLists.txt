@@ -3,4 +3,5 @@ idf_component_register(SRCS "main.cpp"
                     "Src/Leds.cpp"
                     "Src/Matrix.cpp"
                     "Src/UsbHid.cpp"
+                    "Src/Controller.cpp"
                     INCLUDE_DIRS "Inc")

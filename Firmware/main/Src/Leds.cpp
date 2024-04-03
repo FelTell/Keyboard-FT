@@ -184,7 +184,7 @@ static void ShowBluetoothSearching() {
         led_strip_set_pixel(rgbHandle, 0, 0, 0, brightness);
         led_strip_refresh(rgbHandle);
     } else {
-        led_strip_set_pixel(rgbHandle, 0, brightness, 0, 0);
+        led_strip_set_pixel(rgbHandle, 0, 0, 0, 0);
         led_strip_refresh(rgbHandle);
     }
     state = !state;
@@ -273,10 +273,10 @@ static void DecreaseIncreaseBrightness(bool isIncrease) {
 }
 
 bool SetupTask() {
-    if (!task.Setup()) {
+    if (!requests.Setup()) {
         return false;
     }
-    if (!requests.Setup()) {
+    if (!task.Setup()) {
         return false;
     }
     return true;

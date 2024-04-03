@@ -10,6 +10,7 @@
 
 #include "RtosUtils.hpp"
 
+#include "Controller.hpp"
 #include "Layout.hpp"
 #include "UsbHid.hpp"
 
@@ -72,7 +73,12 @@ static bool Init() {
 
 static void Handler() {
     if (PollChanges()) {
-        usb_hid::SendReport(GenerateReport());
+        const auto report = GenerateReport();
+        if (controller::GetMode() == controller::Modes::Usb) {
+            usb_hid::SendReport(report);
+        } else {
+            // TODO (Felipe): ble
+        }
     }
 
     rtos::Delay(10);
