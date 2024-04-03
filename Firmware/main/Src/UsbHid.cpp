@@ -88,7 +88,7 @@ static void Handler() {
     static uint16_t lastConsumerCode;
     static std::array<uint8_t, REPORT_SIZE> keyCodes = {};
 
-    auto report = kbReportsQueue.Wait(100);
+    auto report = kbReportsQueue.Wait(1000);
     if (!report) {
         tud_hid_report(KEYBOARD_REPORT_ID, keyCodes.data(), REPORT_SIZE);
         return;

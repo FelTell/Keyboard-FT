@@ -17,6 +17,7 @@ namespace matrix {
 
 static bool Init();
 static void Handler();
+static bool PollChanges();
 static usb_hid::KbHidReport GenerateReport();
 static bool IsFnPressed();
 
@@ -70,14 +71,20 @@ static bool Init() {
 }
 
 static void Handler() {
-    bool changePresent = false;
+    if (PollChanges()) {
+        usb_hid::SendReport(GenerateReport());
+    }
 
-    rtos::Delay(5);
+    rtos::Delay(10);
+}
+
+static bool PollChanges() {
+    bool changePresent = false;
 
     for (uint8_t column = 0; column < layout::COLUMNS_NUM; ++column) {
         gpio_set_level(columns[column], true);
         // Quick blocking delay to keep sure gpio is in the correct level
-        volatile uint32_t i = 10;
+        volatile uint32_t i = 5;
         while (i) {
             i = i - 1;
         }
@@ -101,9 +108,7 @@ static void Handler() {
         gpio_set_level(columns[column], false);
     }
 
-    if (changePresent) {
-        usb_hid::SendReport(GenerateReport());
-    }
+    return changePresent;
 }
 
 static usb_hid::KbHidReport GenerateReport() {
@@ -111,29 +116,27 @@ static usb_hid::KbHidReport GenerateReport() {
 
     const bool isFnPressed = IsFnPressed();
 
-    for (uint8_t column = 0; column < layout::COLUMNS_NUM; ++column) {
-        for (uint8_t row = 0; row < layout::ROWS_NUM; ++row) {
-            const auto key = layout::keys[column][row];
+    for (uint16_t i = 0; i < layout::COLUMNS_NUM * layout::ROWS_NUM; ++i) {
+        const auto key = layout::keys[0][i];
 
-            if (!key.GetState()) {
-                key.DoFnFunction(false);
-                continue;
-            }
-
-            if (!key.GetCode()) {
-                report.modifiers = report.modifiers | key.GetModifier();
-                continue;
-            }
-
-            if (!isFnPressed) {
-                report.keys[report.size++] = key.GetCode();
-                continue;
-            }
-
-            report.keys[report.size++] = key.GetFnKeyCode();
-            report.consumerCode        = key.GetFnConsumerCode();
-            key.DoFnFunction(true);
+        if (!key.GetState()) {
+            key.DoFnFunction(false);
+            continue;
         }
+
+        if (!key.GetCode()) {
+            report.modifiers = report.modifiers | key.GetModifier();
+            continue;
+        }
+
+        if (!isFnPressed) {
+            report.keys[report.size++] = key.GetCode();
+            continue;
+        }
+
+        report.keys[report.size++] = key.GetFnKeyCode();
+        report.consumerCode        = key.GetFnConsumerCode();
+        key.DoFnFunction(true);
     }
 
     return report;

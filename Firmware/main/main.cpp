@@ -10,6 +10,6 @@ extern "C" void app_main(void) {
     usb_hid::SetupTask();
 
     while (1) {
-        vTaskDelay(pdMS_TO_TICKS(100));
+        rtos::Delay(1000);
     }
 }
