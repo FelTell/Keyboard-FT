@@ -2,8 +2,8 @@
 
 namespace rtos {
 
-void Delay(const TickType_t ticksToDelay) {
-    vTaskDelay(ticksToDelay / portTICK_PERIOD_MS);
+void Delay(const TickType_t msToDelay) {
+    vTaskDelay(msToDelay / portTICK_PERIOD_MS);
 }
 
 } // namespace rtos

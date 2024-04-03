@@ -10,7 +10,7 @@
 
 namespace rtos {
 
-void Delay(const TickType_t ticksToDelay);
+void Delay(const TickType_t msToDelay);
 
 template <typename T>
 class Queue {
