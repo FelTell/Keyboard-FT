@@ -1,4 +1,3 @@
-- Add more function key commands
 - Add bluetooth 
 - Save connected devices in NVS
 - Implement sleep
