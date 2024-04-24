@@ -1,5 +1,9 @@
 #pragma once
 
+#ifndef ESP_PLATFORM
+#error This file is on a non supported platform
+#endif
+
 #include <esp_log.h>
 #include <freertos/FreeRTOS.h>
 #include <freertos/event_groups.h>
@@ -8,6 +12,9 @@
 #include <freertos/timers.h>
 #include <functional>
 #include <optional>
+
+static_assert(sizeof(BaseType_t) == sizeof(uint32_t),
+              "Unexpected RTOS base type, check configuration");
 
 namespace rtos {
 
