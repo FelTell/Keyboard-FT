@@ -1,3 +1,13 @@
+/**
+ * @author Felipe Telles (felipe.melo.telles@gmail.com)
+ * @brief This file helps develop with freeRTOS in C++ by enclosing the
+ * functions provided by freeRTOS with classes. There are also some extra code
+ * that is added on some of the freeRTOS commands that are required for proper
+ * RTOS implementation. For now it's only supported on ESP32 devices.
+ *
+ *
+ */
+
 #pragma once
 
 #ifndef ESP_PLATFORM
@@ -54,6 +64,12 @@ class Queue {
     uint32_t m_size;
 };
 
+/**
+ * @brief An event group is a set of event bits. Event bits are used to indicate
+ * if an event has occurred or not. Event bits are often referred to as event
+ * flags.
+ *
+ */
 class Event {
   public:
     Event(){};
@@ -76,21 +92,33 @@ class Event {
     /**
      * @brief Set one or multiple bits. Do not call from a interruption.
      *
-     * @param bitsToSet Bitwise value.
+     * @param bitsToSet Bitwise value. 24 bits available.
      * @return uint32_t The value of the event group at the end of this function
      * execution. If a higher priority task is called the returned value might
      * have the bits specified by the bitsToSet parameter cleared.
      */
     uint32_t Set(uint32_t bitsToSet) {
+        if (bitsToSet >= (1 << AVAILABLE_BITS)) {
+            ESP_LOGE("EventSet",
+                     "A bit to set was higher than the allowed: %d",
+                     AVAILABLE_BITS);
+            return 0;
+        }
         return xEventGroupSetBits(m_handle, bitsToSet);
     };
 
     /**
      * @brief Set one or multiple bits. Call only from a interruption.
      *
-     * @param bitsToSet
+     * @param bitsToSet Bitwise value. 24 bits available.
      */
     void SetFromIsr(uint32_t bitsToSet) {
+        if (bitsToSet >= (1 << AVAILABLE_BITS)) {
+            ESP_LOGE("EventSet",
+                     "A bit to set was higher than the allowed: %d",
+                     AVAILABLE_BITS);
+            return;
+        }
         auto higherPriorityTaskWoken = pdFALSE;
         auto result                  = xEventGroupSetBitsFromISR(m_handle,
                                                 bitsToSet,
@@ -110,6 +138,12 @@ class Event {
      * were cleared.
      */
     uint32_t Clear(uint32_t bitsToClear) {
+        if (bitsToClear >= (1 << AVAILABLE_BITS)) {
+            ESP_LOGE("EventClear",
+                     "A bit to clear was higher than the allowed: %d",
+                     AVAILABLE_BITS);
+            return 0;
+        }
         return xEventGroupClearBits(m_handle, bitsToClear);
     };
 
@@ -119,6 +153,12 @@ class Event {
      * @param bitsToClear Bitwise value.
      */
     void ClearFromIsr(uint32_t bitsToClear) {
+        if (bitsToClear >= (1 << AVAILABLE_BITS)) {
+            ESP_LOGE("EventClearFromIsr",
+                     "A bit to clear was higher than the allowed: %d",
+                     AVAILABLE_BITS);
+            return;
+        }
         auto result = xEventGroupClearBitsFromISR(m_handle, bitsToClear);
         if (result == pdFALSE) {
             ESP_LOGE("EventClearFromIsr", "Timer command queue is full");
@@ -129,8 +169,8 @@ class Event {
     /**
      * @brief Wait one or more bits to be set.
      *
-     * @param bitsToWaitFor Bitwise value. Do not set to 0.
-     * @param clearOnExit If true the bits passed in bitsToWaitFor will be
+     * @param bitsToWait Bitwise value. Do not set to 0.
+     * @param clearOnExit If true the bits passed in bitsToWait will be
      * cleared if not returned because of a timeout. Default = false.
      * @param waitForAll If true all bits must be set (AND). If false just one
      * of the bits needs to be set (OR). Default = false.
@@ -138,27 +178,33 @@ class Event {
      * @return std::optional<uint32_t> nullopt if timeout has expired or not
      * bits were given. The current event group if the bits were set.
      */
-    std::optional<uint32_t> Wait(uint32_t bitsToWaitFor,
+    std::optional<uint32_t> Wait(uint32_t bitsToWait,
                                  bool clearOnExit = false,
                                  bool waitForAll  = false,
                                  uint32_t timeout = 0xFFFFFFFF) {
-        if (!bitsToWaitFor) {
+        if (bitsToWait >= (1 << AVAILABLE_BITS)) {
+            ESP_LOGE("EventWait",
+                     "A bit to wait was higher than the allowed: %d",
+                     AVAILABLE_BITS);
+            return std::nullopt;
+        }
+        if (!bitsToWait) {
             return std::nullopt;
         }
         auto result = xEventGroupWaitBits(m_handle,
-                                          bitsToWaitFor,
+                                          bitsToWait,
                                           clearOnExit ? pdTRUE : pdFALSE,
                                           waitForAll ? pdTRUE : pdFALSE,
                                           timeout);
 
         // All bits to wait have been set, so the timeout has not been reached.
         // Return the event group bits.
-        if ((bitsToWaitFor & result) == bitsToWaitFor) {
+        if ((bitsToWait & result) == bitsToWait) {
             return result;
         }
         // Some of the bits to wait have been set, if waitForAll is not set it
         // means the timeout has not been reached. Return the event group bits.
-        if (!waitForAll && (result & bitsToWaitFor)) {
+        if (!waitForAll && (result & bitsToWait)) {
             return result;
         }
         // The timeout expired.
@@ -184,6 +230,7 @@ class Event {
     }
 
   private:
+    static constexpr uint8_t AVAILABLE_BITS = 24;
     EventGroupHandle_t m_handle;
 };
 
@@ -258,6 +305,13 @@ class Task {
           m_initFunction(initFunction),
           m_handlerFunction(handlerFunction) {}
 
+    /**
+     * @brief Create a new task and add it to the list of tasks that are ready
+     * to run
+     *
+     * @return true Task was created successfully
+     * @return false Task was not created. Insufficient heap.
+     */
     bool Setup() {
         if (xTaskCreate(TaskFunction,
                         m_name,
