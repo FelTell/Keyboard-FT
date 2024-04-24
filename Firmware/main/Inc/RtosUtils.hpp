@@ -2,6 +2,7 @@
 
 #include <esp_log.h>
 #include <freertos/FreeRTOS.h>
+#include <freertos/event_groups.h>
 #include <freertos/queue.h>
 #include <freertos/task.h>
 #include <freertos/timers.h>
@@ -44,6 +45,139 @@ class Queue {
   private:
     QueueHandle_t m_handle;
     uint32_t m_size;
+};
+
+class Event {
+  public:
+    Event(){};
+
+    /**
+     * @brief Creates an RTOS event group
+     *
+     * @return true Event was created successfully
+     * @return false Event was not created. Insufficient heap.
+     */
+    bool Setup() {
+        m_handle = xEventGroupCreate();
+        if (!m_handle) {
+            ESP_LOGE("EventSetup", "Insufficient heap");
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * @brief Set one or multiple bits. Do not call from a interruption.
+     *
+     * @param bitsToSet Bitwise value.
+     * @return uint32_t The value of the event group at the end of this function
+     * execution. If a higher priority task is called the returned value might
+     * have the bits specified by the bitsToSet parameter cleared.
+     */
+    uint32_t Set(uint32_t bitsToSet) {
+        return xEventGroupSetBits(m_handle, bitsToSet);
+    };
+
+    /**
+     * @brief Set one or multiple bits. Call only from a interruption.
+     *
+     * @param bitsToSet
+     */
+    void SetFromIsr(uint32_t bitsToSet) {
+        auto higherPriorityTaskWoken = pdFALSE;
+        auto result                  = xEventGroupSetBitsFromISR(m_handle,
+                                                bitsToSet,
+                                                &higherPriorityTaskWoken);
+        if (result == pdFALSE) {
+            ESP_LOGE("EventSetFromIsr", "Timer command queue is full");
+            return;
+        }
+        portYIELD_FROM_ISR(higherPriorityTaskWoken);
+    };
+
+    /**
+     * @brief Clear one or multiple bits. Do not call from a interruption.
+     *
+     * @param bitsToClear Bitwise value.
+     * @return uint32_t The value of the event group before the specified bits
+     * were cleared.
+     */
+    uint32_t Clear(uint32_t bitsToClear) {
+        return xEventGroupClearBits(m_handle, bitsToClear);
+    };
+
+    /**
+     * @brief Clear one or multiple bits. Call only from a interruption.
+     *
+     * @param bitsToClear Bitwise value.
+     */
+    void ClearFromIsr(uint32_t bitsToClear) {
+        auto result = xEventGroupClearBitsFromISR(m_handle, bitsToClear);
+        if (result == pdFALSE) {
+            ESP_LOGE("EventClearFromIsr", "Timer command queue is full");
+            return;
+        }
+    };
+
+    /**
+     * @brief Wait one or more bits to be set.
+     *
+     * @param bitsToWaitFor Bitwise value. Do not set to 0.
+     * @param clearOnExit If true the bits passed in bitsToWaitFor will be
+     * cleared if not returned because of a timeout. Default = false.
+     * @param waitForAll If true all bits must be set (AND). If false just one
+     * of the bits needs to be set (OR). Default = false.
+     * @param timeout Maximum amount of time to wait. Default = infinite.
+     * @return std::optional<uint32_t> nullopt if timeout has expired or not
+     * bits were given. The current event group if the bits were set.
+     */
+    std::optional<uint32_t> Wait(uint32_t bitsToWaitFor,
+                                 bool clearOnExit = false,
+                                 bool waitForAll  = false,
+                                 uint32_t timeout = 0xFFFFFFFF) {
+        if (!bitsToWaitFor) {
+            return std::nullopt;
+        }
+        auto result = xEventGroupWaitBits(m_handle,
+                                          bitsToWaitFor,
+                                          clearOnExit ? pdTRUE : pdFALSE,
+                                          waitForAll ? pdTRUE : pdFALSE,
+                                          timeout);
+
+        // All bits to wait have been set, so the timeout has not been reached.
+        // Return the event group bits.
+        if ((bitsToWaitFor & result) == bitsToWaitFor) {
+            return result;
+        }
+        // Some of the bits to wait have been set, if waitForAll is not set it
+        // means the timeout has not been reached. Return the event group bits.
+        if (!waitForAll && (result & bitsToWaitFor)) {
+            return result;
+        }
+        // The timeout expired.
+        return std::nullopt;
+    }
+
+    /**
+     * @brief Get the value of the event group. Do not call from a interruption.
+     *
+     * @return uint32_t Value of the event group.
+     */
+    uint32_t Get() {
+        return xEventGroupGetBits(m_handle);
+    }
+
+    /**
+     * @brief Get the value of the event group. Call only from a interruption.
+     *
+     * @return uint32_t Value of the event group.
+     */
+    uint32_t GetFromIsr() {
+        return xEventGroupGetBitsFromISR(m_handle);
+    }
+
+  private:
+    EventGroupHandle_t m_handle;
 };
 
 class Timer {
