@@ -1,9 +1,11 @@
 /**
  * @author Felipe Telles (felipe.melo.telles@gmail.com)
- * @brief This file helps develop with freeRTOS in C++ by enclosing the
- * functions provided by freeRTOS with classes. There are also some extra code
- * that is added on some of the freeRTOS commands that are required for proper
- * RTOS implementation. For now it's only supported on ESP32 devices.
+ * @brief This file helps develop with freeRTOS in C++ by enclosing some of the
+ * most used functions provided by freeRTOS with classes. There are also some
+ * extra code that is added on some of the freeRTOS commands that are required
+ * for proper RTOS implementation. For now it's only supported on ESP32 devices.
+ * The documentation here is based on the documentation available in
+ * freertos.org
  *
  *
  */
@@ -20,7 +22,6 @@
 #include <freertos/queue.h>
 #include <freertos/task.h>
 #include <freertos/timers.h>
-#include <functional>
 #include <optional>
 
 static_assert(sizeof(BaseType_t) == sizeof(uint32_t),
@@ -28,7 +29,46 @@ static_assert(sizeof(BaseType_t) == sizeof(uint32_t),
 
 namespace rtos {
 
-void Delay(const TickType_t msToDelay);
+/**
+ * @brief Delay a task for a given number of milliseconds.
+ *
+ * @param msToDelay Delay in milliseconds. If configTICK_RATE_HZ is lower than
+ * 1000 the delay might not work as expected for small values.
+ */
+void Delay(const uint32_t msToDelay);
+
+/**
+ * @brief Delay a task until a specified time.
+ * This function differs from Delay() in one important aspect: Delay()
+ * specifies a time at which the task wishes to unblock relative to the time at
+ * which vTaskDelay() is called, whereas vTaskDelayUntil() specifies an absolute
+ * time at which the task wishes to unblock.
+ *
+ * @param previousTime A variable to store the last time the task was released.
+ * The variable must be initialised with the current time using GetTickCount(),
+ * after that it will be automatically updated.
+ * @param timeIncrement The time to delay the task
+ * @return true The task was delayed.
+ * @return false The task was not delayed, meaning the given time was in the
+ * past.
+ */
+bool DelayUntil(uint32_t& previousTime, const uint32_t timeIncrement);
+
+/**
+ * @brief Get the count of ticks since the scheduler was started. Do not call
+ * from a interruption.
+ *
+ * @return uint32_t Count of ticks
+ */
+uint32_t GetTickCount();
+
+/**
+ * @brief Get the count of ticks since the scheduler was started. Call only from
+ * an interruption
+ *
+ * @return uint32_t Count of ticks
+ */
+uint32_t GetTickCountFromIsr();
 
 template <typename T>
 class Queue {
@@ -64,14 +104,14 @@ class Queue {
     uint32_t m_size;
 };
 
-/**
- * @brief An event group is a set of event bits. Event bits are used to indicate
- * if an event has occurred or not. Event bits are often referred to as event
- * flags.
- *
- */
 class Event {
   public:
+    /**
+     * @brief An event group is a set of event bits. Event bits are used to
+     * indicate if an event has occurred or not. Event bits are often referred
+     * to as event flags.
+     *
+     */
     Event(){};
 
     /**
@@ -98,25 +138,25 @@ class Event {
      * have the bits specified by the bitsToSet parameter cleared.
      */
     uint32_t Set(uint32_t bitsToSet) {
-        if (bitsToSet >= (1 << AVAILABLE_BITS)) {
+        if (bitsToSet >= (1 << m_AVAILABLE_BITS)) {
             ESP_LOGE("EventSet",
                      "A bit to set was higher than the allowed: %d",
-                     AVAILABLE_BITS);
+                     m_AVAILABLE_BITS);
             return 0;
         }
         return xEventGroupSetBits(m_handle, bitsToSet);
     };
 
     /**
-     * @brief Set one or multiple bits. Call only from a interruption.
+     * @brief Set one or multiple bits. Call only from an interruption.
      *
      * @param bitsToSet Bitwise value. 24 bits available.
      */
     void SetFromIsr(uint32_t bitsToSet) {
-        if (bitsToSet >= (1 << AVAILABLE_BITS)) {
+        if (bitsToSet >= (1 << m_AVAILABLE_BITS)) {
             ESP_LOGE("EventSet",
                      "A bit to set was higher than the allowed: %d",
-                     AVAILABLE_BITS);
+                     m_AVAILABLE_BITS);
             return;
         }
         auto higherPriorityTaskWoken = pdFALSE;
@@ -138,25 +178,25 @@ class Event {
      * were cleared.
      */
     uint32_t Clear(uint32_t bitsToClear) {
-        if (bitsToClear >= (1 << AVAILABLE_BITS)) {
+        if (bitsToClear >= (1 << m_AVAILABLE_BITS)) {
             ESP_LOGE("EventClear",
                      "A bit to clear was higher than the allowed: %d",
-                     AVAILABLE_BITS);
+                     m_AVAILABLE_BITS);
             return 0;
         }
         return xEventGroupClearBits(m_handle, bitsToClear);
     };
 
     /**
-     * @brief Clear one or multiple bits. Call only from a interruption.
+     * @brief Clear one or multiple bits. Call only from an interruption.
      *
      * @param bitsToClear Bitwise value.
      */
     void ClearFromIsr(uint32_t bitsToClear) {
-        if (bitsToClear >= (1 << AVAILABLE_BITS)) {
+        if (bitsToClear >= (1 << m_AVAILABLE_BITS)) {
             ESP_LOGE("EventClearFromIsr",
                      "A bit to clear was higher than the allowed: %d",
-                     AVAILABLE_BITS);
+                     m_AVAILABLE_BITS);
             return;
         }
         auto result = xEventGroupClearBitsFromISR(m_handle, bitsToClear);
@@ -182,10 +222,10 @@ class Event {
                                  bool clearOnExit = false,
                                  bool waitForAll  = false,
                                  uint32_t timeout = 0xFFFFFFFF) {
-        if (bitsToWait >= (1 << AVAILABLE_BITS)) {
+        if (bitsToWait >= (1 << m_AVAILABLE_BITS)) {
             ESP_LOGE("EventWait",
                      "A bit to wait was higher than the allowed: %d",
-                     AVAILABLE_BITS);
+                     m_AVAILABLE_BITS);
             return std::nullopt;
         }
         if (!bitsToWait) {
@@ -221,7 +261,7 @@ class Event {
     }
 
     /**
-     * @brief Get the value of the event group. Call only from a interruption.
+     * @brief Get the value of the event group. Call only from an interruption.
      *
      * @return uint32_t Value of the event group.
      */
@@ -230,7 +270,7 @@ class Event {
     }
 
   private:
-    static constexpr uint8_t AVAILABLE_BITS = 24;
+    static constexpr uint8_t m_AVAILABLE_BITS = 24;
     EventGroupHandle_t m_handle;
 };
 
@@ -294,6 +334,21 @@ class Timer {
 
 class Task {
   public:
+    /**
+     * @brief An RTOS is structured as a set of independent tasks. Each task
+     * executes within its own context with no coincidental dependency on other
+     * tasks within the system or the RTOS scheduler itself.
+     *
+     * @param name Name of the task.
+     * @param size Task's stack size in words (4 bytes).
+     * @param priority A value from 0 to configMAX_PRIORITIES - 1, with 0 being
+     * the lowest priority available (same as idle task) and
+     * configMAX_PRIORITIES - 1 the highest priority.
+     * @param initFunction Pointer to a function that will be called until it
+     * returns true.
+     * @param handlerFunction Pointer to function that will be called inside a
+     * infinite loop. Ensure that the proper timing control is implemented.
+     */
     Task(const char* name,
          uint32_t size,
          uint32_t priority,
@@ -310,20 +365,44 @@ class Task {
      * to run
      *
      * @return true Task was created successfully
-     * @return false Task was not created. Insufficient heap.
+     * @return false Task was not created. Insufficient heap or incorrect
+     * parameters.
      */
     bool Setup() {
+        if (!m_initFunction) {
+            ESP_LOGE(m_name, "Invalid init function");
+            return false;
+        }
+        if (!m_handlerFunction) {
+            ESP_LOGE(m_name, "Invalid handler function");
+            return false;
+        }
+        if (m_size == 0) {
+            ESP_LOGE(m_name, "Invalid stack size");
+            return false;
+        }
+        if (m_priority >= configMAX_PRIORITIES) {
+            ESP_LOGE(m_name, "Invalid priority");
+            return false;
+        }
+
         if (xTaskCreate(TaskFunction,
                         m_name,
                         m_size,
                         this,
                         m_priority,
                         &m_handle) != pdPASS) {
+            ESP_LOGE(m_name, "Insufficient heap");
             return false;
         }
         return true;
     }
 
+    /**
+     * @brief Getter for the task handler
+     *
+     * @return TaskHandle_t*
+     */
     TaskHandle_t* GetHandle() {
         return &m_handle;
     };
@@ -331,11 +410,19 @@ class Task {
   private:
     TaskHandle_t m_handle;
     const char* m_name;
-    uint32_t m_size;
-    uint32_t m_priority;
+    const uint32_t m_size;
+    const uint32_t m_priority;
     bool (*m_initFunction)();
     void (*m_handlerFunction)();
 
+    /**
+     * @brief This is the actual task function. It's a static function that gets
+     * as argument the class of the task. To make it more similar to normal bare
+     * metal development it calls the init function once (if sucessfull) and a
+     * handler function inside an infinite loop.
+     *
+     * @param arg
+     */
     static void TaskFunction(void* arg) {
         Task* obj = static_cast<Task*>(arg);
         while (obj->m_initFunction() == false) {
