@@ -55,20 +55,11 @@ void Delay(const uint32_t msToDelay);
 bool DelayUntil(uint32_t& previousTime, const uint32_t timeIncrement);
 
 /**
- * @brief Get the count of ticks since the scheduler was started. Do not call
- * from a interruption.
+ * @brief Get the count of ticks since the scheduler was started.
  *
  * @return uint32_t Count of ticks
  */
 uint32_t GetTickCount();
-
-/**
- * @brief Get the count of ticks since the scheduler was started. Call only from
- * an interruption
- *
- * @return uint32_t Count of ticks
- */
-uint32_t GetTickCountFromIsr();
 
 template <typename T>
 class Queue {
@@ -130,12 +121,13 @@ class Event {
     }
 
     /**
-     * @brief Set one or multiple bits. Do not call from a interruption.
+     * @brief Set one or multiple bits.
      *
      * @param bitsToSet Bitwise value. 24 bits available.
      * @return uint32_t The value of the event group at the end of this function
      * execution. If a higher priority task is called the returned value might
-     * have the bits specified by the bitsToSet parameter cleared.
+     * have the bits specified by the bitsToSet parameter cleared. If called
+     * from a interruption it will always return 0.
      */
     uint32_t Set(uint32_t bitsToSet) {
         if (bitsToSet >= (1 << m_AVAILABLE_BITS)) {
@@ -144,38 +136,27 @@ class Event {
                      m_AVAILABLE_BITS);
             return 0;
         }
+        if (xPortInIsrContext()) {
+            auto higherPriorityTaskWoken = pdFALSE;
+            auto result                  = xEventGroupSetBitsFromISR(m_handle,
+                                                    bitsToSet,
+                                                    &higherPriorityTaskWoken);
+            if (result == pdFALSE) {
+                ESP_LOGE("EventSetFromIsr", "Timer command queue is full");
+            } else {
+                portYIELD_FROM_ISR(higherPriorityTaskWoken);
+            }
+            return 0;
+        }
         return xEventGroupSetBits(m_handle, bitsToSet);
     };
 
     /**
-     * @brief Set one or multiple bits. Call only from an interruption.
-     *
-     * @param bitsToSet Bitwise value. 24 bits available.
-     */
-    void SetFromIsr(uint32_t bitsToSet) {
-        if (bitsToSet >= (1 << m_AVAILABLE_BITS)) {
-            ESP_LOGE("EventSet",
-                     "A bit to set was higher than the allowed: %d",
-                     m_AVAILABLE_BITS);
-            return;
-        }
-        auto higherPriorityTaskWoken = pdFALSE;
-        auto result                  = xEventGroupSetBitsFromISR(m_handle,
-                                                bitsToSet,
-                                                &higherPriorityTaskWoken);
-        if (result == pdFALSE) {
-            ESP_LOGE("EventSetFromIsr", "Timer command queue is full");
-            return;
-        }
-        portYIELD_FROM_ISR(higherPriorityTaskWoken);
-    };
-
-    /**
-     * @brief Clear one or multiple bits. Do not call from a interruption.
+     * @brief Clear one or multiple bits.
      *
      * @param bitsToClear Bitwise value.
      * @return uint32_t The value of the event group before the specified bits
-     * were cleared.
+     * were cleared. If called from a interrution it will always return 0.
      */
     uint32_t Clear(uint32_t bitsToClear) {
         if (bitsToClear >= (1 << m_AVAILABLE_BITS)) {
@@ -184,26 +165,14 @@ class Event {
                      m_AVAILABLE_BITS);
             return 0;
         }
+        if (xPortInIsrContext()) {
+            auto result = xEventGroupClearBitsFromISR(m_handle, bitsToClear);
+            if (result == pdFALSE) {
+                ESP_LOGE("EventClearFromIsr", "Timer command queue is full");
+            }
+            return 0;
+        }
         return xEventGroupClearBits(m_handle, bitsToClear);
-    };
-
-    /**
-     * @brief Clear one or multiple bits. Call only from an interruption.
-     *
-     * @param bitsToClear Bitwise value.
-     */
-    void ClearFromIsr(uint32_t bitsToClear) {
-        if (bitsToClear >= (1 << m_AVAILABLE_BITS)) {
-            ESP_LOGE("EventClearFromIsr",
-                     "A bit to clear was higher than the allowed: %d",
-                     m_AVAILABLE_BITS);
-            return;
-        }
-        auto result = xEventGroupClearBitsFromISR(m_handle, bitsToClear);
-        if (result == pdFALSE) {
-            ESP_LOGE("EventClearFromIsr", "Timer command queue is full");
-            return;
-        }
     };
 
     /**
@@ -222,6 +191,11 @@ class Event {
                                  bool clearOnExit = false,
                                  bool waitForAll  = false,
                                  uint32_t timeout = 0xFFFFFFFF) {
+        if (xPortInIsrContext()) {
+            ESP_LOGE("EventWait", "Do not call a wait function from ISR");
+            return std::nullopt;
+        }
+
         if (bitsToWait >= (1 << m_AVAILABLE_BITS)) {
             ESP_LOGE("EventWait",
                      "A bit to wait was higher than the allowed: %d",
@@ -261,7 +235,7 @@ class Event {
     }
 
     /**
-     * @brief Get the value of the event group. Call only from an interruption.
+     * @brief Get the value of the event group. Call only from ans interruption.
      *
      * @return uint32_t Value of the event group.
      */
@@ -276,20 +250,53 @@ class Event {
 
 class Timer {
   public:
+    /**
+     * @brief A software timer (or just a 'timer') allows a function to be
+     * executed at a set time in the future.
+     *
+     * @param name Name of the timer.
+     * @param periodMs Period in milliseconds. If configTICK_RATE_HZ is lower
+     * than 1000 the timer might not work as expected for small periods.
+     * @param autoReload If set to true the timer will automatically reset and
+     * start again after it has expired. If set to false it will stop after it
+     * has expired
+     * @param callback A function to call after the timer has expired.
+     */
     Timer(const char* name,
-          uint32_t period,
+          uint32_t periodMs,
           bool autoReload,
           void (*callback)())
         : m_name(name),
-          m_period(period),
+          m_periodMs(periodMs),
           m_autoReload(autoReload),
           m_callback(callback) {}
 
+    /**
+     * @brief Start the timer. If it has already been started this function will
+     * reset the current countdown.
+     *
+     * @return true Timer was started successfully
+     * @return false Timer was not started. Insufficient heap or timer command
+     * queue is full.
+     */
     bool Start() {
         if (!m_handle) {
             if (!Setup()) {
                 return false;
             }
+        }
+
+        if (xPortInIsrContext()) {
+            auto higherPriorityTaskWoken = pdFALSE;
+            auto result =
+                xTimerStartFromISR(m_handle, &higherPriorityTaskWoken);
+            if (result == pdFALSE) {
+                ESP_LOGE("Start failed", "Timer command queue is full");
+                return false;
+            } else {
+                portYIELD_FROM_ISR(higherPriorityTaskWoken);
+            }
+            return true;
         }
 
         if (xTimerStart(m_handle, 0) != pdPASS) {
@@ -299,22 +306,36 @@ class Timer {
         return true;
     }
 
+    /**
+     * @brief Stops a timer that was previously started
+     *
+     * @return true Timer was stopped successfully
+     * @return false Timer was not stopped. Timer command queue is full.
+     */
     bool Stop() {
         if (!m_handle) {
             return true;
         }
+        if (xPortInIsrContext()) {
+            auto higherPriorityTaskWoken = pdFALSE;
+            auto result = xTimerStopFromISR(m_handle, &higherPriorityTaskWoken);
+            if (result == pdFALSE) {
+                ESP_LOGE("Stop failed", "Timer command queue is full");
+                return false;
+            } else {
+                portYIELD_FROM_ISR(higherPriorityTaskWoken);
+            }
+            return true;
+        }
+
         return xTimerStop(m_handle, 0) == pdPASS ? true : false;
     }
 
-    bool Setup() {
-        m_handle = xTimerCreate(m_name, m_period, m_autoReload, this, Callback);
-        if (!m_handle) {
-            ESP_LOGE(m_name, "Setup failed");
-            return false;
-        }
-        return true;
-    }
-
+    /**
+     * @brief Getter for the task handler
+     *
+     * @return TimerHandle_t*
+     */
     TimerHandle_t* GetHandle() {
         return &m_handle;
     };
@@ -322,9 +343,22 @@ class Timer {
   private:
     TimerHandle_t m_handle;
     const char* m_name;
-    uint32_t m_period;
+    uint32_t m_periodMs;
     bool m_autoReload;
     void (*m_callback)();
+
+    bool Setup() {
+        m_handle = xTimerCreate(m_name,
+                                m_periodMs / portTICK_PERIOD_MS,
+                                m_autoReload,
+                                this,
+                                Callback);
+        if (!m_handle) {
+            ESP_LOGE(m_name, "Setup failed");
+            return false;
+        }
+        return true;
+    }
 
     static void Callback(TimerHandle_t xTimer) {
         Timer* obj = static_cast<Timer*>(pvTimerGetTimerID(xTimer));
@@ -415,14 +449,6 @@ class Task {
     bool (*m_initFunction)();
     void (*m_handlerFunction)();
 
-    /**
-     * @brief This is the actual task function. It's a static function that gets
-     * as argument the class of the task. To make it more similar to normal bare
-     * metal development it calls the init function once (if sucessfull) and a
-     * handler function inside an infinite loop.
-     *
-     * @param arg
-     */
     static void TaskFunction(void* arg) {
         Task* obj = static_cast<Task*>(arg);
         while (obj->m_initFunction() == false) {
