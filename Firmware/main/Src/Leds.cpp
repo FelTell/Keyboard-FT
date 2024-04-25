@@ -139,14 +139,15 @@ static void Handler() {
 }
 
 static void DelayAndWaitNewCommand(const TickType_t ticksToDelay) {
-    auto newCommand = requests.Wait(ticksToDelay);
-    if (newCommand) {
-        if (*newCommand == Commands::DecreaseBrightness ||
-            *newCommand == Commands::IncreaseBrightness) {
-            DecreaseIncreaseBrightness(*newCommand ==
+    Commands newCommand;
+
+    if (requests.Wait(newCommand, ticksToDelay)) {
+        if (newCommand == Commands::DecreaseBrightness ||
+            newCommand == Commands::IncreaseBrightness) {
+            DecreaseIncreaseBrightness(newCommand ==
                                        Commands::IncreaseBrightness);
         } else {
-            currentMode = newCommand.value();
+            currentMode = newCommand;
         }
     }
 }

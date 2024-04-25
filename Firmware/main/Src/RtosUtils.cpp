@@ -2,6 +2,10 @@
 
 namespace rtos {
 
+bool IsInIsr() {
+    return xPortInIsrContext() == pdTRUE;
+}
+
 void Delay(const uint32_t msToDelay) {
     if (xPortInIsrContext()) {
         ESP_LOGE("Delay", "Do not call a delay function from ISR");

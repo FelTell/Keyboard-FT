@@ -48,9 +48,12 @@ static bool Init() {
 }
 
 static void Handler() {
-    auto newMode = requests.Wait();
-
-    currentMode = newMode.value_or(Modes::Usb);
+    Modes newMode;
+    if (requests.Wait(newMode)) {
+        currentMode = newMode;
+    } else {
+        currentMode = Modes::Usb;
+    }
 
     leds::SendCommand(currentMode == Modes::Usb
                           ? leds::Commands::Usb

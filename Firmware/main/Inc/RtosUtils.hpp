@@ -30,6 +30,12 @@ static_assert(sizeof(BaseType_t) == sizeof(uint32_t),
 namespace rtos {
 
 /**
+ * @brief Checks if the code currently running is inside an ISR
+ *
+ */
+bool IsInIsr();
+
+/**
  * @brief Delay a task for a given number of milliseconds.
  *
  * @param msToDelay Delay in milliseconds. If configTICK_RATE_HZ is lower than
@@ -64,30 +70,117 @@ uint32_t GetTickCount();
 template <typename T>
 class Queue {
   public:
+    /**
+     * @brief Queues should be used to send messages between tasks, and between
+     * interrupts and tasks. In most cases they are used as thread safe FIFO
+     * buffers, although data can also be sent to the front.
+     *
+     * @param size The size of the queue.
+     */
     Queue(uint32_t size) : m_size(size) {}
 
+    /**
+     * @brief Creates a new queue.
+     *
+     * @return true Event was created successfully
+     * @return false Event was not created. Insufficient heap.
+     */
     bool Setup() {
         m_handle = xQueueCreate(m_size, sizeof(T));
         return (m_handle != nullptr);
     }
 
+    /**
+     * @brief Post an item on the back of a queue. The item is queued by copy,
+     * not by reference.
+     *
+     * @param value The item that is to be placed on the queue.
+     * @return true Item was added successfully to the queue.
+     * @return false Item was not added to the queue. Queue is full.
+     */
     bool Send(T& value) {
-        return (xQueueSend(m_handle, &value, 0) == pdTRUE);
+        if (!IsInIsr()) {
+            return (xQueueSend(m_handle, &value, 0) == pdTRUE);
+        }
+
+        auto higherPriorityTaskWoken = pdFALSE;
+        auto result =
+            xQueueSendFromISR(m_handle, &value, &higherPriorityTaskWoken);
+        if (result == pdFALSE) {
+            return false;
+        } else {
+            portYIELD_FROM_ISR(higherPriorityTaskWoken);
+            return true;
+        }
     }
 
-    std::optional<T> Get() {
-        T value;
-        if (xQueueReceive(m_handle, &value, 0) == pdTRUE) {
-            return value;
-        };
-        return std::nullopt;
+    /**
+     * @brief Post an item on the front of a queue. The item is queued by copy,
+     * not by reference.
+     *
+     * @param value The item that is to be placed on the queue.
+     * @return true Item was added successfully to the queue.
+     * @return false Item was not added to the queue. Queue is full.
+     */
+    bool SendToFront(T& value) {
+        if (!IsInIsr()) {
+            return (xQueueSendToFront(m_handle, &value, 0) == pdTRUE);
+        }
+
+        auto higherPriorityTaskWoken = pdFALSE;
+        auto result                  = xQueueSendToFrontFromISR(m_handle,
+                                               &value,
+                                               &higherPriorityTaskWoken);
+        if (result == pdFALSE) {
+            return false;
+        } else {
+            portYIELD_FROM_ISR(higherPriorityTaskWoken);
+            return true;
+        }
     }
-    std::optional<T> Wait(uint32_t timeout = 0xFFFFFFFF) {
-        T value;
-        if (xQueueReceive(m_handle, &value, timeout) == pdTRUE) {
-            return value;
+
+    /**
+     * @brief Get a item from the queue
+     *
+     * @param value Item that will be received, will not change if queue is
+     * empty
+     * @return true Item was retrieved successfully from the queue.
+     * @return false Item was not retried from the queue. The queue is empty.
+     */
+    bool Get(T& value) {
+        if (!IsInIsr()) {
+            return Wait(value, 0);
+        }
+
+        auto higherPriorityTaskWoken = pdFALSE;
+        if (xQueueReceiveFromISR(m_handle, &value, &higherPriorityTaskWoken) ==
+            pdTRUE) {
+            portYIELD_FROM_ISR(higherPriorityTaskWoken);
+            return true;
         };
-        return std::nullopt;
+        return false;
+    }
+
+    /**
+     * @brief Get a item from the queue, wait if empty
+     *
+     * @param value Item that will be received, will not change if timout has
+     * expired
+     * @param timeout Time to wait to receive a new item from the queue
+     * @return true Item was retrieved successfully from the queue.
+     * @return false Item was not retried from the queue. The queue is empty and
+     * the timeout has expired.
+     */
+    bool Wait(T& value, uint32_t timeout = 0xFFFFFFFF) {
+        if (IsInIsr()) {
+            ESP_LOGE("QueueWait", "Do not call a wait function from ISR");
+            return false;
+        }
+
+        if (xQueueReceive(m_handle, &value, timeout) == pdTRUE) {
+            return true;
+        };
+        return false;
     }
 
   private:
@@ -136,19 +229,21 @@ class Event {
                      m_AVAILABLE_BITS);
             return 0;
         }
-        if (xPortInIsrContext()) {
-            auto higherPriorityTaskWoken = pdFALSE;
-            auto result                  = xEventGroupSetBitsFromISR(m_handle,
-                                                    bitsToSet,
-                                                    &higherPriorityTaskWoken);
-            if (result == pdFALSE) {
-                ESP_LOGE("EventSetFromIsr", "Timer command queue is full");
-            } else {
-                portYIELD_FROM_ISR(higherPriorityTaskWoken);
-            }
-            return 0;
+
+        if (!IsInIsr()) {
+            return xEventGroupSetBits(m_handle, bitsToSet);
         }
-        return xEventGroupSetBits(m_handle, bitsToSet);
+
+        auto higherPriorityTaskWoken = pdFALSE;
+        auto result                  = xEventGroupSetBitsFromISR(m_handle,
+                                                bitsToSet,
+                                                &higherPriorityTaskWoken);
+        if (result == pdFALSE) {
+            ESP_LOGE("EventSetFromIsr", "Timer command queue is full");
+        } else {
+            portYIELD_FROM_ISR(higherPriorityTaskWoken);
+        }
+        return 0;
     };
 
     /**
@@ -165,14 +260,16 @@ class Event {
                      m_AVAILABLE_BITS);
             return 0;
         }
-        if (xPortInIsrContext()) {
-            auto result = xEventGroupClearBitsFromISR(m_handle, bitsToClear);
-            if (result == pdFALSE) {
-                ESP_LOGE("EventClearFromIsr", "Timer command queue is full");
-            }
-            return 0;
+
+        if (!IsInIsr()) {
+            return xEventGroupClearBits(m_handle, bitsToClear);
         }
-        return xEventGroupClearBits(m_handle, bitsToClear);
+
+        auto result = xEventGroupClearBitsFromISR(m_handle, bitsToClear);
+        if (result == pdFALSE) {
+            ESP_LOGE("EventClearFromIsr", "Timer command queue is full");
+        }
+        return 0;
     };
 
     /**
@@ -191,7 +288,7 @@ class Event {
                                  bool clearOnExit = false,
                                  bool waitForAll  = false,
                                  uint32_t timeout = 0xFFFFFFFF) {
-        if (xPortInIsrContext()) {
+        if (IsInIsr()) {
             ESP_LOGE("EventWait", "Do not call a wait function from ISR");
             return std::nullopt;
         }
@@ -286,22 +383,21 @@ class Timer {
             }
         }
 
-        if (xPortInIsrContext()) {
-            auto higherPriorityTaskWoken = pdFALSE;
-            auto result =
-                xTimerStartFromISR(m_handle, &higherPriorityTaskWoken);
-            if (result == pdFALSE) {
-                ESP_LOGE("Start failed", "Timer command queue is full");
+        if (!IsInIsr()) {
+            if (xTimerStart(m_handle, 0) != pdPASS) {
+                ESP_LOGE(m_name, "Start failed");
                 return false;
-            } else {
-                portYIELD_FROM_ISR(higherPriorityTaskWoken);
             }
             return true;
         }
 
-        if (xTimerStart(m_handle, 0) != pdPASS) {
-            ESP_LOGE(m_name, "Start failed");
+        auto higherPriorityTaskWoken = pdFALSE;
+        auto result = xTimerStartFromISR(m_handle, &higherPriorityTaskWoken);
+        if (result == pdFALSE) {
+            ESP_LOGE("Start failed", "Timer command queue is full");
             return false;
+        } else {
+            portYIELD_FROM_ISR(higherPriorityTaskWoken);
         }
         return true;
     }
@@ -316,19 +412,20 @@ class Timer {
         if (!m_handle) {
             return true;
         }
-        if (xPortInIsrContext()) {
-            auto higherPriorityTaskWoken = pdFALSE;
-            auto result = xTimerStopFromISR(m_handle, &higherPriorityTaskWoken);
-            if (result == pdFALSE) {
-                ESP_LOGE("Stop failed", "Timer command queue is full");
-                return false;
-            } else {
-                portYIELD_FROM_ISR(higherPriorityTaskWoken);
-            }
-            return true;
+
+        if (!IsInIsr()) {
+            return xTimerStop(m_handle, 0) == pdPASS ? true : false;
         }
 
-        return xTimerStop(m_handle, 0) == pdPASS ? true : false;
+        auto higherPriorityTaskWoken = pdFALSE;
+        auto result = xTimerStopFromISR(m_handle, &higherPriorityTaskWoken);
+        if (result == pdFALSE) {
+            ESP_LOGE("Stop failed", "Timer command queue is full");
+            return false;
+        } else {
+            portYIELD_FROM_ISR(higherPriorityTaskWoken);
+        }
+        return true;
     }
 
     /**
