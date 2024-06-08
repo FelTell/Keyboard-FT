@@ -16,18 +16,22 @@
 #error This file is on a non supported platform
 #endif
 
+#include <optional>
+#include <string_view>
+
 #include <esp_log.h>
 #include <freertos/FreeRTOS.h>
 #include <freertos/event_groups.h>
 #include <freertos/queue.h>
 #include <freertos/task.h>
 #include <freertos/timers.h>
-#include <optional>
 
 static_assert(sizeof(BaseType_t) == sizeof(uint32_t),
               "Unexpected RTOS base type, check configuration");
 
 namespace rtos {
+
+static constexpr uint32_t INFINITE_TIMEOUT = 0xFFFFFFFF;
 
 /**
  * @brief Checks if the code currently running is inside an ISR
@@ -69,7 +73,7 @@ uint32_t GetTickCount();
 
 template <typename T>
 class Queue {
-  public:
+   public:
     /**
      * @brief Queues should be used to send messages between tasks, and between
      * interrupts and tasks. In most cases they are used as thread safe FIFO
@@ -77,13 +81,13 @@ class Queue {
      *
      * @param size The size of the queue.
      */
-    Queue(uint32_t size) : m_size(size) {}
+    Queue(uint32_t size) : m_size(size), m_handle(nullptr) {}
 
     /**
      * @brief Creates a new queue.
      *
-     * @return true Event was created successfully
-     * @return false Event was not created. Insufficient heap.
+     * @return true Queue was created successfully
+     * @return false Queue was not created. Insufficient heap.
      */
     bool Setup() {
         m_handle = xQueueCreate(m_size, sizeof(T));
@@ -98,7 +102,13 @@ class Queue {
      * @return true Item was added successfully to the queue.
      * @return false Item was not added to the queue. Queue is full.
      */
-    bool Send(T& value) {
+    bool Send(const T& value) {
+        if (!m_handle) {
+            if (!IsInIsr()) {
+                ESP_LOGI("Queue", "Handle is null, check if setup was done");
+            }
+            return false;
+        }
         if (!IsInIsr()) {
             return (xQueueSend(m_handle, &value, 0) == pdTRUE);
         }
@@ -122,7 +132,13 @@ class Queue {
      * @return true Item was added successfully to the queue.
      * @return false Item was not added to the queue. Queue is full.
      */
-    bool SendToFront(T& value) {
+    bool SendToFront(const T& value) {
+        if (!m_handle) {
+            if (!IsInIsr()) {
+                ESP_LOGI("Queue", "Handle is null, check if setup was done");
+            }
+            return false;
+        }
         if (!IsInIsr()) {
             return (xQueueSendToFront(m_handle, &value, 0) == pdTRUE);
         }
@@ -148,6 +164,12 @@ class Queue {
      * @return false Item was not retried from the queue. The queue is empty.
      */
     bool Get(T& value) {
+        if (!m_handle) {
+            if (!IsInIsr()) {
+                ESP_LOGI("Queue", "Handle is null, check if setup was done");
+            }
+            return false;
+        }
         if (!IsInIsr()) {
             return Wait(value, 0);
         }
@@ -157,7 +179,7 @@ class Queue {
             pdTRUE) {
             portYIELD_FROM_ISR(higherPriorityTaskWoken);
             return true;
-        };
+        }
         return false;
     }
 
@@ -171,32 +193,154 @@ class Queue {
      * @return false Item was not retried from the queue. The queue is empty and
      * the timeout has expired.
      */
-    bool Wait(T& value, uint32_t timeout = 0xFFFFFFFF) {
+    bool Wait(T& value, uint32_t timeout = INFINITE_TIMEOUT) {
+        if (!m_handle) {
+            if (!IsInIsr()) {
+                ESP_LOGI("Queue", "Handle is null, check if setup was done");
+            }
+            return false;
+        }
         if (IsInIsr()) {
-            ESP_LOGE("QueueWait", "Do not call a wait function from ISR");
             return false;
         }
 
         if (xQueueReceive(m_handle, &value, timeout) == pdTRUE) {
             return true;
-        };
+        }
         return false;
     }
 
-  private:
-    QueueHandle_t m_handle;
+    /**
+     * @brief Getter for the queue handler
+     *
+     * @return QueueHandle_t*
+     */
+    QueueHandle_t& GetHandle() {
+        return m_handle;
+    }
+
+    /**
+     * @brief Get the queue max size
+     *
+     * @return uint32_t
+     */
+    uint32_t GetMaxSize() {
+        return m_size;
+    }
+
+   private:
     uint32_t m_size;
+    QueueHandle_t m_handle;
+};
+
+template <typename T>
+class Variable {
+   public:
+    /**
+     * @brief Variable is a queue with size 1. It will always have a value, and
+     * after setup it should never fail. It should be used as a simple and safe
+     * way to share a value between tasks.
+     *
+     * @param defaultValue The value that the variable will be initialized as.
+     */
+    Variable(T defaultValue)
+        : m_defaultValue(defaultValue), m_handle(nullptr) {}
+
+    /**
+     * @brief Creates a new queue with size 1.
+     *
+     * @return true Queue was created successfully
+     * @return false Queue was not created. Insufficient heap.
+     */
+    bool Setup() {
+        m_handle = xQueueCreate(1, sizeof(T));
+        if (m_handle != nullptr) {
+            Set(m_defaultValue);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * @brief Set an item on the queue. The item is queued by copy, not by
+     * reference. Will always overwrite the queue, so no error return is
+     * possible.
+     *
+     * @param value The item that is to be placed on the queue.
+     */
+    void Set(const T& value) {
+        if (!m_handle) {
+            if (!IsInIsr()) {
+                ESP_LOGI("Variable", "Handle is null, check if setup was done");
+            }
+            return;
+        }
+        if (!IsInIsr()) {
+            xQueueOverwrite(m_handle, &value);
+        }
+
+        auto higherPriorityTaskWoken = pdFALSE;
+        auto result =
+            xQueueOverwriteFromISR(m_handle, &value, &higherPriorityTaskWoken);
+        if (result != pdFALSE) {
+            portYIELD_FROM_ISR(higherPriorityTaskWoken);
+        }
+    }
+
+    /**
+     * @brief Get a item from the queue
+     *
+     * @return value
+     */
+    T Get() {
+        if (!m_handle) {
+            if (!IsInIsr()) {
+                ESP_LOGI("Variable", "Handle is null, check if setup was done");
+            }
+            return m_defaultValue;
+        }
+
+        T value;
+
+        if (!IsInIsr()) {
+            xQueuePeek(m_handle, &value, 0);
+        } else {
+            xQueuePeekFromISR(m_handle, &value);
+        }
+        return value;
+    }
+
+    /**
+     * @brief Getter for the queue handler
+     *
+     * @return QueueHandle_t*
+     */
+    QueueHandle_t& GetHandle() {
+        return m_handle;
+    }
+
+   private:
+    const T m_defaultValue;
+    QueueHandle_t m_handle;
 };
 
 class Event {
-  public:
+   public:
     /**
      * @brief An event group is a set of event bits. Event bits are used to
      * indicate if an event has occurred or not. Event bits are often referred
      * to as event flags.
      *
      */
-    Event(){};
+    Event();
+
+    ~Event();
+
+    Event(const Event&)            = delete;
+    Event& operator=(const Event&) = delete;
+
+    Event(Event&&);
+    Event& operator=(Event&&);
 
     /**
      * @brief Creates an RTOS event group
@@ -204,14 +348,7 @@ class Event {
      * @return true Event was created successfully
      * @return false Event was not created. Insufficient heap.
      */
-    bool Setup() {
-        m_handle = xEventGroupCreate();
-        if (!m_handle) {
-            ESP_LOGE("EventSetup", "Insufficient heap");
-            return false;
-        }
-        return true;
-    }
+    bool Setup();
 
     /**
      * @brief Set one or multiple bits.
@@ -222,29 +359,7 @@ class Event {
      * have the bits specified by the bitsToSet parameter cleared. If called
      * from a interruption it will always return 0.
      */
-    uint32_t Set(uint32_t bitsToSet) {
-        if (bitsToSet >= (1 << m_AVAILABLE_BITS)) {
-            ESP_LOGE("EventSet",
-                     "A bit to set was higher than the allowed: %d",
-                     m_AVAILABLE_BITS);
-            return 0;
-        }
-
-        if (!IsInIsr()) {
-            return xEventGroupSetBits(m_handle, bitsToSet);
-        }
-
-        auto higherPriorityTaskWoken = pdFALSE;
-        auto result                  = xEventGroupSetBitsFromISR(m_handle,
-                                                bitsToSet,
-                                                &higherPriorityTaskWoken);
-        if (result == pdFALSE) {
-            ESP_LOGE("EventSetFromIsr", "Timer command queue is full");
-        } else {
-            portYIELD_FROM_ISR(higherPriorityTaskWoken);
-        }
-        return 0;
-    };
+    uint32_t Set(uint32_t bitsToSet);
 
     /**
      * @brief Clear one or multiple bits.
@@ -253,24 +368,7 @@ class Event {
      * @return uint32_t The value of the event group before the specified bits
      * were cleared. If called from a interrution it will always return 0.
      */
-    uint32_t Clear(uint32_t bitsToClear) {
-        if (bitsToClear >= (1 << m_AVAILABLE_BITS)) {
-            ESP_LOGE("EventClear",
-                     "A bit to clear was higher than the allowed: %d",
-                     m_AVAILABLE_BITS);
-            return 0;
-        }
-
-        if (!IsInIsr()) {
-            return xEventGroupClearBits(m_handle, bitsToClear);
-        }
-
-        auto result = xEventGroupClearBitsFromISR(m_handle, bitsToClear);
-        if (result == pdFALSE) {
-            ESP_LOGE("EventClearFromIsr", "Timer command queue is full");
-        }
-        return 0;
-    };
+    uint32_t Clear(uint32_t bitsToClear);
 
     /**
      * @brief Wait one or more bits to be set.
@@ -287,66 +385,29 @@ class Event {
     std::optional<uint32_t> Wait(uint32_t bitsToWait,
                                  bool clearOnExit = false,
                                  bool waitForAll  = false,
-                                 uint32_t timeout = 0xFFFFFFFF) {
-        if (IsInIsr()) {
-            ESP_LOGE("EventWait", "Do not call a wait function from ISR");
-            return std::nullopt;
-        }
-
-        if (bitsToWait >= (1 << m_AVAILABLE_BITS)) {
-            ESP_LOGE("EventWait",
-                     "A bit to wait was higher than the allowed: %d",
-                     m_AVAILABLE_BITS);
-            return std::nullopt;
-        }
-        if (!bitsToWait) {
-            return std::nullopt;
-        }
-        auto result = xEventGroupWaitBits(m_handle,
-                                          bitsToWait,
-                                          clearOnExit ? pdTRUE : pdFALSE,
-                                          waitForAll ? pdTRUE : pdFALSE,
-                                          timeout);
-
-        // All bits to wait have been set, so the timeout has not been reached.
-        // Return the event group bits.
-        if ((bitsToWait & result) == bitsToWait) {
-            return result;
-        }
-        // Some of the bits to wait have been set, if waitForAll is not set it
-        // means the timeout has not been reached. Return the event group bits.
-        if (!waitForAll && (result & bitsToWait)) {
-            return result;
-        }
-        // The timeout expired.
-        return std::nullopt;
-    }
+                                 uint32_t timeout = INFINITE_TIMEOUT);
 
     /**
-     * @brief Get the value of the event group. Do not call from a interruption.
+     * @brief Get the value of the event group.
      *
      * @return uint32_t Value of the event group.
      */
-    uint32_t Get() {
-        return xEventGroupGetBits(m_handle);
-    }
+    uint32_t Get();
 
     /**
-     * @brief Get the value of the event group. Call only from ans interruption.
+     * @brief Getter for the event queue handler
      *
-     * @return uint32_t Value of the event group.
+     * @return EventGroupHandle_t*
      */
-    uint32_t GetFromIsr() {
-        return xEventGroupGetBitsFromISR(m_handle);
-    }
+    EventGroupHandle_t& GetHandle();
 
-  private:
+   private:
     static constexpr uint8_t m_AVAILABLE_BITS = 24;
     EventGroupHandle_t m_handle;
 };
 
 class Timer {
-  public:
+   public:
     /**
      * @brief A software timer (or just a 'timer') allows a function to be
      * executed at a set time in the future.
@@ -359,14 +420,18 @@ class Timer {
      * has expired
      * @param callback A function to call after the timer has expired.
      */
-    Timer(const char* name,
+    Timer(std::string_view name,
           uint32_t periodMs,
           bool autoReload,
-          void (*callback)())
-        : m_name(name),
-          m_periodMs(periodMs),
-          m_autoReload(autoReload),
-          m_callback(callback) {}
+          void (*callback)());
+
+    ~Timer();
+
+    Timer(const Timer&)            = delete;
+    Timer& operator=(const Timer&) = delete;
+
+    Timer(Timer&&);
+    Timer& operator=(Timer&&);
 
     /**
      * @brief Start the timer. If it has already been started this function will
@@ -376,31 +441,7 @@ class Timer {
      * @return false Timer was not started. Insufficient heap or timer command
      * queue is full.
      */
-    bool Start() {
-        if (!m_handle) {
-            if (!Setup()) {
-                return false;
-            }
-        }
-
-        if (!IsInIsr()) {
-            if (xTimerStart(m_handle, 0) != pdPASS) {
-                ESP_LOGE(m_name, "Start failed");
-                return false;
-            }
-            return true;
-        }
-
-        auto higherPriorityTaskWoken = pdFALSE;
-        auto result = xTimerStartFromISR(m_handle, &higherPriorityTaskWoken);
-        if (result == pdFALSE) {
-            ESP_LOGE("Start failed", "Timer command queue is full");
-            return false;
-        } else {
-            portYIELD_FROM_ISR(higherPriorityTaskWoken);
-        }
-        return true;
-    }
+    bool Start();
 
     /**
      * @brief Stops a timer that was previously started
@@ -408,63 +449,29 @@ class Timer {
      * @return true Timer was stopped successfully
      * @return false Timer was not stopped. Timer command queue is full.
      */
-    bool Stop() {
-        if (!m_handle) {
-            return true;
-        }
-
-        if (!IsInIsr()) {
-            return xTimerStop(m_handle, 0) == pdPASS ? true : false;
-        }
-
-        auto higherPriorityTaskWoken = pdFALSE;
-        auto result = xTimerStopFromISR(m_handle, &higherPriorityTaskWoken);
-        if (result == pdFALSE) {
-            ESP_LOGE("Stop failed", "Timer command queue is full");
-            return false;
-        } else {
-            portYIELD_FROM_ISR(higherPriorityTaskWoken);
-        }
-        return true;
-    }
+    bool Stop();
 
     /**
-     * @brief Getter for the task handler
+     * @brief Getter for the timer handler
      *
      * @return TimerHandle_t*
      */
-    TimerHandle_t* GetHandle() {
-        return &m_handle;
-    };
+    TimerHandle_t& GetHandle();
 
-  private:
+   private:
     TimerHandle_t m_handle;
-    const char* m_name;
+    std::string_view m_name;
     uint32_t m_periodMs;
     bool m_autoReload;
     void (*m_callback)();
 
-    bool Setup() {
-        m_handle = xTimerCreate(m_name,
-                                m_periodMs / portTICK_PERIOD_MS,
-                                m_autoReload,
-                                this,
-                                Callback);
-        if (!m_handle) {
-            ESP_LOGE(m_name, "Setup failed");
-            return false;
-        }
-        return true;
-    }
+    bool Setup();
 
-    static void Callback(TimerHandle_t xTimer) {
-        Timer* obj = static_cast<Timer*>(pvTimerGetTimerID(xTimer));
-        obj->m_callback();
-    }
+    static void Callback(TimerHandle_t xTimer);
 };
 
 class Task {
-  public:
+   public:
     /**
      * @brief An RTOS is structured as a set of independent tasks. Each task
      * executes within its own context with no coincidental dependency on other
@@ -480,16 +487,19 @@ class Task {
      * @param handlerFunction Pointer to function that will be called inside a
      * infinite loop. Ensure that the proper timing control is implemented.
      */
-    Task(const char* name,
+    Task(std::string_view name,
          uint32_t size,
          uint32_t priority,
          bool (*initFunction)(),
-         void (*handlerFunction)())
-        : m_name(name),
-          m_size(size),
-          m_priority(priority),
-          m_initFunction(initFunction),
-          m_handlerFunction(handlerFunction) {}
+         void (*handlerFunction)());
+
+    ~Task();
+
+    Task(const Task&)            = delete;
+    Task& operator=(const Task&) = delete;
+
+    Task(Task&&);
+    Task& operator=(Task&&);
 
     /**
      * @brief Create a new task and add it to the list of tasks that are ready
@@ -499,64 +509,24 @@ class Task {
      * @return false Task was not created. Insufficient heap or incorrect
      * parameters.
      */
-    bool Setup() {
-        if (!m_initFunction) {
-            ESP_LOGE(m_name, "Invalid init function");
-            return false;
-        }
-        if (!m_handlerFunction) {
-            ESP_LOGE(m_name, "Invalid handler function");
-            return false;
-        }
-        if (m_size == 0) {
-            ESP_LOGE(m_name, "Invalid stack size");
-            return false;
-        }
-        if (m_priority >= configMAX_PRIORITIES) {
-            ESP_LOGE(m_name, "Invalid priority");
-            return false;
-        }
-
-        if (xTaskCreate(TaskFunction,
-                        m_name,
-                        m_size,
-                        this,
-                        m_priority,
-                        &m_handle) != pdPASS) {
-            ESP_LOGE(m_name, "Insufficient heap");
-            return false;
-        }
-        return true;
-    }
+    bool Setup();
 
     /**
      * @brief Getter for the task handler
      *
      * @return TaskHandle_t*
      */
-    TaskHandle_t* GetHandle() {
-        return &m_handle;
-    };
+    TaskHandle_t& GetHandle();
 
-  private:
+   private:
     TaskHandle_t m_handle;
-    const char* m_name;
-    const uint32_t m_size;
-    const uint32_t m_priority;
+    std::string_view m_name;
+    uint32_t m_size;
+    uint32_t m_priority;
     bool (*m_initFunction)();
     void (*m_handlerFunction)();
 
-    static void TaskFunction(void* arg) {
-        Task* obj = static_cast<Task*>(arg);
-        while (obj->m_initFunction() == false) {
-            ESP_LOGE(obj->m_name, "Init failed");
-            rtos::Delay(100);
-        }
-        ESP_LOGI(obj->m_name, "Init Successful");
-        while (1) {
-            obj->m_handlerFunction();
-        }
-    }
+    static void TaskFunction(void* arg);
 };
 
-} // namespace rtos
+}  // namespace rtos

@@ -88,21 +88,21 @@ static void Handler() {
     static uint16_t lastConsumerCode;
     static std::array<uint8_t, REPORT_SIZE> keyCodes = {};
 
-    auto report = kbReportsQueue.Wait(1000);
-    if (!report) {
+    KbHidReport report;
+    if (!kbReportsQueue.Wait(report, 1000)) {
         tud_hid_report(KEYBOARD_REPORT_ID, keyCodes.data(), REPORT_SIZE);
         return;
     }
 
-    if (lastConsumerCode != report->consumerCode) {
-        lastConsumerCode = report->consumerCode;
+    if (lastConsumerCode != report.consumerCode) {
+        lastConsumerCode = report.consumerCode;
         tud_hid_report(CONSUMER_REPORT_ID, &lastConsumerCode, 2);
-        ESP_LOGI("ConsumerReport: ", "%d", report->consumerCode);
+        ESP_LOGI("ConsumerReport: ", "%d", report.consumerCode);
         return;
     }
 
-    keyCodes[0] = report->modifiers;
-    memcpy(&keyCodes[2], report->keys.data(), REPORT_MAX_KEYS);
+    keyCodes[0] = report.modifiers;
+    memcpy(&keyCodes[2], report.keys.data(), REPORT_MAX_KEYS);
 
     tud_hid_report(KEYBOARD_REPORT_ID, keyCodes.data(), REPORT_SIZE);
 
