@@ -10,10 +10,10 @@
 
 #include "RtosUtils.hpp"
 
+#include "Bluetooth/BluetoothController.hpp"
 #include "Controller.hpp"
 #include "Layout.hpp"
 #include "UsbHid.hpp"
-
 namespace matrix {
 
 static bool Init();
@@ -77,6 +77,10 @@ static void Handler() {
         if (controller::GetMode() == controller::Modes::Usb) {
             usb_hid::SendReport(report);
         } else {
+            bluetooth::controller::SendReport({report.keys,
+                                               report.consumerCode,
+                                               report.size,
+                                               report.modifiers});
             // TODO (Felipe): ble
         }
     }

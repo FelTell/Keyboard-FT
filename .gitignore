@@ -9,6 +9,6 @@ Outputs/
 *.lck
 
 .vscode
-build/
+*build/
 managed_components/
 *.old
