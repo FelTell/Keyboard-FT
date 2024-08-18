@@ -1,27 +1,11 @@
-/*
- * SPDX-FileCopyrightText: 2021-2022 Espressif Systems (Shanghai) CO LTD
- *
- * SPDX-License-Identifier: Unlicense OR CC0-1.0
- */
+
 #include "Bluetooth/BluetoothController.hpp"
 #include "esp_bt.h"
-#include "esp_event.h"
 #include "esp_log.h"
-#include "esp_system.h"
-#include "esp_wifi.h"
-#include "freertos/FreeRTOS.h"
-#include "freertos/event_groups.h"
-#include "freertos/task.h"
 #include "nvs_flash.h"
 #include <array>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
 #include "RtosUtils.hpp"
-#include "driver/gpio.h"
-#include "esp_bt_defs.h"
-#include "esp_bt_device.h"
 #include "esp_bt_main.h"
 #include "esp_gap_ble_api.h"
 #include "esp_gatt_defs.h"
@@ -33,14 +17,27 @@ namespace bluetooth::controller {
 
 static bool Init();
 static void Handler();
-static rtos::Task task("Bluetooth", 4096, 24, Init, Handler);
+static void HidEventCallback(esp_hidd_cb_event_t event,
+                             esp_hidd_cb_param_t* param);
+
+static constexpr const char* TAG         = "BluetoothTask";
+static constexpr const char* DEVICE_NAME = "Keyboard-FT";
+
+static rtos::Task task(TAG, 4096, 24, Init, Handler);
 static rtos::Queue<model::hid::Report> reportsQueue(10);
+static rtos::Event events;
+static constexpr uint32_t IS_CONNECTED_FLAG = 1 << 0;
+
+static uint16_t connectionId = 0;
 
 bool SetupTask() {
     if (!task.Setup()) {
         return false;
     }
     if (!reportsQueue.Setup()) {
+        return false;
+    }
+    if (!events.Setup()) {
         return false;
     }
     return true;
@@ -50,80 +47,36 @@ bool SendReport(model::hid::Report report) {
     return reportsQueue.Send(report);
 }
 
-/**
- * Brief:
- * This example Implemented BLE HID device profile related functions, in which
- * the HID device has 4 Reports (1 is mouse, 2 is keyboard and LED, 3 is
- * Consumer Devices, 4 is Vendor devices). Users can choose different reports
- * according to their own application scenarios. BLE HID profile inheritance and
- * USB HID class.
- */
+static uint8_t uuid[] = {0xfb,
+                         0x34,
+                         0x9b,
+                         0x5f,
+                         0x80,
+                         0x00,
+                         0x00,
+                         0x80,
+                         0x00,
+                         0x10,
+                         0x00,
+                         0x00,
+                         0x12,
+                         0x18,
+                         0x00,
+                         0x00};
 
-/**
- * Note:
- * 1. Win10 does not support vendor report , So SUPPORT_REPORT_VENDOR is always
- * set to FALSE, it defines in hidd_le_prf_int.h
- * 2. Update connection parameters are not allowed during iPhone HID encryption,
- * slave turns off the ability to automatically update connection parameters
- * during encryption.
- * 3. After our HID device is connected, the iPhones write 1 to the Report
- * Characteristic Configuration Descriptor, even if the HID encryption is not
- * completed. This should actually be written 1 after the HID encryption is
- * completed. we modify the permissions of the Report Characteristic
- * Configuration Descriptor to `ESP_GATT_PERM_READ |
- * ESP_GATT_PERM_WRITE_ENCRYPTED`. if you got `GATT_INSUF_ENCRYPTION` error,
- * please ignore.
- */
-
-#define HID_DEMO_TAG "HID_DEMO"
-
-static uint16_t hid_conn_id = 0;
-static bool sec_conn        = false;
-static bool send_volum_up   = false;
-#define CHAR_DECLARATION_SIZE (sizeof(uint8_t))
-
-static void hidd_event_callback(esp_hidd_cb_event_t event,
-                                esp_hidd_cb_param_t* param);
-
-#define HIDD_DEVICE_NAME "HID"
-static uint8_t hidd_service_uuid128[] = {
-    /* LSB
-       <-------------------------------------------------------------------------------->
-       MSB */
-    // first uuid, 16bit, [12],[13] is the value
-    0xfb,
-    0x34,
-    0x9b,
-    0x5f,
-    0x80,
-    0x00,
-    0x00,
-    0x80,
-    0x00,
-    0x10,
-    0x00,
-    0x00,
-    0x12,
-    0x18,
-    0x00,
-    0x00,
-};
-
-static esp_ble_adv_data_t hidd_adv_data = {
-    .set_scan_rsp    = false,
-    .include_name    = true,
-    .include_txpower = true,
-    .min_interval    = 0x0006,     // slave connection min interval, Time =
-                                   // min_interval * 1.25 msec
-    .max_interval = 0x0010,        // slave connection max interval, Time =
-                                   // max_interval * 1.25 msec
-    .appearance          = 0x03c0, // HID Generic,
+static esp_ble_adv_data_t hiddAdvData = {
+    .set_scan_rsp        = false,
+    .include_name        = true,
+    .include_txpower     = true,
+    .min_interval        = 0x0006,
+    .max_interval        = 0x0010,
+    .appearance          = 0x03c0,
     .manufacturer_len    = 0,
     .p_manufacturer_data = NULL,
     .service_data_len    = 0,
     .p_service_data      = NULL,
-    .service_uuid_len    = sizeof(hidd_service_uuid128),
-    .p_service_uuid      = hidd_service_uuid128,
+    .service_uuid_len    = sizeof(uuid),
+    .p_service_uuid      = uuid,
     .flag                = 0x6,
 };
 
@@ -138,14 +91,13 @@ static esp_ble_adv_params_t hidd_adv_params = {
     .adv_filter_policy = ADV_FILTER_ALLOW_SCAN_ANY_CON_ANY,
 };
 
-static void hidd_event_callback(esp_hidd_cb_event_t event,
-                                esp_hidd_cb_param_t* param) {
+static void HidEventCallback(esp_hidd_cb_event_t event,
+                             esp_hidd_cb_param_t* param) {
     switch (event) {
         case ESP_HIDD_EVENT_REG_FINISH: {
             if (param->init_finish.state == ESP_HIDD_INIT_OK) {
-                // esp_bd_addr_t rand_addr = {0x04,0x11,0x11,0x11,0x11,0x05};
-                esp_ble_gap_set_device_name(HIDD_DEVICE_NAME);
-                esp_ble_gap_config_adv_data(&hidd_adv_data);
+                esp_ble_gap_set_device_name(DEVICE_NAME);
+                esp_ble_gap_config_adv_data(&hiddAdvData);
             }
             break;
         }
@@ -155,28 +107,28 @@ static void hidd_event_callback(esp_hidd_cb_event_t event,
         case ESP_HIDD_EVENT_DEINIT_FINISH:
             break;
         case ESP_HIDD_EVENT_BLE_CONNECT: {
-            ESP_LOGI(HID_DEMO_TAG, "ESP_HIDD_EVENT_BLE_CONNECT");
-            hid_conn_id = param->connect.conn_id;
+            ESP_LOGI(TAG, "ESP_HIDD_EVENT_BLE_CONNECT");
+            connectionId = param->connect.conn_id;
             break;
         }
         case ESP_HIDD_EVENT_BLE_DISCONNECT: {
-            sec_conn = false;
-            ESP_LOGI(HID_DEMO_TAG, "ESP_HIDD_EVENT_BLE_DISCONNECT");
+            events.Clear(IS_CONNECTED_FLAG);
+            ESP_LOGI(TAG, "ESP_HIDD_EVENT_BLE_DISCONNECT");
             esp_ble_gap_start_advertising(&hidd_adv_params);
             break;
         }
         case ESP_HIDD_EVENT_BLE_VENDOR_REPORT_WRITE_EVT: {
-            ESP_LOGI(HID_DEMO_TAG,
+            ESP_LOGI(TAG,
                      "%s, ESP_HIDD_EVENT_BLE_VENDOR_REPORT_WRITE_EVT",
                      __func__);
-            ESP_LOG_BUFFER_HEX(HID_DEMO_TAG,
+            ESP_LOG_BUFFER_HEX(TAG,
                                param->vendor_write.data,
                                param->vendor_write.length);
             break;
         }
         case ESP_HIDD_EVENT_BLE_LED_REPORT_WRITE_EVT: {
-            ESP_LOGI(HID_DEMO_TAG, "ESP_HIDD_EVENT_BLE_LED_REPORT_WRITE_EVT");
-            ESP_LOG_BUFFER_HEX(HID_DEMO_TAG,
+            ESP_LOGI(TAG, "ESP_HIDD_EVENT_BLE_LED_REPORT_WRITE_EVT");
+            ESP_LOG_BUFFER_HEX(TAG,
                                param->led_write.data,
                                param->led_write.length);
             break;
@@ -187,40 +139,38 @@ static void hidd_event_callback(esp_hidd_cb_event_t event,
     return;
 }
 
-static void gap_event_handler(esp_gap_ble_cb_event_t event,
-                              esp_ble_gap_cb_param_t* param) {
+static void BleEventHandler(esp_gap_ble_cb_event_t event,
+                            esp_ble_gap_cb_param_t* param) {
     switch (event) {
         case ESP_GAP_BLE_ADV_DATA_SET_COMPLETE_EVT:
             esp_ble_gap_start_advertising(&hidd_adv_params);
             break;
         case ESP_GAP_BLE_SEC_REQ_EVT:
             for (int i = 0; i < ESP_BD_ADDR_LEN; i++) {
-                ESP_LOGD(HID_DEMO_TAG,
-                         "%x:",
-                         param->ble_security.ble_req.bd_addr[i]);
+                ESP_LOGD(TAG, "%x:", param->ble_security.ble_req.bd_addr[i]);
             }
             esp_ble_gap_security_rsp(param->ble_security.ble_req.bd_addr, true);
             break;
         case ESP_GAP_BLE_AUTH_CMPL_EVT:
-            sec_conn = true;
+            events.Set(IS_CONNECTED_FLAG);
             esp_bd_addr_t bd_addr;
             memcpy(bd_addr,
                    param->ble_security.auth_cmpl.bd_addr,
                    sizeof(esp_bd_addr_t));
-            ESP_LOGI(HID_DEMO_TAG,
+            ESP_LOGI(TAG,
                      "remote BD_ADDR: %08x%04x",
                      (bd_addr[0] << 24) + (bd_addr[1] << 16) +
                          (bd_addr[2] << 8) + bd_addr[3],
                      (bd_addr[4] << 8) + bd_addr[5]);
-            ESP_LOGI(HID_DEMO_TAG,
+            ESP_LOGI(TAG,
                      "address type = %d",
                      param->ble_security.auth_cmpl.addr_type);
-            ESP_LOGI(HID_DEMO_TAG,
+            ESP_LOGI(TAG,
                      "pair status = %s",
                      param->ble_security.auth_cmpl.success ? "success"
                                                            : "fail");
             if (!param->ble_security.auth_cmpl.success) {
-                ESP_LOGE(HID_DEMO_TAG,
+                ESP_LOGE(TAG,
                          "fail reason = 0x%x",
                          param->ble_security.auth_cmpl.fail_reason);
             }
@@ -238,7 +188,7 @@ void Handler() {
     static model::hid::Report report;
 
     if (!reportsQueue.Wait(report, 1000)) {
-        esp_hidd_send_keyboard_value(hid_conn_id,
+        esp_hidd_send_keyboard_value(connectionId,
                                      report.modifiers,
                                      report.keys.data(),
                                      6);
@@ -248,12 +198,12 @@ void Handler() {
 
     if (lastConsumerCode != report.consumerCode) {
         lastConsumerCode = report.consumerCode;
-        esp_hidd_send_consumer_value(hid_conn_id, lastConsumerCode, true);
+        esp_hidd_send_consumer_value(connectionId, lastConsumerCode, true);
         ESP_LOGI("ConsumerReport: ", "%d", report.consumerCode);
         return;
     }
 
-    esp_hidd_send_keyboard_value(hid_conn_id,
+    esp_hidd_send_keyboard_value(connectionId,
                                  report.modifiers,
                                  report.keys.data(),
                                  6);
@@ -276,35 +226,35 @@ bool Init() {
     esp_bt_controller_config_t bt_cfg = BT_CONTROLLER_INIT_CONFIG_DEFAULT();
     ret                               = esp_bt_controller_init(&bt_cfg);
     if (ret) {
-        ESP_LOGE(HID_DEMO_TAG, "%s initialize controller failed\n", __func__);
+        ESP_LOGE(TAG, "%s initialize controller failed\n", __func__);
         return false;
     }
 
     ret = esp_bt_controller_enable(ESP_BT_MODE_BLE);
     if (ret) {
-        ESP_LOGE(HID_DEMO_TAG, "%s enable controller failed\n", __func__);
+        ESP_LOGE(TAG, "%s enable controller failed\n", __func__);
         return false;
     }
 
     ret = esp_bluedroid_init();
     if (ret) {
-        ESP_LOGE(HID_DEMO_TAG, "%s init bluedroid failed\n", __func__);
+        ESP_LOGE(TAG, "%s init bluedroid failed\n", __func__);
         return false;
     }
 
     ret = esp_bluedroid_enable();
     if (ret) {
-        ESP_LOGE(HID_DEMO_TAG, "%s init bluedroid failed\n", __func__);
+        ESP_LOGE(TAG, "%s init bluedroid failed\n", __func__);
         return false;
     }
 
     if ((ret = esp_hidd_profile_init()) != ESP_OK) {
-        ESP_LOGE(HID_DEMO_TAG, "%s init bluedroid failed\n", __func__);
+        ESP_LOGE(TAG, "%s init bluedroid failed\n", __func__);
     }
 
     /// register the callback function to the gap module
-    esp_ble_gap_register_callback(gap_event_handler);
-    esp_hidd_register_callbacks(hidd_event_callback);
+    esp_ble_gap_register_callback(BleEventHandler);
+    esp_hidd_register_callbacks(HidEventCallback);
 
     /* set the security iocap & auth_req & key size & init key response key
      * parameters to the stack*/
