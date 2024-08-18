@@ -34,20 +34,20 @@ namespace bluetooth::controller {
 static bool Init();
 static void Handler();
 static rtos::Task task("Bluetooth", 4096, 24, Init, Handler);
-static rtos::Queue<KbHidReport> kbReportsQueue(10);
+static rtos::Queue<model::hid::Report> reportsQueue(10);
 
 bool SetupTask() {
     if (!task.Setup()) {
         return false;
     }
-    if (!kbReportsQueue.Setup()) {
+    if (!reportsQueue.Setup()) {
         return false;
     }
     return true;
 }
 
-bool SendReport(KbHidReport kbHidReport) {
-    return kbReportsQueue.Send(kbHidReport);
+bool SendReport(model::hid::Report report) {
+    return reportsQueue.Send(report);
 }
 
 /**
@@ -235,10 +235,9 @@ static constexpr uint8_t REPORT_SIZE     = 2 + REPORT_MAX_KEYS;
 
 void Handler() {
     static uint16_t lastConsumerCode;
-    static std::array<uint8_t, REPORT_SIZE> keyCodes = {};
+    static model::hid::Report report;
 
-    KbHidReport report;
-    if (!kbReportsQueue.Wait(report, 1000)) {
+    if (!reportsQueue.Wait(report, 1000)) {
         esp_hidd_send_keyboard_value(hid_conn_id,
                                      report.modifiers,
                                      report.keys.data(),
@@ -250,13 +249,9 @@ void Handler() {
     if (lastConsumerCode != report.consumerCode) {
         lastConsumerCode = report.consumerCode;
         esp_hidd_send_consumer_value(hid_conn_id, lastConsumerCode, true);
-
         ESP_LOGI("ConsumerReport: ", "%d", report.consumerCode);
         return;
     }
-
-    keyCodes[0] = report.modifiers;
-    memcpy(&keyCodes[2], report.keys.data(), REPORT_MAX_KEYS);
 
     esp_hidd_send_keyboard_value(hid_conn_id,
                                  report.modifiers,

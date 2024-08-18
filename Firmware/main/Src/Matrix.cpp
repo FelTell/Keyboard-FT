@@ -19,7 +19,7 @@ namespace matrix {
 static bool Init();
 static void Handler();
 static bool PollChanges();
-static usb_hid::KbHidReport GenerateReport();
+static model::hid::Report GenerateReport();
 static bool IsFnPressed();
 
 static rtos::Task task("MatrixTask", 4096, 24, Init, Handler);
@@ -77,11 +77,7 @@ static void Handler() {
         if (controller::GetMode() == controller::Modes::Usb) {
             usb_hid::SendReport(report);
         } else {
-            bluetooth::controller::SendReport({report.keys,
-                                               report.consumerCode,
-                                               report.size,
-                                               report.modifiers});
-            // TODO (Felipe): ble
+            bluetooth::controller::SendReport(report);
         }
     }
 
@@ -121,8 +117,8 @@ static bool PollChanges() {
     return changePresent;
 }
 
-static usb_hid::KbHidReport GenerateReport() {
-    usb_hid::KbHidReport report = {};
+static model::hid::Report GenerateReport() {
+    model::hid::Report report = {};
 
     const bool isFnPressed = IsFnPressed();
 

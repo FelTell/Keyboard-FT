@@ -27,7 +27,7 @@ static rtos::Timer pollConnectionTimer("PollConnectionTimer",
                                        100,
                                        true,
                                        PollConnection);
-static rtos::Queue<KbHidReport> kbReportsQueue(10);
+static rtos::Queue<model::hid::Report> kbReportsQueue(10);
 
 static bool isReady;
 
@@ -62,8 +62,8 @@ static const uint8_t configurationDescriptor[] = {
     TUD_HID_DESCRIPTOR(0, 4, false, sizeof(reportDescriptor), 0x81, 16, 10),
 };
 
-bool SendReport(KbHidReport kbHidReport) {
-    return kbReportsQueue.Send(kbHidReport);
+bool SendReport(model::hid::Report report) {
+    return kbReportsQueue.Send(report);
 }
 
 static bool Init() {
@@ -88,7 +88,7 @@ static void Handler() {
     static uint16_t lastConsumerCode;
     static std::array<uint8_t, REPORT_SIZE> keyCodes = {};
 
-    KbHidReport report;
+    model::hid::Report report;
     if (!kbReportsQueue.Wait(report, 1000)) {
         tud_hid_report(KEYBOARD_REPORT_ID, keyCodes.data(), REPORT_SIZE);
         return;
