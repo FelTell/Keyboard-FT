@@ -10,6 +10,7 @@
 namespace leds {
 static const char* taskName = "LedsTask";
 
+static constexpr auto TIMEOUT_MS     = 30 * 1000;
 static constexpr auto STATUS_LED_PIN = GPIO_NUM_48;
 static constexpr auto CAPS_LED_PIN   = GPIO_NUM_39;
 
@@ -32,6 +33,13 @@ static led_strip_handle_t rgbHandle;
 
 static rtos::Task task(taskName, 4096, 24, Init, Handler);
 static rtos::Queue<Commands> requests(1);
+static rtos::Event events;
+static constexpr uint32_t LED_ENABLED_FLAG = 1 << 0;
+
+static rtos::Timer timeoutTimer("TimeoutTimer", TIMEOUT_MS, false, []() {
+    events.Clear(LED_ENABLED_FLAG);
+    SendCommand(Commands::Disable);
+});
 
 static Commands currentMode;
 
@@ -73,6 +81,11 @@ void DecreaseBrightness(bool isPressed) {
     commandDone = true;
 }
 
+void ResetTimeout() {
+    events.Set(LED_ENABLED_FLAG);
+    timeoutTimer.Start();
+}
+
 // Since this is a simple variable that only changes in one place there is no
 // need for synchronization
 Commands GetMode() {
@@ -105,6 +118,9 @@ static bool Init() {
     SetCapsKey(false);
 
     currentMode = Commands::NotConnected;
+
+    events.Set(LED_ENABLED_FLAG);
+    timeoutTimer.Start();
 
     return true;
 }
@@ -139,14 +155,19 @@ static void Handler() {
 }
 
 static void DelayAndWaitNewCommand(const TickType_t ticksToDelay) {
-    auto newCommand = requests.Wait(ticksToDelay);
-    if (newCommand) {
-        if (*newCommand == Commands::DecreaseBrightness ||
-            *newCommand == Commands::IncreaseBrightness) {
-            DecreaseIncreaseBrightness(*newCommand ==
+    Commands newCommand;
+    if (requests.Wait(newCommand, ticksToDelay)) {
+        if (newCommand == Commands::DecreaseBrightness ||
+            newCommand == Commands::IncreaseBrightness) {
+            DecreaseIncreaseBrightness(newCommand ==
                                        Commands::IncreaseBrightness);
+        } else if (newCommand == Commands::Disable) {
+            led_strip_set_pixel(rgbHandle, 0, 0, 0, 0);
+            led_strip_refresh(rgbHandle);
+
+            events.Wait(LED_ENABLED_FLAG);
         } else {
-            currentMode = newCommand.value();
+            currentMode = newCommand;
         }
     }
 }
@@ -277,6 +298,9 @@ bool SetupTask() {
         return false;
     }
     if (!requests.Setup()) {
+        return false;
+    }
+    if (!events.Setup()) {
         return false;
     }
     return true;

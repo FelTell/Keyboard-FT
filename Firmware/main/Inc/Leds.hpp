@@ -15,6 +15,7 @@ enum class Commands : uint8_t {
 
     DecreaseBrightness = 20,
     IncreaseBrightness,
+    Disable,
 };
 
 bool SendCommand(Commands);
@@ -24,5 +25,7 @@ bool SetupTask();
 
 void DecreaseBrightness(bool);
 void IncreaseBrightness(bool);
+
+void ResetTimeout();
 
 } // namespace leds
