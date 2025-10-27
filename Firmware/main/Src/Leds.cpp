@@ -31,7 +31,7 @@ static void DecreaseIncreaseBrightness(bool isIncrease);
 
 static led_strip_handle_t rgbHandle;
 
-static rtos::Task task(taskName, 4096, 24, Init, Handler);
+static rtos::Task task(taskName, 4096, 20, Init, Handler, 0);
 static rtos::Queue<Commands> requests(1);
 static rtos::Event events;
 static constexpr uint32_t LED_ENABLED_FLAG = 1 << 0;

@@ -22,7 +22,7 @@ static void Handler();
 static void PollConnection();
 static void PrintReport(std::array<uint8_t, REPORT_SIZE>& report);
 
-static rtos::Task task("UsbHidTask", 4096, 24, Init, Handler);
+static rtos::Task task("UsbHidTask", 4096, 24, Init, Handler, 0);
 static rtos::Timer pollConnectionTimer("PollConnectionTimer",
                                        100,
                                        true,

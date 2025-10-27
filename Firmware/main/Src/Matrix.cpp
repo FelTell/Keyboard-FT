@@ -21,7 +21,7 @@ static bool PollChanges();
 static usb_hid::KbHidReport GenerateReport();
 static bool IsFnPressed();
 
-static rtos::Task task("MatrixTask", 4096, 24, Init, Handler);
+static rtos::Task task("MatrixTask", 4096, 24, Init, Handler, 1);
 
 static const std::array<gpio_num_t, layout::ROWS_NUM> rows = {
     GPIO_NUM_14,
@@ -74,8 +74,6 @@ static void Handler() {
     if (PollChanges()) {
         usb_hid::SendReport(GenerateReport());
     }
-
-    rtos::Delay(10);
 }
 
 static bool PollChanges() {
@@ -91,9 +89,8 @@ static bool PollChanges() {
         for (uint8_t row = 0; row < layout::ROWS_NUM; ++row) {
             Key& key   = layout::keys[column][row];
             bool state = gpio_get_level(rows[row]);
-            if (state != key.GetState()) {
+            if (key.HandleStateChange(state)) {
                 changePresent = true;
-                key.SetState(state);
                 ESP_LOGI(key.GetText(),
                          "has been %s. ID = %d. Row = %d, Column = %d. GPIO = "
                          "%d and %d.",

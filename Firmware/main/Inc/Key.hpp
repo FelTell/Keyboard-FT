@@ -63,12 +63,45 @@ class Key {
         }
     }
 
+    bool HandleStateChange(bool currentState) {
+        if (!m_state && currentState) {
+            return HandlePress();
+        }
+        if (m_state && !currentState) {
+            return HandleRelease();
+        }
+        return false;
+    }
+
   private:
+    static constexpr uint32_t DEBOUNCE_COUNT = 10;
     const char* m_keyText;
     const uint8_t m_modifier;
     const uint8_t m_hidCode;
     const uint8_t m_fnKeyCode;
     const uint16_t m_fnConsumerCode;
     const FnFunction m_fnFunction;
+    uint32_t m_pressCount;
+    uint32_t m_releaseCount;
     bool m_state;
+
+    bool HandlePress() {
+        m_releaseCount = 0;
+        if (m_pressCount < DEBOUNCE_COUNT) {
+            m_pressCount++;
+            return false;
+        }
+        m_state = true;
+        return true;
+    }
+
+    bool HandleRelease() {
+        m_pressCount = 0;
+        if (m_releaseCount < DEBOUNCE_COUNT) {
+            m_releaseCount++;
+            return false;
+        }
+        m_state = false;
+        return true;
+    }
 };
