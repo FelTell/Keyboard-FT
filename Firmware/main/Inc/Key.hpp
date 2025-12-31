@@ -74,7 +74,8 @@ class Key {
     }
 
   private:
-    static constexpr uint32_t DEBOUNCE_COUNT = 20;
+    static constexpr uint32_t DEBOUNCE_COUNT_PRESS = 5;
+    static constexpr uint32_t DEBOUNCE_COUNT_RELEASE = 40;
     const char* m_keyText;
     const uint8_t m_modifier;
     const uint8_t m_hidCode;
@@ -87,7 +88,7 @@ class Key {
 
     bool HandlePress() {
         m_releaseCount = 0;
-        if (m_pressCount < DEBOUNCE_COUNT) {
+        if (m_pressCount < DEBOUNCE_COUNT_PRESS) {
             m_pressCount++;
             return false;
         }
@@ -97,7 +98,7 @@ class Key {
 
     bool HandleRelease() {
         m_pressCount = 0;
-        if (m_releaseCount < DEBOUNCE_COUNT) {
+        if (m_releaseCount < DEBOUNCE_COUNT_RELEASE) {
             m_releaseCount++;
             return false;
         }
