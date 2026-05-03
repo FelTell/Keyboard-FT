@@ -48,7 +48,7 @@ static constexpr int8_t DEFAULT_INDEX = 2;
 static uint8_t brightness             = (1 << (DEFAULT_INDEX + 1)) - 1;
 
 bool SendCommand(Commands mode) {
-    return requests.Send(mode);
+    return requests.SendToFront(mode);
 }
 
 void IncreaseBrightness(bool isPressed) {
