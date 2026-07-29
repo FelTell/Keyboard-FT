@@ -69,6 +69,7 @@ bool SendReport(KbHidReport kbHidReport) {
 
 static bool Init() {
     tinyusb_config_t tinyUsbConfig             = TINYUSB_DEFAULT_CONFIG();
+    tinyUsbConfig.task.xCoreID                 = 0;
     tinyUsbConfig.descriptor.device            = NULL;
     tinyUsbConfig.descriptor.full_speed_config = configurationDescriptor;
     tinyUsbConfig.descriptor.string            = stringDescriptor;
@@ -136,10 +137,10 @@ static void PrintReport(std::array<uint8_t, REPORT_SIZE>& report) {
 }
 
 bool SetupTask() {
-    if (!task.Setup()) {
+    if (!kbReportsQueue.Setup()) {
         return false;
     }
-    if (!kbReportsQueue.Setup()) {
+    if (!task.Setup()) {
         return false;
     }
     return true;
