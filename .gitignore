@@ -12,3 +12,4 @@ Outputs/
 build/
 managed_components/
 *.old
+*.lock
