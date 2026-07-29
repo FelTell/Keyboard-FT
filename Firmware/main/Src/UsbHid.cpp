@@ -6,6 +6,7 @@
 #include <class/hid/hid_device.h>
 #include <esp_log.h>
 #include <tinyusb.h>
+#include <tinyusb_default_config.h>
 
 #include "RtosUtils.hpp"
 
@@ -67,16 +68,13 @@ bool SendReport(KbHidReport kbHidReport) {
 }
 
 static bool Init() {
-    const tinyusb_config_t tinyUsbConfig = {
-        .device_descriptor = NULL,
-        .string_descriptor = stringDescriptor,
-        .string_descriptor_count =
-            sizeof(stringDescriptor) / sizeof(stringDescriptor[0]),
-        .external_phy             = false,
-        .configuration_descriptor = configurationDescriptor,
-        .self_powered             = false,
-        .vbus_monitor_io          = 0,
-    };
+    tinyusb_config_t tinyUsbConfig             = TINYUSB_DEFAULT_CONFIG();
+    tinyUsbConfig.descriptor.device            = NULL;
+    tinyUsbConfig.descriptor.full_speed_config = configurationDescriptor;
+    tinyUsbConfig.descriptor.string            = stringDescriptor;
+    tinyUsbConfig.descriptor.string_count =
+        sizeof(stringDescriptor) / sizeof(stringDescriptor[0]);
+
     ESP_ERROR_CHECK(tinyusb_driver_install(&tinyUsbConfig));
 
     pollConnectionTimer.Start();
