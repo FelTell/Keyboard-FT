@@ -94,11 +94,11 @@ Commands GetMode() {
 
 static bool Init() {
     const led_strip_config_t stripConfig = {
-        .strip_gpio_num   = STATUS_LED_PIN,
-        .max_leds         = 1,
-        .led_model        = LED_MODEL_WS2812,
+        .strip_gpio_num         = STATUS_LED_PIN,
+        .max_leds               = 1,
+        .led_model              = LED_MODEL_WS2812,
         .color_component_format = LED_STRIP_COLOR_COMPONENT_FMT_GRB,
-        .flags            = {.invert_out = false},
+        .flags                  = {.invert_out = false},
     };
     // Using default settings
     const led_strip_rmt_config_t rmtConfig = {};
@@ -217,6 +217,7 @@ static void ShowBluetoothSearching() {
 
 static void ShowBluetoothConnected() {
     led_strip_set_pixel(rgbHandle, 0, 0, 0, brightness);
+    led_strip_refresh(rgbHandle);
 
     SetCapsKey(false);
 
