@@ -23,12 +23,14 @@ static void Handler();
 static void PollConnection();
 static void PrintReport(std::array<uint8_t, REPORT_SIZE>& report);
 
-static rtos::Task task("UsbHidTask", 4096, 24, Init, Handler, 0);
+static rtos::Task task("UsbHidTask", 4096, 23, Init, Handler, 0);
 static rtos::Timer pollConnectionTimer("PollConnectionTimer",
                                        100,
                                        true,
                                        PollConnection);
 static rtos::Queue<KbHidReport> kbReportsQueue(10);
+// TODO (Felipe): This should be a semaphore
+static rtos::Event hidReady;
 
 static bool isReady;
 
@@ -69,6 +71,7 @@ bool SendReport(KbHidReport kbHidReport) {
 
 static bool Init() {
     tinyusb_config_t tinyUsbConfig             = TINYUSB_DEFAULT_CONFIG();
+    tinyUsbConfig.task.priority                = 24;
     tinyUsbConfig.task.xCoreID                 = 0;
     tinyUsbConfig.descriptor.device            = NULL;
     tinyUsbConfig.descriptor.full_speed_config = configurationDescriptor;
@@ -87,11 +90,9 @@ static void Handler() {
     static uint16_t lastConsumerCode;
     static std::array<uint8_t, REPORT_SIZE> keyCodes = {};
 
+    hidReady.Wait(1);
     KbHidReport report;
-    if (!kbReportsQueue.Wait(report, 1000)) {
-        tud_hid_report(KEYBOARD_REPORT_ID, keyCodes.data(), REPORT_SIZE);
-        return;
-    }
+    kbReportsQueue.Wait(report);
 
     if (lastConsumerCode != report.consumerCode) {
         lastConsumerCode = report.consumerCode;
@@ -103,6 +104,7 @@ static void Handler() {
     keyCodes[0] = report.modifiers;
     memcpy(&keyCodes[2], report.keys.data(), REPORT_MAX_KEYS);
 
+    hidReady.Clear(1);
     tud_hid_report(KEYBOARD_REPORT_ID, keyCodes.data(), REPORT_SIZE);
 
     PrintReport(keyCodes);
@@ -137,6 +139,10 @@ static void PrintReport(std::array<uint8_t, REPORT_SIZE>& report) {
 }
 
 bool SetupTask() {
+    if (hidReady.Setup() == false) {
+        return false;
+    }
+    hidReady.Set(1);
     if (!kbReportsQueue.Setup()) {
         return false;
     }
@@ -161,12 +167,6 @@ extern "C" uint16_t tud_hid_get_report_cb(
     [[maybe_unused]] hid_report_type_t type,
     [[maybe_unused]] uint8_t* buf,
     [[maybe_unused]] uint16_t realen) {
-    ESP_LOGI("get report cb",
-             "id: %d, type: %d, realen: %d, buf: %s",
-             id,
-             type,
-             realen,
-             buf);
     return 0;
 }
 
@@ -194,4 +194,11 @@ extern "C" void tud_hid_set_report_cb([[maybe_unused]] uint8_t instance,
     bool capsState = buf[0] & KEYBOARD_LED_CAPSLOCK;
     leds::SendCommand(capsState ? leds::Commands::CapsOnUsb
                                 : leds::Commands::Usb);
+}
+
+extern "C" void tud_hid_report_complete_cb(
+    [[maybe_unused]] uint8_t instance,
+    [[maybe_unused]] const uint8_t* report,
+    [[maybe_unused]] uint16_t len) {
+    usb_hid::hidReady.Set(1);
 }

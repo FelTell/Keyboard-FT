@@ -92,6 +92,7 @@ class Key {
             m_pressCount++;
             return false;
         }
+        m_pressCount = 0;
         m_state = true;
         return true;
     }
@@ -102,6 +103,7 @@ class Key {
             m_releaseCount++;
             return false;
         }
+        m_releaseCount = 0;
         m_state = false;
         return true;
     }
