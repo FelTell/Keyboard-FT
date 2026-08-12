@@ -56,17 +56,12 @@ bool SendReport(KbHidReport kbHidReport) {
     return kbReportsQueue.Send(kbHidReport);
 }
 
-const uint8_t consumerMap[] = {
+const uint8_t reportsMap[] = {
+    TUD_HID_REPORT_DESC_KEYBOARD(HID_REPORT_ID(KEYBOARD_REPORT_ID)),
     TUD_HID_REPORT_DESC_CONSUMER(HID_REPORT_ID(CONSUMER_REPORT_ID))};
 
-const uint8_t keyboardMap[] = {
-    TUD_HID_REPORT_DESC_KEYBOARD(HID_REPORT_ID(KEYBOARD_REPORT_ID))};
-
 static esp_hid_raw_report_map_t reportsMaps[] = {
-    {.data = consumerMap, .len = sizeof(consumerMap)},
-    {.data = keyboardMap, .len = sizeof(keyboardMap)},
-
-};
+    {.data = reportsMap, .len = sizeof(reportsMap)}};
 
 static esp_hid_device_config_t hidConfig = {.vendor_id         = 0x16C0,
                                             .product_id        = 0x05DF,
@@ -75,7 +70,7 @@ static esp_hid_device_config_t hidConfig = {.vendor_id         = 0x16C0,
                                             .manufacturer_name = "Espressif",
                                             .serial_number     = "1234567890",
                                             .report_maps       = reportsMaps,
-                                            .report_maps_len   = 2};
+                                            .report_maps_len   = 1};
 
 static void HidEventCallback(void* handlerArgs,
                              esp_event_base_t base,
@@ -119,7 +114,7 @@ static void HidEventCallback(void* handlerArgs,
         case ESP_HIDD_OUTPUT_EVENT: {
             auto size = param->output.length;
             auto id   = param->output.report_id;
-            if (id != 1 && size != 1) {
+            if (id != 1 || size != 1) {
                 // Unknown message, log and ignore it
                 ESP_LOGI(TAG, "Len: %d, Data:", id, size);
                 ESP_LOG_BUFFER_HEX(TAG, param->output.data, size);
@@ -181,7 +176,7 @@ static bool Init() {
     ESP_LOGI("BleHid", "setting hid gap, mode:%d", HID_DEV_MODE);
     ret = esp_hid_gap_init(HID_DEV_MODE);
     ESP_ERROR_CHECK(ret);
-    ret = esp_hid_ble_gap_adv_init(ESP_HID_APPEARANCE_GENERIC, "Keyboard-FT");
+    ret = esp_hid_ble_gap_adv_init(ESP_HID_APPEARANCE_KEYBOARD, "Keyboard-FT");
     ESP_ERROR_CHECK(ret);
 
     if ((ret = esp_ble_gatts_register_callback(esp_hidd_gatts_event_handler)) !=
@@ -203,19 +198,12 @@ static void Handler() {
     static std::array<uint8_t, REPORT_SIZE> keyCodes = {};
 
     KbHidReport report;
-    if (!kbReportsQueue.Wait(report, 1000)) {
-        esp_hidd_dev_input_set(hidParams.hid_dev,
-                               0,
-                               KEYBOARD_REPORT_ID,
-                               keyCodes.data(),
-                               REPORT_SIZE);
-        return;
-    }
+    kbReportsQueue.Wait(report);
 
     if (lastConsumerCode != report.consumerCode) {
         lastConsumerCode = report.consumerCode;
         esp_hidd_dev_input_set(hidParams.hid_dev,
-                               1,
+                               0,
                                CONSUMER_REPORT_ID,
                                reinterpret_cast<uint8_t*>(&lastConsumerCode),
                                2);
