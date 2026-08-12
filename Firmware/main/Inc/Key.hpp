@@ -74,8 +74,8 @@ class Key {
     }
 
   private:
-    static constexpr uint32_t DEBOUNCE_COUNT_PRESS = 10;
-    static constexpr uint32_t DEBOUNCE_COUNT_RELEASE = 50;
+    static constexpr uint32_t DEBOUNCE_COUNT_PRESS   = 5;
+    static constexpr uint32_t DEBOUNCE_COUNT_RELEASE = 10;
     const char* m_keyText;
     const uint8_t m_modifier;
     const uint8_t m_hidCode;
@@ -92,6 +92,7 @@ class Key {
             m_pressCount++;
             return false;
         }
+        m_pressCount = 0;
         m_state = true;
         return true;
     }
@@ -102,6 +103,7 @@ class Key {
             m_releaseCount++;
             return false;
         }
+        m_releaseCount = 0;
         m_state = false;
         return true;
     }

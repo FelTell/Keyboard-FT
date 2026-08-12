@@ -81,7 +81,7 @@ static bool PollChanges() {
 
     for (uint8_t column = 0; column < layout::COLUMNS_NUM; ++column) {
         gpio_set_level(columns[column], true);
-        // Quick blocking delay to keep sure gpio is in the correct level
+        // Quick blocking delay to make sure gpio is in the correct level
         volatile uint32_t i = 5;
         while (i) {
             i = i - 1;
