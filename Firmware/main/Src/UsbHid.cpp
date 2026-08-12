@@ -83,7 +83,7 @@ static void HidEventCallback(void* handlerArgs,
     switch (event) {
         case ESP_HIDD_START_EVENT: {
             ESP_LOGI(TAG, "START");
-            esp_hid_ble_gap_adv_start();
+            AdvertisingStart();
             break;
         }
         case ESP_HIDD_CONNECT_EVENT: {
@@ -143,7 +143,7 @@ static void HidEventCallback(void* handlerArgs,
                          esp_hidd_dev_transport_get(param->disconnect.dev),
                          param->disconnect.reason));
             // ble_hid_task_shut_down();
-            esp_hid_ble_gap_adv_start();
+            AdvertisingStart();
             break;
         }
         case ESP_HIDD_STOP_EVENT: {
@@ -173,10 +173,8 @@ static bool Init() {
         ret = nvs_flash_init();
     }
     ESP_ERROR_CHECK(ret);
-    ESP_LOGI("BleHid", "setting hid gap, mode:%d", HID_DEV_MODE);
-    ret = esp_hid_gap_init(HID_DEV_MODE);
-    ESP_ERROR_CHECK(ret);
-    ret = esp_hid_ble_gap_adv_init(ESP_HID_APPEARANCE_KEYBOARD, "Keyboard-FT");
+
+    ret = BleGatInit("Keyboard-FT");
     ESP_ERROR_CHECK(ret);
 
     if ((ret = esp_ble_gatts_register_callback(esp_hidd_gatts_event_handler)) !=
