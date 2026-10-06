@@ -5,6 +5,7 @@
 namespace ble {
 
 bool Init();
+bool DeInit();
 
 void SendReport(models::KbHidReport report);
 

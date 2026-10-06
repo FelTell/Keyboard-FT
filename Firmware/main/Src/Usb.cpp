@@ -25,7 +25,7 @@ static rtos::Timer pollConnectionTimer("PollConnectionTimer",
                                        true,
                                        PollConnection);
 // TODO (Felipe): This should be a semaphore
-static bool hidReady;
+static rtos::Event hidReady;
 
 static bool isReady;
 
@@ -74,12 +74,19 @@ bool Init() {
 
     pollConnectionTimer.Start();
 
+    if (hidReady.Setup() == false) {
+        return false;
+    }
+    hidReady.Set(1);
+
     return true;
 }
 
 void SendReport(models::KbHidReport report) {
     static uint16_t lastConsumerCode;
     static std::array<uint8_t, REPORT_SIZE> keyCodes = {};
+
+    hidReady.Wait(1);
 
     if (lastConsumerCode != report.consumerCode) {
         lastConsumerCode = report.consumerCode;
@@ -91,7 +98,7 @@ void SendReport(models::KbHidReport report) {
     keyCodes[0] = report.modifiers;
     memcpy(&keyCodes[2], report.keys.data(), REPORT_MAX_KEYS);
 
-    hidReady = false;
+    hidReady.Clear(1);
     tud_hid_report(KEYBOARD_REPORT_ID, keyCodes.data(), REPORT_SIZE);
 
     PrintReport(keyCodes);
@@ -173,5 +180,5 @@ extern "C" void tud_hid_report_complete_cb(
     [[maybe_unused]] uint8_t instance,
     [[maybe_unused]] const uint8_t* report,
     [[maybe_unused]] uint16_t len) {
-    usb::hidReady = true;
+    usb::hidReady.Set(1);
 }

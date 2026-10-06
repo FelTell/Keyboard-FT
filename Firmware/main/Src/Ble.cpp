@@ -62,6 +62,8 @@ static esp_hid_device_config_t hidConfig = {.vendor_id         = 0x16C0,
                                             .report_maps       = reportsMaps,
                                             .report_maps_len   = 1};
 
+static bool isInitialized = false;
+
 static void HidEventCallback(void* handlerArgs,
                              esp_event_base_t base,
                              int32_t id,
@@ -156,6 +158,9 @@ typedef struct {
 static local_param_t hidParams = {};
 
 bool Init() {
+    if (isInitialized) {
+        return true;
+    }
     esp_err_t ret = nvs_flash_init();
     if (ret == ESP_ERR_NVS_NO_FREE_PAGES ||
         ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
@@ -178,6 +183,7 @@ bool Init() {
                                       HidEventCallback,
                                       &hidParams.hid_dev));
 
+    isInitialized = true;
     return true;
 }
 
@@ -208,6 +214,16 @@ void SendReport(models::KbHidReport report) {
     PrintReport(keyCodes);
 
     leds::ResetTimeout();
+}
+
+void DeInit() {
+    esp_hidd_dev_deinit(hidParams.hid_dev);
+    esp_bluedroid_disable();
+    esp_bluedroid_deinit();
+    esp_bt_controller_disable();
+    esp_bt_controller_deinit();
+
+    isInitialized = false;
 }
 
 static void PrintReport(std::array<uint8_t, REPORT_SIZE>& report) {

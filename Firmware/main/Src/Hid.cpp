@@ -49,6 +49,7 @@ void SetUsbMode(bool isPressed) {
     }
     commandDone = true;
 
+    ble::DeInit();
     leds::SendCommand(leds::Commands::Usb);
     currentMode = Mode::Usb;
 }
@@ -65,13 +66,13 @@ void SetBleMode(bool isPressed) {
     }
     commandDone = true;
 
-    leds::SendCommand(leds::Commands::BluetoothSearching);
+    ble::Init();
+    leds::SendCommand(leds::Commands::BluetoothConnected);
     currentMode = Mode::Ble;
 }
 
 static bool Init() {
     usb::Init();
-    ble::Init();
 
     return true;
 }
