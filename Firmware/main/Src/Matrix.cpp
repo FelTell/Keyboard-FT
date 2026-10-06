@@ -10,15 +10,15 @@
 
 #include "RtosUtils.hpp"
 
+#include "Hid.hpp"
 #include "Layout.hpp"
-#include "UsbHid.hpp"
 
 namespace matrix {
 
 static bool Init();
 static void Handler();
 static bool PollChanges();
-static usb_hid::KbHidReport GenerateReport();
+static models::KbHidReport GenerateReport();
 static bool IsFnPressed();
 
 static rtos::Task task("MatrixTask", 4096, 24, Init, Handler, 1);
@@ -72,7 +72,7 @@ static bool Init() {
 
 static void Handler() {
     if (PollChanges()) {
-        usb_hid::SendReport(GenerateReport());
+        hid::SendReport(GenerateReport());
     }
 }
 
@@ -108,8 +108,8 @@ static bool PollChanges() {
     return changePresent;
 }
 
-static usb_hid::KbHidReport GenerateReport() {
-    usb_hid::KbHidReport report = {};
+static models::KbHidReport GenerateReport() {
+    models::KbHidReport report = {};
 
     const bool isFnPressed = IsFnPressed();
 

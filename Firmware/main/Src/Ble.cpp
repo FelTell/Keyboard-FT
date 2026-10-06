@@ -1,4 +1,4 @@
-#include "UsbHid.hpp"
+#include "Hid.hpp"
 
 #include <algorithm>
 #include <cstdlib>
@@ -36,25 +36,13 @@
 #include "esp_hid_gap.h"
 #include "esp_hidd.h"
 
-namespace usb_hid {
+namespace ble {
 
 static constexpr uint8_t REPORT_MAX_KEYS = 6;
 static constexpr uint8_t REPORT_SIZE     = 2 + REPORT_MAX_KEYS;
 
-static bool Init();
-static void Handler();
-
-static void PrintReport(std::array<uint8_t, REPORT_SIZE>& report);
-
-static rtos::Task task("UsbHidTask", 4096, 24, Init, Handler, 0);
-static rtos::Queue<KbHidReport> kbReportsQueue(10);
-
 static constexpr uint8_t KEYBOARD_REPORT_ID = 1;
 static constexpr uint8_t CONSUMER_REPORT_ID = 3;
-
-bool SendReport(KbHidReport kbHidReport) {
-    return kbReportsQueue.Send(kbHidReport);
-}
 
 const uint8_t reportsMap[] = {
     TUD_HID_REPORT_DESC_KEYBOARD(HID_REPORT_ID(KEYBOARD_REPORT_ID)),
@@ -62,6 +50,8 @@ const uint8_t reportsMap[] = {
 
 static esp_hid_raw_report_map_t reportsMaps[] = {
     {.data = reportsMap, .len = sizeof(reportsMap)}};
+
+static void PrintReport(std::array<uint8_t, REPORT_SIZE>& report);
 
 static esp_hid_device_config_t hidConfig = {.vendor_id         = 0x16C0,
                                             .product_id        = 0x05DF,
@@ -165,7 +155,7 @@ typedef struct {
 
 static local_param_t hidParams = {};
 
-static bool Init() {
+bool Init() {
     esp_err_t ret = nvs_flash_init();
     if (ret == ESP_ERR_NVS_NO_FREE_PAGES ||
         ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
@@ -191,12 +181,9 @@ static bool Init() {
     return true;
 }
 
-static void Handler() {
+void SendReport(models::KbHidReport report) {
     static uint16_t lastConsumerCode;
     static std::array<uint8_t, REPORT_SIZE> keyCodes = {};
-
-    KbHidReport report;
-    kbReportsQueue.Wait(report);
 
     if (lastConsumerCode != report.consumerCode) {
         lastConsumerCode = report.consumerCode;
@@ -236,14 +223,4 @@ static void PrintReport(std::array<uint8_t, REPORT_SIZE>& report) {
     ESP_LOGI("Report: ", "%s", text.data());
 }
 
-bool SetupTask() {
-    if (!kbReportsQueue.Setup()) {
-        return false;
-    }
-    if (!task.Setup()) {
-        return false;
-    }
-    return true;
-}
-
-} // namespace usb_hid
+} // namespace ble
