@@ -14,11 +14,7 @@
 
 namespace usb {
 
-static constexpr uint8_t REPORT_MAX_KEYS = 6;
-static constexpr uint8_t REPORT_SIZE     = 2 + REPORT_MAX_KEYS;
-
 static void PollConnection();
-static void PrintReport(std::array<uint8_t, REPORT_SIZE>& report);
 
 static rtos::Timer pollConnectionTimer("PollConnectionTimer",
                                        100,
@@ -37,7 +33,7 @@ static constexpr uint8_t CONSUMER_REPORT_ID = 3;
 static constexpr uint32_t TUSB_DESC_TOTAL_LEN =
     TUD_CONFIG_DESC_LEN + CFG_TUD_HID * TUD_HID_DESC_LEN;
 
-static const uint8_t reportDescriptor[] = {
+static constexpr uint8_t reportDescriptor[] = {
     TUD_HID_REPORT_DESC_KEYBOARD(HID_REPORT_ID(KEYBOARD_REPORT_ID)),
     TUD_HID_REPORT_DESC_CONSUMER(HID_REPORT_ID(CONSUMER_REPORT_ID))};
 
@@ -82,28 +78,14 @@ bool Init() {
     return true;
 }
 
-void SendReport(models::KbHidReport report) {
-    static uint16_t lastConsumerCode;
-    static std::array<uint8_t, REPORT_SIZE> keyCodes = {};
-
+void SendKeyboardReport(models::KeyboardReport report) {
     hidReady.Wait(1);
+    tud_hid_report(KEYBOARD_REPORT_ID, report.data(), report.size());
+}
 
-    if (lastConsumerCode != report.consumerCode) {
-        lastConsumerCode = report.consumerCode;
-        tud_hid_report(CONSUMER_REPORT_ID, &lastConsumerCode, 2);
-        ESP_LOGI("ConsumerReport: ", "%d", report.consumerCode);
-        return;
-    }
-
-    keyCodes[0] = report.modifiers;
-    memcpy(&keyCodes[2], report.keys.data(), REPORT_MAX_KEYS);
-
-    hidReady.Clear(1);
-    tud_hid_report(KEYBOARD_REPORT_ID, keyCodes.data(), REPORT_SIZE);
-
-    PrintReport(keyCodes);
-
-    leds::ResetTimeout();
+void SendConsumerCode(uint16_t consumerCode) {
+    hidReady.Wait(1);
+    tud_hid_report(CONSUMER_REPORT_ID, &consumerCode, sizeof(consumerCode));
 }
 
 static void PollConnection() {
@@ -119,34 +101,18 @@ static void PollConnection() {
     }
 }
 
-static void PrintReport(std::array<uint8_t, REPORT_SIZE>& report) {
-    uint16_t textIndex         = 0;
-    std::array<char, 100> text = {""};
-
-    for (uint16_t i = 0; i < REPORT_SIZE; ++i) {
-        textIndex += snprintf(&text[textIndex],
-                              sizeof(text) - textIndex,
-                              "%d ",
-                              report[i]);
-    }
-    ESP_LOGI("Report: ", "%s", text.data());
-}
-
 } // namespace usb
-
-// TinyUSB HID callbacks
 
 extern "C" const uint8_t* tud_hid_descriptor_report_cb(
     [[maybe_unused]] uint8_t instance) {
     return usb::reportDescriptor;
 }
 
-extern "C" uint16_t tud_hid_get_report_cb(
-    [[maybe_unused]] uint8_t instance,
-    [[maybe_unused]] uint8_t id,
-    [[maybe_unused]] hid_report_type_t type,
-    [[maybe_unused]] uint8_t* buf,
-    [[maybe_unused]] uint16_t realen) {
+extern "C" uint16_t tud_hid_get_report_cb([[maybe_unused]] uint8_t instance,
+                                          [[maybe_unused]] uint8_t id,
+                                          [[maybe_unused]] hid_report_type_t type,
+                                          [[maybe_unused]] uint8_t* buf,
+                                          [[maybe_unused]] uint16_t realen) {
     return 0;
 }
 
@@ -156,29 +122,15 @@ extern "C" void tud_hid_set_report_cb([[maybe_unused]] uint8_t instance,
                                       const uint8_t* buf,
                                       uint16_t size) {
     if (id != 1 && type != HID_REPORT_TYPE_OUTPUT && size != 1) {
-        // Unknown message, log and ignore it
-        uint16_t index = 0;
-        std::array<char, 100> text;
-        for (uint16_t i = 0; i < size; ++i) {
-            index +=
-                snprintf(&text[index], sizeof(text) - index, "%x ,", buf[i]);
-        }
-        ESP_LOGI("set report cb",
-                 "id: %d, type: %d, size: %d, buf: %s",
-                 id,
-                 type,
-                 size,
-                 buf);
+        ESP_LOGI("set report cb", "Unkown output event");
         return;
     }
-    bool capsState = buf[0] & KEYBOARD_LED_CAPSLOCK;
-    leds::SendCommand(capsState ? leds::Commands::CapsOnUsb
-                                : leds::Commands::Usb);
+    bool capsState = buf[0] & 2;
+    leds::SendCommand(capsState ? leds::Commands::CapsOnUsb : leds::Commands::Usb);
 }
 
-extern "C" void tud_hid_report_complete_cb(
-    [[maybe_unused]] uint8_t instance,
-    [[maybe_unused]] const uint8_t* report,
-    [[maybe_unused]] uint16_t len) {
+extern "C" void tud_hid_report_complete_cb([[maybe_unused]] uint8_t instance,
+                                           [[maybe_unused]] const uint8_t* report,
+                                           [[maybe_unused]] uint16_t len) {
     usb::hidReady.Set(1);
 }

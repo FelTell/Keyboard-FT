@@ -6,6 +6,7 @@ namespace usb {
 
 bool Init();
 
-void SendReport(models::KbHidReport report);
+void SendKeyboardReport(models::KeyboardReport report);
+void SendConsumerCode(uint16_t consumerCode);
 
 } // namespace usb

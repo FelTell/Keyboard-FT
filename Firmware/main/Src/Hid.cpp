@@ -12,16 +12,13 @@
 
 namespace hid {
 
-static constexpr uint8_t REPORT_MAX_KEYS = 6;
-static constexpr uint8_t REPORT_SIZE     = 2 + REPORT_MAX_KEYS;
-
 static bool Init();
 static void Handler();
 
-static void PrintReport(std::array<uint8_t, REPORT_SIZE>& report);
+static void PrintReport(std::array<uint8_t, models::REPORT_SIZE>& report);
 
 static rtos::Task task("UsbHidTask", 4096, 24, Init, Handler, 0);
-static rtos::Queue<models::KbHidReport> kbReportsQueue(10);
+static rtos::Queue<KbHidReport> kbReportsQueue(10);
 
 static constexpr uint8_t KEYBOARD_REPORT_ID = 1;
 static constexpr uint8_t CONSUMER_REPORT_ID = 3;
@@ -33,7 +30,7 @@ enum class Mode {
 
 static Mode currentMode = Mode::Usb;
 
-bool SendReport(models::KbHidReport kbHidReport) {
+bool SendReport(KbHidReport kbHidReport) {
     return kbReportsQueue.Send(kbHidReport);
 }
 
@@ -79,29 +76,42 @@ static bool Init() {
 
 static void Handler() {
     static uint16_t lastConsumerCode;
-    static std::array<uint8_t, REPORT_SIZE> keyCodes = {};
+    static models::KeyboardReport keyCodes = {};
 
-    models::KbHidReport report;
+    KbHidReport report;
     kbReportsQueue.Wait(report);
 
-    if (currentMode == Mode::Ble) {
-        ble::SendReport(report);
-    } else if (currentMode == Mode::Usb) {
-        usb::SendReport(report);
+    if (lastConsumerCode != report.consumerCode) {
+        lastConsumerCode = report.consumerCode;
+        if (currentMode == Mode::Ble) {
+            ble::SendConsumerCode(lastConsumerCode);
+        } else if (currentMode == Mode::Usb) {
+            usb::SendConsumerCode(lastConsumerCode);
+        }
+
+        return;
     }
 
+    keyCodes[0] = report.modifiers;
+    memcpy(&keyCodes[2], report.keys.data(), models::REPORT_MAX_KEYS);
+
+    if (currentMode == Mode::Ble) {
+        ble::SendKeyboardReport(keyCodes);
+    } else if (currentMode == Mode::Usb) {
+        usb::SendKeyboardReport(keyCodes);
+    }
+
+    PrintReport(keyCodes);
     leds::ResetTimeout();
 }
 
-static void PrintReport(std::array<uint8_t, REPORT_SIZE>& report) {
+static void PrintReport(models::KeyboardReport& report) {
     uint16_t textIndex         = 0;
     std::array<char, 100> text = {""};
 
-    for (uint16_t i = 0; i < REPORT_SIZE; ++i) {
-        textIndex += snprintf(&text[textIndex],
-                              sizeof(text) - textIndex,
-                              "%d ",
-                              report[i]);
+    for (uint16_t i = 0; i < models::REPORT_SIZE; ++i) {
+        textIndex +=
+            snprintf(&text[textIndex], sizeof(text) - textIndex, "%d ", report[i]);
     }
     ESP_LOGI("Report: ", "%s", text.data());
 }

@@ -18,7 +18,7 @@ namespace matrix {
 static bool Init();
 static void Handler();
 static bool PollChanges();
-static models::KbHidReport GenerateReport();
+static hid::KbHidReport GenerateReport();
 static bool IsFnPressed();
 
 static rtos::Task task("MatrixTask", 4096, 24, Init, Handler, 1);
@@ -108,8 +108,8 @@ static bool PollChanges() {
     return changePresent;
 }
 
-static models::KbHidReport GenerateReport() {
-    models::KbHidReport report = {};
+static hid::KbHidReport GenerateReport() {
+    hid::KbHidReport report = {};
 
     const bool isFnPressed = IsFnPressed();
 

@@ -7,7 +7,14 @@
 
 namespace hid {
 
-bool SendReport(models::KbHidReport);
+struct KbHidReport {
+    std::array<uint8_t, models::COLUMNS_NUM * models::ROWS_NUM> keys;
+    uint16_t consumerCode;
+    uint16_t size;
+    uint8_t modifiers;
+};
+
+bool SendReport(KbHidReport);
 
 void SetUsbMode(bool isPressed);
 

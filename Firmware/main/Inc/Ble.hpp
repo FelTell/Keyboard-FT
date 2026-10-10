@@ -7,6 +7,7 @@ namespace ble {
 bool Init();
 bool DeInit();
 
-void SendReport(models::KbHidReport report);
+void SendKeyboardReport(models::KeyboardReport report);
+void SendConsumerCode(uint16_t consumerCode);
 
 } // namespace ble
