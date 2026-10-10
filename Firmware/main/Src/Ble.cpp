@@ -132,7 +132,8 @@ static void EventCallback(void* args, esp_event_base_t base, int32_t id, void* d
             AdvertisingStart();
         } break;
         case ESP_HIDD_CONNECT_EVENT: {
-            ESP_LOGI(TAG, "CONNECT");
+            ESP_LOGI(TAG, "CONNECTED");
+            leds::SendCommand(leds::Commands::BluetoothConnected);
         } break;
         case ESP_HIDD_OUTPUT_EVENT: {
             if (param->output.report_id != 1 || param->output.length != 1) {
@@ -145,11 +146,8 @@ static void EventCallback(void* args, esp_event_base_t base, int32_t id, void* d
                                         : leds::Commands::BluetoothConnected);
         } break;
         case ESP_HIDD_DISCONNECT_EVENT: {
-            ESP_LOGI(TAG,
-                     "DISCONNECT: %s",
-                     esp_hid_disconnect_reason_str(
-                         esp_hidd_dev_transport_get(param->disconnect.dev),
-                         param->disconnect.reason));
+            ESP_LOGI(TAG, "DISCONNECTED");
+            leds::SendCommand(leds::Commands::BluetoothSearching);
             AdvertisingStart();
         } break;
         default: {

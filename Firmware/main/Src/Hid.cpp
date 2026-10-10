@@ -64,7 +64,7 @@ void SetBleMode(bool isPressed) {
     commandDone = true;
 
     ble::Init();
-    leds::SendCommand(leds::Commands::BluetoothConnected);
+    leds::SendCommand(leds::Commands::BluetoothSearching);
     currentMode = Mode::Ble;
 }
 
