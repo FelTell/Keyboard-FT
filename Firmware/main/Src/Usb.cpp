@@ -1,6 +1,5 @@
 #include "Usb.hpp"
 
-#include <algorithm>
 #include <cstdlib>
 
 #include <class/hid/hid_device.h>

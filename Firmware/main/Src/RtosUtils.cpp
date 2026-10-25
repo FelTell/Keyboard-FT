@@ -39,10 +39,9 @@ Event::~Event() {
     m_handle = nullptr;
 }
 
-Event::Event(Event&& other) noexcept
-    : m_handle(std::exchange(other.m_handle, nullptr)) {}
+Event::Event(Event&& other) : m_handle(std::exchange(other.m_handle, nullptr)) {}
 
-Event& Event::operator=(Event&& other) noexcept {
+Event& Event::operator=(Event&& other) {
     if (&other != this) {
         std::swap(m_handle, other.m_handle);
     }
@@ -82,9 +81,8 @@ uint32_t Event::Set(uint32_t bitsToSet) {
     }
 
     auto higherPriorityTaskWoken = pdFALSE;
-    auto result                  = xEventGroupSetBitsFromISR(m_handle,
-                                            bitsToSet,
-                                            &higherPriorityTaskWoken);
+    auto result =
+        xEventGroupSetBitsFromISR(m_handle, bitsToSet, &higherPriorityTaskWoken);
     if (result != pdFALSE) {
         portYIELD_FROM_ISR(higherPriorityTaskWoken);
     }
@@ -194,14 +192,14 @@ Timer::~Timer() {
     m_handle = nullptr;
 }
 
-Timer::Timer(Timer&& other) noexcept
+Timer::Timer(Timer&& other)
     : m_handle(std::exchange(other.m_handle, nullptr)),
       m_name(std::exchange(other.m_name, "")),
       m_periodMs(std::exchange(other.m_periodMs, 0)),
       m_autoReload(std::exchange(other.m_autoReload, false)),
       m_callback(std::exchange(other.m_callback, nullptr)) {}
 
-Timer& Timer::operator=(Timer&& other) noexcept {
+Timer& Timer::operator=(Timer&& other) {
     if (&other != this) {
         std::swap(m_handle, other.m_handle);
         std::swap(m_name, other.m_name);
@@ -261,8 +259,7 @@ bool Timer::ChangePeriod(uint32_t period) {
         return xTimerChangePeriod(m_handle, period, 0);
     }
     auto higherPriorityTaskWoken = pdFALSE;
-    auto result =
-        xTimerChangePeriodFromISR(m_handle, period, &higherPriorityTaskWoken);
+    auto result = xTimerChangePeriodFromISR(m_handle, period, &higherPriorityTaskWoken);
     if (result == pdFALSE) {
         return false;
     } else {
@@ -314,7 +311,7 @@ Task::~Task() {
     m_handle = nullptr;
 }
 
-Task::Task(Task&& other) noexcept
+Task::Task(Task&& other)
     : m_handle(std::exchange(other.m_handle, nullptr)),
       m_name(std::exchange(other.m_name, "")),
       m_size(std::exchange(other.m_size, 0)),
@@ -323,7 +320,7 @@ Task::Task(Task&& other) noexcept
       m_handlerFunction(std::exchange(other.m_handlerFunction, nullptr)),
       m_coreId(std::exchange(other.m_coreId, tskNO_AFFINITY)) {}
 
-Task& Task::operator=(Task&& other) noexcept {
+Task& Task::operator=(Task&& other) {
     if (&other != this) {
         std::swap(m_handle, other.m_handle);
         std::swap(m_name, other.m_name);
@@ -397,4 +394,4 @@ void Task::TaskFunction(void* arg) {
     }
 }
 
-}  // namespace rtos
+} // namespace rtos
