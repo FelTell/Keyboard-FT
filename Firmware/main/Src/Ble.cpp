@@ -1,4 +1,4 @@
-#include "Hid.hpp"
+#include "Ble.hpp"
 
 #include <esp_bt.h>
 #include <esp_bt_main.h>
@@ -10,7 +10,6 @@
 #include <esp_hidd.h>
 
 #include "Leds.hpp"
-#include "RtosUtils.hpp"
 
 namespace ble {
 
@@ -157,14 +156,14 @@ static void EventCallback(void* args, esp_event_base_t base, int32_t id, void* d
 }
 
 static esp_err_t AdvertisingStart(void) {
-    static esp_ble_adv_params_t hidd_adv_params = {};
-    hidd_adv_params.adv_int_min                 = 0x20;
-    hidd_adv_params.adv_int_max                 = 0x30;
-    hidd_adv_params.adv_type                    = ADV_TYPE_IND;
-    hidd_adv_params.own_addr_type               = BLE_ADDR_TYPE_PUBLIC;
-    hidd_adv_params.channel_map                 = ADV_CHNL_ALL;
-    hidd_adv_params.adv_filter_policy           = ADV_FILTER_ALLOW_SCAN_ANY_CON_ANY;
-    return esp_ble_gap_start_advertising(&hidd_adv_params);
+    static esp_ble_adv_params_t hiddAdvParams = {};
+    hiddAdvParams.adv_int_min                 = 0x20;
+    hiddAdvParams.adv_int_max                 = 0x30;
+    hiddAdvParams.adv_type                    = ADV_TYPE_IND;
+    hiddAdvParams.own_addr_type               = BLE_ADDR_TYPE_PUBLIC;
+    hiddAdvParams.channel_map                 = ADV_CHNL_ALL;
+    hiddAdvParams.adv_filter_policy           = ADV_FILTER_ALLOW_SCAN_ANY_CON_ANY;
+    return esp_ble_gap_start_advertising(&hiddAdvParams);
 }
 
 } // namespace ble

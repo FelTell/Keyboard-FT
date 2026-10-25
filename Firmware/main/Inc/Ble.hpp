@@ -5,7 +5,7 @@
 namespace ble {
 
 bool Init();
-bool DeInit();
+void DeInit();
 
 void SendKeyboardReport(models::KeyboardReport report);
 void SendConsumerCode(uint16_t consumerCode);
