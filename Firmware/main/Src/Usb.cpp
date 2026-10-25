@@ -80,11 +80,13 @@ bool Init() {
 void SendKeyboardReport(models::KeyboardReport report) {
     hidReady.Wait(1);
     tud_hid_report(KEYBOARD_REPORT_ID, report.data(), report.size());
+    hidReady.Clear(1);
 }
 
 void SendConsumerCode(uint16_t consumerCode) {
     hidReady.Wait(1);
     tud_hid_report(CONSUMER_REPORT_ID, &consumerCode, sizeof(consumerCode));
+    hidReady.Clear(1);
 }
 
 static void PollConnection() {
