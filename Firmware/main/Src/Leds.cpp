@@ -1,5 +1,4 @@
 #include "Leds.hpp"
-#include <array>
 
 #include "RtosUtils.hpp"
 #include "led_strip.h"
@@ -51,34 +50,12 @@ bool SendCommand(Commands mode) {
     return requests.SendToFront(mode);
 }
 
-void IncreaseBrightness(bool isPressed) {
-    static bool commandDone;
-
-    if (!isPressed) {
-        commandDone = false;
-        return;
-    }
-    if (commandDone) {
-        return;
-    }
-
+void IncreaseBrightness() {
     SendCommand(Commands::IncreaseBrightness);
-    commandDone = true;
 }
 
-void DecreaseBrightness(bool isPressed) {
-    static bool commandDone;
-
-    if (!isPressed) {
-        commandDone = false;
-        return;
-    }
-    if (commandDone) {
-        return;
-    }
-
+void DecreaseBrightness() {
     SendCommand(Commands::DecreaseBrightness);
-    commandDone = true;
 }
 
 void ResetTimeout() {
@@ -159,8 +136,7 @@ static void DelayAndWaitNewCommand(const TickType_t ticksToDelay) {
     if (requests.Wait(newCommand, ticksToDelay)) {
         if (newCommand == Commands::DecreaseBrightness ||
             newCommand == Commands::IncreaseBrightness) {
-            DecreaseIncreaseBrightness(newCommand ==
-                                       Commands::IncreaseBrightness);
+            DecreaseIncreaseBrightness(newCommand == Commands::IncreaseBrightness);
         } else if (newCommand == Commands::Disable) {
             led_strip_set_pixel(rgbHandle, 0, 0, 0, 0);
             led_strip_refresh(rgbHandle);

@@ -16,9 +16,9 @@ struct KbHidReport {
 
 bool SendReport(KbHidReport);
 
-void SetUsbMode(bool isPressed);
+void SetUsbMode();
 
-void SetBleMode(bool isPressed);
+void SetBleMode();
 
 bool SetupTask();
 

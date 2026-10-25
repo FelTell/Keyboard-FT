@@ -8,7 +8,6 @@
 
 #include "Ble.hpp"
 #include "Usb.hpp"
-#include "esp_hidd.h"
 
 namespace hid {
 
@@ -34,35 +33,13 @@ bool SendReport(KbHidReport kbHidReport) {
     return kbReportsQueue.Send(kbHidReport);
 }
 
-void SetUsbMode(bool isPressed) {
-    static bool commandDone;
-
-    if (!isPressed) {
-        commandDone = false;
-        return;
-    }
-    if (commandDone) {
-        return;
-    }
-    commandDone = true;
-
+void SetUsbMode() {
     ble::DeInit();
     leds::SendCommand(leds::Commands::Usb);
     currentMode = Mode::Usb;
 }
 
-void SetBleMode(bool isPressed) {
-    static bool commandDone;
-
-    if (!isPressed) {
-        commandDone = false;
-        return;
-    }
-    if (commandDone) {
-        return;
-    }
-    commandDone = true;
-
+void SetBleMode() {
     ble::Init();
     leds::SendCommand(leds::Commands::BluetoothSearching);
     currentMode = Mode::Ble;

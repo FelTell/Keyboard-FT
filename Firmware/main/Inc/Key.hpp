@@ -5,7 +5,7 @@
 
 class Key {
   public:
-    using FnFunction = void (*)(bool);
+    using FnFunction = void (*)();
 
     Key(const char* keyText,
         uint8_t hidCode,
@@ -18,7 +18,8 @@ class Key {
           m_fnKeyCode(fnCode),
           m_fnConsumerCode(fnConsumerCode),
           m_fnFunction(fnFunction),
-          m_state(false) {}
+          m_state(false),
+          m_fnDone(false) {}
 
     Key(const char* keyText, hid_keyboard_modifier_bm_t modifier)
         : m_keyText(keyText),
@@ -27,7 +28,8 @@ class Key {
           m_fnKeyCode(0),
           m_fnConsumerCode(0),
           m_fnFunction(nullptr),
-          m_state(false) {}
+          m_state(false),
+          m_fnDone(false) {}
 
     const char* GetText() {
         return m_keyText;
@@ -57,10 +59,20 @@ class Key {
         m_state = state;
     }
 
-    void DoFnFunction(bool state) const {
-        if (m_fnFunction) {
-            m_fnFunction(state);
+    void DoFnFunction(bool state) {
+        if (!m_fnFunction) {
+            return;
         }
+        if (!state) {
+            m_fnDone = false;
+            return;
+        }
+        if (m_fnDone) {
+            return;
+        }
+
+        m_fnDone = true;
+        m_fnFunction();
     }
 
     bool HandleStateChange(bool currentState) {
@@ -85,6 +97,7 @@ class Key {
     uint32_t m_pressCount;
     uint32_t m_releaseCount;
     bool m_state;
+    bool m_fnDone;
 
     bool HandlePress() {
         m_releaseCount = 0;
@@ -93,7 +106,7 @@ class Key {
             return false;
         }
         m_pressCount = 0;
-        m_state = true;
+        m_state      = true;
         return true;
     }
 
@@ -104,7 +117,7 @@ class Key {
             return false;
         }
         m_releaseCount = 0;
-        m_state = false;
+        m_state        = false;
         return true;
     }
 };

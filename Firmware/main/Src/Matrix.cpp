@@ -114,7 +114,7 @@ static hid::KbHidReport GenerateReport() {
     const bool isFnPressed = IsFnPressed();
 
     for (uint16_t i = 0; i < layout::COLUMNS_NUM * layout::ROWS_NUM; ++i) {
-        const auto key = layout::keys[0][i];
+        auto key = layout::keys[0][i];
 
         if (!key.GetState()) {
             key.DoFnFunction(false);

@@ -23,8 +23,8 @@ Commands GetMode();
 
 bool SetupTask();
 
-void DecreaseBrightness(bool);
-void IncreaseBrightness(bool);
+void DecreaseBrightness();
+void IncreaseBrightness();
 
 void ResetTimeout();
 
